@@ -1,18 +1,16 @@
 const express = require("express");
 const cors = require("cors");
 
-const app = express();
+const pool = require("./db");
+const user_router = require("./routes/users/routes");
 
+const app = express();
 const port = 3000;
 
+app.use(express.json());
 app.use(cors());
 
-app.get("/", (req, res) => {
-
-	console.log("get request");
-
-	res.status(200).json({ example: "data"});
-});
+app.use("/users", user_router);
 
 app.listen(port, () => {
 	console.log(`listening on port ${port}`);
