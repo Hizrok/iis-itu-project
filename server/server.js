@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 
-const pool = require("./db");
 const user_router = require("./routes/users/routes");
+const course_router = require("./routes/courses/routes");
 
 const app = express();
 const port = 3000;
@@ -11,6 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/users", user_router);
+app.use("/courses", course_router);
 
 app.listen(port, () => {
 	console.log(`listening on port ${port}`);
