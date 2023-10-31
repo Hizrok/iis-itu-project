@@ -1,11 +1,11 @@
 import HomePage from "../pages/main/HomePage";
 import { RouteType } from "./config";
-import DefaultPage from "../pages/registration/DefaultPage";
 import AccountPage from "../pages/account/AccountPage";
 import RegistrationPageLayout from "../pages/registration/RegistationPageLayout";
 import RegistrationIndex from "../pages/registration/RegistrationIndex";
 import CourseRegPage from "../pages/registration/CourseRegPage";
 import ClassRegPage from "../pages/registration/ClassRegPage";
+import NotFound from "../pages/error/NotFoundPage";
 
 const appRoutes: RouteType[] = [
   {
@@ -16,10 +16,7 @@ const appRoutes: RouteType[] = [
   {
     path: "/account",
     element: <AccountPage />,
-    state: "account",
-    sidebarProps: {
-      displayText: "Account"
-    }
+    state: "account"
   },
   {
     path: "/registration",
@@ -33,14 +30,6 @@ const appRoutes: RouteType[] = [
         index: true,
         element: <RegistrationIndex />,
         state: "registration.index"
-      },
-      {
-        path: "/registration/default",
-        element: <DefaultPage />,
-        state: "registration.default",
-        sidebarProps: {
-          displayText: "Default"
-        },
       },
       {
         path: "/registration/course_registration",
@@ -59,6 +48,11 @@ const appRoutes: RouteType[] = [
         }
       }
     ]
+  },
+  {
+    path: "*",
+    element: <NotFound />,
+    state: "not_found"
   }
 ];
 
