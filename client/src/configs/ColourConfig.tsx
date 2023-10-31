@@ -12,7 +12,8 @@ const ColourConfig = {
         colour: "#000",
         buttonColour: "#613DC1"
     },
-    mainBg: colors.grey[100]
+    mainBg: colors.grey[100],
+    footerBg: colors.grey[300]
 };
 
 export default ColourConfig;

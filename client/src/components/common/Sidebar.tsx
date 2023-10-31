@@ -13,7 +13,7 @@ const Sidebar = () => {
                 width: SizeConfig.sidebar.width,
                 flexShrink: 0,
                 "& .MuiDrawer-paper": {width: SizeConfig.sidebar.width, boxSizing: "border-box", borderRight: "0px", backgroundColor: ColourConfig.sidebar.bg, color: ColourConfig.sidebar.colour}}} >
-            <List disablePadding>
+            <List sx={{p:1}}>
                 <Toolbar
                     component={Link}
                     to={"/"}>

@@ -19,7 +19,7 @@ const SidebarItem = ({ item }: Props) => {
             backgroundColor: colorConfigs.sidebar.hoverBg
           },
           paddingY: "12px",
-          paddingX: "24px"
+          paddingX: "35px"
         }}
       >
         <ListItemIcon sx={{
