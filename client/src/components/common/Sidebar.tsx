@@ -15,6 +15,7 @@ const Sidebar = () => {
                 "& .MuiDrawer-paper": {width: SizeConfig.sidebar.width, boxSizing: "border-box", borderRight: "0px", backgroundColor: ColourConfig.sidebar.bg, color: ColourConfig.sidebar.colour}}} >
             <List sx={{p:1}}>
                 <Toolbar
+                    sx={{marginBottom: "20px"}}
                     component={Link}
                     to={"/"}>
                     <Stack>
