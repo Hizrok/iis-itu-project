@@ -1,4 +1,4 @@
-import { ListItemButton, ListItemIcon } from "@mui/material";
+import { ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import colorConfigs from "../../configs/ColourConfig";
 import { RouteType } from "../../routes/config";
@@ -25,16 +25,19 @@ const SidebarItem = ({ item }: Props) => {
           background: ColourConfig.sidebar.highlightBg,
           backgroundColor: appState === item.state ? colorConfigs.sidebar.activeBg : ColourConfig.sidebar.highlightBg,
           paddingY: "12px",
-          paddingX: "12px",
+          paddingX: "0px",
           marginBottom: "2px"
         }}
       >
-        <ListItemIcon sx={{
-          color: colorConfigs.sidebar.colour
-        }}>
-          {item.sidebarProps.icon && item.sidebarProps.icon}
-        </ListItemIcon>
-        {item.sidebarProps.displayText}
+        <ListItemText
+            disableTypography
+            primary={
+              <Typography sx={{paddingLeft:"10px"}}>
+                {item.sidebarProps.displayText}
+              </Typography>
+            }
+        />
+        
       </ListItemButton>
     ) : null
   );

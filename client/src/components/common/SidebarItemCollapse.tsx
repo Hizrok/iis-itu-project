@@ -34,24 +34,22 @@ const SidebarItemCollapse = ({ item }: Props) => {
             },
             backgroundColor: ColourConfig.sidebar.highlightBg,
             paddingY: "12px",
-            paddingX: "5px",
+            paddingX: "0px",
             marginBottom: "2px"
           }}
         >
-          <ListItemIcon sx={{
-            color: ColourConfig.sidebar.colour
-          }}>
-            {item.sidebarProps.icon && item.sidebarProps.icon}
+          <ListItemIcon sx={{marginLeft:"10px", color:"white"}}>
+            {open ? <ExpandLessOutlinedIcon /> : <ExpandMoreOutlinedIcon />}
           </ListItemIcon>
+
           <ListItemText
             disableTypography
             primary={
-              <Typography>
+              <Typography sx={{marginLeft:"10px"}}>
                 {item.sidebarProps.displayText}
               </Typography>
             }
           />
-          {open ? <ExpandLessOutlinedIcon /> : <ExpandMoreOutlinedIcon />}
         </ListItemButton>
         <Collapse in={open} timeout="auto">
           <List
