@@ -16,11 +16,11 @@ const Sidebar = () => {
                 "& .MuiDrawer-paper": {width: SizeConfig.sidebar.width, boxSizing: "border-box", borderRight: "0px", backgroundColor: ColourConfig.sidebar.bg, color: ColourConfig.sidebar.colour}}} >
             <List>
                 <Toolbar
-                    sx={{margin:5}}
+                    sx={{margin:3}}
                     component={Link}
                     to={"/"}>
                     <Stack>
-                        <Typography variant='h6' textAlign={'center'} sx={{paddingTop: 4, paddingBottom: 4, paddingLeft: 7, paddingRight: 7, color:"#FFFFFF", background:ColourConfig.sidebar.highlightBg}}>
+                        <Typography variant='h6' textAlign={'center'} sx={{paddingLeft:8, paddingRight:8, paddingTop:6, paddingBottom:6, color:"#FFFFFF", background:ColourConfig.sidebar.highlightBg}}>
                             LOGO
                         </Typography>
                     </Stack>

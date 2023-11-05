@@ -38,9 +38,9 @@ const appRoutes: RouteType[] = [
     state: "account"
   },
   {
-    path: "/courses",
+    path: "/course",
     element: <MainCoursesListPage />,
-    state: "courses_main_list",
+    state: "course_main_list",
     sidebarProps: {
       displayText: "Seznam předmětů"
     }
