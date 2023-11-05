@@ -31,7 +31,7 @@ const MainCoursesListPage = () => {
         <div>
             {
                 users.map(user => {
-                    return <div>{user.user_name}</div>
+                    return <div key={user.user_login}>{user.user_login}, {user.user_role}, {user.user_name}, {user.user_surname}</div>
                 })
             }
         </div>
