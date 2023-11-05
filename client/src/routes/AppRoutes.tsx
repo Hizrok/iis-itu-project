@@ -30,17 +30,20 @@ const appRoutes: RouteType[] = [
   {
     index: true,
     element: <HomePage />,
-    state: "home"
+    state: "home",
+    topbarText: "Registrační stránka"
   },
   {
     path: "/account",
     element: <AccountPage />,
-    state: "account"
+    state: "account",
+    topbarText: "Účet"
   },
   {
     path: "/course",
     element: <MainCoursesListPage />,
     state: "course_main_list",
+    topbarText: "Seznam předmětů",
     sidebarProps: {
       displayText: "Seznam předmětů"
     }
@@ -49,6 +52,7 @@ const appRoutes: RouteType[] = [
     path: "/schedule",
     element: <SchedulePage />,
     state: "schedule",
+    topbarText: "Rozvrh",
     sidebarProps: {
       displayText: "Rozvrh"
     }
@@ -57,6 +61,7 @@ const appRoutes: RouteType[] = [
     path: "/registration",
     element: <RegistrationPageLayout />,
     state: "registration",
+    topbarText: "Registrace",
     sidebarProps: {
       displayText: "Registace"
     },
@@ -70,6 +75,7 @@ const appRoutes: RouteType[] = [
         path: "/registration/course_registration",
         element: <CourseRegPage />,
         state: "registration.course_registration",
+        topbarText: "Registrace předmětů",
         sidebarProps: {
           displayText: "Registrace předmětu"
         }
@@ -78,6 +84,7 @@ const appRoutes: RouteType[] = [
         path: "/registration/class_registration",
         element: <ClassRegPage />,
         state: "registration.class_registration",
+        topbarText: "Registrace vyučování",
         sidebarProps: {
           displayText: "Registrace vyučování"
         }
@@ -88,6 +95,7 @@ const appRoutes: RouteType[] = [
     path: "/list",
     element: <ListPageLayout />,
     state: "list",
+    topbarText: "Seznamy",
     sidebarProps: {
       displayText: "Seznamy"
     },
@@ -101,6 +109,7 @@ const appRoutes: RouteType[] = [
         path: "/list/user_list",
         element: <UserListPage />,
         state: "list.user_list",
+        topbarText: "Seznam uživetelů",
         sidebarProps: {
           displayText: "Uživatelé"
         }
@@ -109,6 +118,7 @@ const appRoutes: RouteType[] = [
         path: "/list/course_list",
         element: <CourseListPage />,
         state: "list.course_list",
+        topbarText: "Seznam předmětů",
         sidebarProps: {
           displayText: "Předmětů"
         }
@@ -117,6 +127,7 @@ const appRoutes: RouteType[] = [
         path: "/list/room_list",
         element: <RoomListPage />,
         state: "list.room_list",
+        topbarText: "Seznam místností",
         sidebarProps: {
           displayText: "Místnotí"
         }
@@ -127,6 +138,7 @@ const appRoutes: RouteType[] = [
     path: "/create",
     element: <CreatePageLayout />,
     state: "create",
+    topbarText: "Vytvořit",
     sidebarProps: {
       displayText: "Vytvořit"
     },
@@ -140,6 +152,7 @@ const appRoutes: RouteType[] = [
         path: "/create/user_create",
         element: <UserCreatePage />,
         state: "create.user_create",
+        topbarText: "Vytvořit uživatele",
         sidebarProps: {
           displayText: "Uživatele"
         }
@@ -148,6 +161,7 @@ const appRoutes: RouteType[] = [
         path: "/create/course_create",
         element: <CourseCreatePage />,
         state: "create.course_create",
+        topbarText: "Vytvořit předmět",
         sidebarProps: {
           displayText: "Předmět"
         }
@@ -156,6 +170,7 @@ const appRoutes: RouteType[] = [
         path: "/create/room_create",
         element: <RoomCreatePage />,
         state: "create.room_create",
+        topbarText: "Vytvořit místnost",
         sidebarProps: {
           displayText: "Místnost"
         }

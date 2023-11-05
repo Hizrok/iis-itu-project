@@ -1,4 +1,4 @@
-import { ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
+import { ListItemButton, ListItemText, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import colorConfigs from "../../configs/ColourConfig";
 import { RouteType } from "../../routes/config";
