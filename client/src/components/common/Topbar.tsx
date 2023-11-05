@@ -10,7 +10,7 @@ function Topbar() {
     const [output, setOutput] = useState("Registační stránka");
 
     useEffect(() => {
-        AppRoutes.some((value) => { if(location.pathname.includes(value.path? value.path : "")){setOutput(value.sidebarProps? value.sidebarProps.displayText : "Registační stránka"); return;}});
+        AppRoutes.some((value) => { if(location.pathname.includes(value.path? value.path : "")){setOutput(value.topbarText? value.topbarText : output); return;}});
     }, [location]);
 
     return(
