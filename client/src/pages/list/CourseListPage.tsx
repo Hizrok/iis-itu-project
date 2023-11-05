@@ -14,7 +14,7 @@ const CourseListPage = () => {
 
     useEffect(() => {
         async function fetchCourses() {
-            const response = await fetch("http://localhost:3000/users");
+            const response = await fetch("http://localhost:3000/courses");
             const courses_json = await response.json();
     
             setCourses(courses_json);
@@ -29,7 +29,7 @@ const CourseListPage = () => {
         <div>
             {
                 courses.map(course => {
-                    return <div>{course.course_id}</div>
+                    return <div key={course.course_id}>{course.course_id}</div>
                 })
             }
         </div>
