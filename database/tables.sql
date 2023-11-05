@@ -9,7 +9,7 @@ drop table if exists time_requirements;
 drop table if exists course_activities;
 drop table if exists courses;
 drop table if exists rooms;
-drop table if exists users;
+drop table if exists users cascade;
 
 drop type if exists role cascade;
 drop type if exists ca_type cascade;
@@ -22,9 +22,8 @@ create type recurrence_type as enum ('každý', 'lichý', 'sudý', 'jednorázov�
 create type day as enum ('monday', 'tuesday', 'wednesday', 'thursday', 'friday');
 
 create table users (
-	user_id serial primary key,
+	user_login varchar(10) primary key,
 	user_role role default 'student',
-	user_login varchar(10) unique,
 	user_name varchar(50),
 	user_surname varchar(50)
 );
@@ -33,8 +32,8 @@ create table courses (
 	course_id char(3) primary key,
 	course_name varchar(50) not null,
 	course_annotation text,
-	course_guarantor_id serial not null,
-	foreign key (course_guarantor_id) references users(user_id)
+	course_guarantor_login varchar(10) not null,
+	foreign key (course_guarantor_login) references users(user_login)
 );
 
 create table rooms (
@@ -81,9 +80,9 @@ create table course_act_room_reqs (
 );
 
 create table lecturer_time_reqs (
-	user_id serial,
+	user_login varchar(10),
 	tr_id serial,
-	foreign key (user_id) references users (user_id),
+	foreign key (user_login) references users (user_login),
 	foreign key (tr_id) references time_requirements (tr_id),
-	primary key (user_id, tr_id)
+	primary key (user_login, tr_id)
 );
