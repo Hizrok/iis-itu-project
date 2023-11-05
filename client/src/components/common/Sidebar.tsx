@@ -5,6 +5,7 @@ import ColourConfig from "../../configs/ColourConfig"
 import AppRoutes from "../../routes/AppRoutes"
 import SidebarItem from "./SidebarItem"
 import SidebarItemCollapse from "./SidebarItemCollapse"
+
 const Sidebar = () => {
 
     return(
@@ -13,13 +14,13 @@ const Sidebar = () => {
                 width: SizeConfig.sidebar.width,
                 flexShrink: 0,
                 "& .MuiDrawer-paper": {width: SizeConfig.sidebar.width, boxSizing: "border-box", borderRight: "0px", backgroundColor: ColourConfig.sidebar.bg, color: ColourConfig.sidebar.colour}}} >
-            <List sx={{p:1}}>
+            <List>
                 <Toolbar
-                    sx={{marginBottom: "20px"}}
+                    sx={{margin:5}}
                     component={Link}
                     to={"/"}>
                     <Stack>
-                        <Typography variant='h6' color={ColourConfig.sidebar.colour}>
+                        <Typography variant='h6' textAlign={'center'} sx={{paddingTop: 4, paddingBottom: 4, paddingLeft: 7, paddingRight: 7, color:"#FFFFFF", background:ColourConfig.sidebar.highlightBg}}>
                             LOGO
                         </Typography>
                     </Stack>

@@ -4,6 +4,7 @@ import colorConfigs from "../../configs/ColourConfig";
 import { RouteType } from "../../routes/config";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import ColourConfig from "../../configs/ColourConfig";
 
 type Props = {
   item: RouteType;
@@ -21,9 +22,11 @@ const SidebarItem = ({ item }: Props) => {
           "&: hover": {
             backgroundColor: colorConfigs.sidebar.hoverBg
           },
-          backgroundColor: appState === item.state ? colorConfigs.sidebar.activeBg : "unset",
+          background: ColourConfig.sidebar.highlightBg,
+          backgroundColor: appState === item.state ? colorConfigs.sidebar.activeBg : ColourConfig.sidebar.highlightBg,
           paddingY: "12px",
-          paddingX: "35px"
+          paddingX: "12px",
+          marginBottom: "2px"
         }}
       >
         <ListItemIcon sx={{
