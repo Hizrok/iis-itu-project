@@ -31,23 +31,23 @@ const add_course = async (req, res) => {
     const { course_id, course_name, course_annotation, course_guarantor } =
       req.body;
 
-    let guarator_id = await pool.query(queries.get_guarantor_id, [
-      course_guarantor,
-    ]);
-    if (guarator_id.rowCount) {
-      guarator_id = guarator_id.rows[0].user_id;
-    } else {
-      res
-        .status(404)
-        .json({ message: `guarantor ${course_guarantor} was not found` });
-      return;
-    }
+    // let guarator_id = await pool.query(queries.get_guarantor_id, [
+    //   course_guarantor,
+    // ]);
+    // if (guarator_id.rowCount) {
+    //   guarator_id = guarator_id.rows[0].user_id;
+    // } else {
+    //   res
+    //     .status(404)
+    //     .json({ message: `guarantor ${course_guarantor} was not found` });
+    //   return;
+    // }
 
     const course = await pool.query(queries.add_course, [
       course_id,
       course_name,
       course_annotation,
-      guarator_id,
+      course_guarantor,
     ]);
     res.status(201).json(course.rows);
   } catch (error) {

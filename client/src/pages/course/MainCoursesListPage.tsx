@@ -1,41 +1,41 @@
+import { useState, useEffect } from "react";
 
-import { useState, useEffect } from 'react';
-
-type User = {
-    user_login: string,
-    user_role: string,
-    user_name: string,
-    user_surname: string
-}
+type Course = {
+  course_id: string;
+  course_name: string;
+  course_annotation: string;
+  course_guarantor_login: string;
+};
 
 const MainCoursesListPage = () => {
-    
-    const [users, setUsers] = useState<User[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
 
-    // let courses = "loading..."
+  // let courses = "loading..."
 
-    useEffect(() => {
-        async function fetchCourses() {
-            const response = await fetch("http://localhost:3000/users");
-            const users_json = await response.json();
-    
-            setUsers(users_json);
-            console.log(users_json);
-        }
-        
-        fetchCourses();
-    }, []);
+  useEffect(() => {
+    async function fetchCourses() {
+      const response = await fetch("http://localhost:3000/courses");
+      const courses_json = await response.json();
 
+      setCourses(courses_json);
+      console.log(courses_json);
+    }
 
-    return(
-        <div>
-            {
-                users.map(user => {
-                    return <div key={user.user_login}>{user.user_login}, {user.user_role}, {user.user_name}, {user.user_surname}</div>
-                })
-            }
-        </div>
-    )
-}
+    fetchCourses();
+  }, []);
+
+  return (
+    <ul>
+      {courses.map((course) => {
+        return (
+          <li key={course.course_id}>
+            {course.course_id}, {course.course_name}, {course.course_annotation}
+            , {course.course_guarantor_login}
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
 
 export default MainCoursesListPage;
