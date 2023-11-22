@@ -28,6 +28,8 @@ const get_room_by_id = async (req, res) => {
 
 const add_room = async (req, res) => {
   try {
+    if (req.user.role !== "admin") return res.sendStatus(403);
+
     const { building, number, capacity } = req.body;
     const id = building + number;
 
@@ -46,6 +48,8 @@ const add_room = async (req, res) => {
 
 const delete_room = async (req, res) => {
   try {
+    if (req.user.role !== "admin") return res.sendStatus(403);
+
     const id = req.params.id;
     const delete_query = await pool.query(queries.delete_room, [id]);
     if (delete_query.rowCount) {
