@@ -1,12 +1,15 @@
-import { Drawer, List, Toolbar, Stack, Typography, Button } from "@mui/material"
+import { Drawer, List, Toolbar, Stack, Typography } from "@mui/material"
 import { Link } from "react-router-dom";
 import SizeConfig from "../../configs/SizeConfig"
 import ColourConfig from "../../configs/ColourConfig"
 import AppRoutes from "../../routes/AppRoutes"
 import SidebarItem from "./SidebarItem"
 import SidebarItemCollapse from "./SidebarItemCollapse"
+import { useAuthUser, useIsAuthenticated } from "react-auth-kit";
 
 const Sidebar = () => {
+    const isAuthenticated = useIsAuthenticated();
+    const auth = useAuthUser();
 
     return(
         <Drawer variant="permanent"
@@ -26,13 +29,26 @@ const Sidebar = () => {
                     </Stack>
                 </Toolbar>
                 {AppRoutes.map((route, index) => (
+                    route.authenticated ?
+                        isAuthenticated() ?
+                            route.roles?.includes(auth()!.role)?
+                                route.sidebarProps ? (
+                                    route.child ? (
+                                    <SidebarItemCollapse item={route} key={index} />
+                                    ) : (
+                                    <SidebarItem item={route} key={index} />
+                                    )
+                                ) : null 
+                            : null
+                        : null
+                    :
                     route.sidebarProps ? (
                         route.child ? (
                         <SidebarItemCollapse item={route} key={index} />
                         ) : (
                         <SidebarItem item={route} key={index} />
                         )
-                    ) : null
+                    ) : null 
                     ))}
             </List>
         </Drawer>
