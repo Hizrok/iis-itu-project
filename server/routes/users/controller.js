@@ -1,6 +1,9 @@
 const pool = require("../../db");
 const queries = require("./queries");
 
+const bcrypt = require("bcrypt");
+const saltRounds = 12;
+
 const get_users = async (req, res) => {
   try {
     if (req.user.role !== "admin") return res.sendStatus(403);
@@ -68,14 +71,17 @@ const add_user = async (req, res) => {
     const surname_substring = surname.substring(0, 5).toLowerCase();
     const login = await generate_login(surname_substring);
 
-    const user = await pool.query(queries.add_user, [
-      role,
-      login,
-      password,
-      name,
-      surname,
-    ]);
-    res.status(201).json(user.rows);
+    bcrypt.hash(password, saltRounds, async function (err, hash) {
+      if (err) throw err;
+      const user = await pool.query(queries.add_user, [
+        role,
+        login,
+        hash,
+        name,
+        surname,
+      ]);
+      res.status(201).json(user.rows);
+    });
   } catch (error) {
     res.status(500).json(error);
     console.error(error);
