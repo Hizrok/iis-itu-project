@@ -3,6 +3,8 @@ const queries = require("./queries");
 
 const get_users = async (req, res) => {
   try {
+    if (req.user.role !== "admin") return res.sendStatus(403);
+
     const users = await pool.query(queries.get_all_users);
     res.status(200).json(users.rows);
   } catch (error) {
@@ -14,6 +16,10 @@ const get_users = async (req, res) => {
 const get_user_by_login = async (req, res) => {
   try {
     const login = req.params.login;
+
+    if (req.user.role !== "admin" && req.user.login !== login)
+      return res.sendStatus(403);
+
     const user = await pool.query(queries.get_user_by_login, [login]);
     if (user.rows.length) {
       res.status(200).json(user.rows);
@@ -55,13 +61,17 @@ const generate_login = async (surname_substring) => {
 
 const add_user = async (req, res) => {
   try {
-    const { role, name, surname } = req.body;
+    const { password, role, name, surname } = req.body;
+
+    if (req.user.role !== "admin") return res.sendStatus(403);
+
     const surname_substring = surname.substring(0, 5).toLowerCase();
     const login = await generate_login(surname_substring);
 
     const user = await pool.query(queries.add_user, [
       role,
       login,
+      password,
       name,
       surname,
     ]);
@@ -76,6 +86,9 @@ const edit_user = async (req, res) => {
   try {
     const login = req.params.login;
     const { role, name, surname } = req.body;
+
+    if (req.user.role !== "admin" && req.user.login !== login)
+      return res.sendStatus(403);
 
     const user = await pool.query(queries.edit_user, [
       role,
@@ -93,6 +106,10 @@ const edit_user = async (req, res) => {
 const delete_user = async (req, res) => {
   try {
     const login = req.params.login;
+
+    if (req.user.role !== "admin" && req.user.login !== login)
+      return res.sendStatus(403);
+
     const delete_query = await pool.query(queries.delete_user, [login]);
     // delete query will be one if user with that login was found
     if (delete_query.rowCount) {

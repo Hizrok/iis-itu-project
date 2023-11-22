@@ -28,26 +28,16 @@ const get_course_by_id = async (req, res) => {
 
 const add_course = async (req, res) => {
   try {
-    const { course_id, course_name, course_annotation, course_guarantor } =
-      req.body;
+    if (req.user.role !== "admin" && req.user.role !== "garant")
+      return res.sendStatus(403);
 
-    // let guarator_id = await pool.query(queries.get_guarantor_id, [
-    //   course_guarantor,
-    // ]);
-    // if (guarator_id.rowCount) {
-    //   guarator_id = guarator_id.rows[0].user_id;
-    // } else {
-    //   res
-    //     .status(404)
-    //     .json({ message: `guarantor ${course_guarantor} was not found` });
-    //   return;
-    // }
+    const { course_id, course_name, course_annotation } = req.body;
 
     const course = await pool.query(queries.add_course, [
       course_id,
       course_name,
       course_annotation,
-      course_guarantor,
+      req.user.login,
     ]);
     res.status(201).json(course.rows);
   } catch (error) {

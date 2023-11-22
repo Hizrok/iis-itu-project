@@ -16,13 +16,14 @@ drop type if exists ca_type cascade;
 drop type if exists recurrence_type cascade;
 drop type if exists day cascade;
 
-create type role as enum ('student', 'scheduler', 'lecturer', 'guarantor', 'admin');
+create type role as enum ('student', 'rozvrhář', 'vyučující', 'garant', 'admin');
 create type ca_type as enum ('přednáška', 'cvičení', 'laboratoř', 'democvičení', 'seminář');
 create type recurrence_type as enum ('každý', 'lichý', 'sudý', 'jednorázová aktivita');
-create type day as enum ('monday', 'tuesday', 'wednesday', 'thursday', 'friday');
+create type day as enum ('pondělí', 'úterý', 'středa', 'čtvrtek', 'pátek');
 
 create table users (
 	user_login varchar(10) primary key,
+	user_password varchar(72) not null,
 	user_role role default 'student',
 	user_name varchar(50),
 	user_surname varchar(50)
@@ -86,3 +87,9 @@ create table lecturer_time_reqs (
 	foreign key (tr_id) references time_requirements (tr_id),
 	primary key (user_login, tr_id)
 );
+
+insert into users (user_role, user_login, user_password) values ('admin', 'admin', '$2a$12$4fsW9MNF7EkCB26ZqyjBv.XePklapQIs22rqz/KySOFat75/3YSJK');
+insert into users (user_role, user_login, user_password) values ('garant', 'garant', '$2a$12$fIkt71B3YPGl7jLVGmhuZ.MoxhIvteEt206gAGclrZoWtWZNhyTfe');
+insert into users (user_role, user_login, user_password) values ('vyučující', 'vyucujici', '$2a$12$ioGGvtfQ0MJ3OXqNdBw6eOgRabokZW8pPnxGIq862ITwBR8yd2UZ2');
+insert into users (user_role, user_login, user_password) values ('rozvrhář', 'rozvrhar', '$2a$12$d0jtwdQOIloBGlKa0SmcauSDg0Z5V13wsmKnrNOzbkJUsOggxVYlq');
+insert into users (user_role, user_login, user_password) values ('student', 'student', '$2a$12$TuXkefAQEOzebxtTBH9YSeoP2/1Q3UcrjnoLx78bnTi51oEPRGIGC');
