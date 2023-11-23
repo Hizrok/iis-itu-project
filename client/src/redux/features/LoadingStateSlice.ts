@@ -9,7 +9,7 @@ const initialState: loadingState = {
 };
 
 export const loadingStateSlice = createSlice({
-    name: "menuState",
+    name: "loadingState",
     initialState,
     reducers: {
     setLoadingState: (state, action: PayloadAction<boolean>) => {

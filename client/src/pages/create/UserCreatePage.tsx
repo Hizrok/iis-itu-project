@@ -11,7 +11,7 @@ import { useAuthHeader } from "react-auth-kit";
 
 const UserCreatePage = () => {
 
-  const authHeader = useAuthHeader()
+  const authHeader = useAuthHeader();
 
 
   const [role, setRole] = useState<string>("");

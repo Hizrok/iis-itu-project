@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { Box, Button, TextField } from "@mui/material";
+import { useAuthHeader } from "react-auth-kit";
 
 const CourseCreatePage = () => {
   const [id, setId] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [annotation, setAnnotation] = useState<string>("");
+
+  const authHeader = useAuthHeader()
 
   const handleClick = () => {
     async function fetchCourses() {
@@ -21,6 +24,7 @@ const CourseCreatePage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "authorization": authHeader()
         },
         body: JSON.stringify(new_course),
       });
