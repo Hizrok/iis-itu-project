@@ -4,6 +4,8 @@ const queries = require("./queries");
 const bcrypt = require("bcrypt");
 const saltRounds = 12;
 
+const valid_roles = ["admin", "garant", "vyučující", "rozvrhář", "student"];
+
 const get_users = async (req, res) => {
   try {
     if (req.user.role !== "admin") return res.sendStatus(403);
@@ -64,7 +66,10 @@ const generate_login = async (surname_substring) => {
 
 const add_user = async (req, res) => {
   try {
-    const { password, role, name, surname } = req.body;
+    const { role, name, surname } = req.body;
+    const password = "heslo";
+
+    if (!valid_roles.includes(role)) return res.sendStatus(400);
 
     if (req.user.role !== "admin") return res.sendStatus(403);
 
