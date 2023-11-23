@@ -90,7 +90,7 @@ const add_user = async (req, res) => {
         .json({ error: "you don't have permission to add a new user" });
     }
 
-    let { role, password, name, surname } = req.body;
+    let { role, password, name, surname, email } = req.body;
 
     if (!valid_roles.includes(role)) {
       console.log("sending response 400");
@@ -117,10 +117,16 @@ const add_user = async (req, res) => {
         hash,
         name,
         surname,
+        email,
       ]);
 
       console.log("sending response 201");
-      res.status(201).json(user_query.rows[0]);
+      res
+        .status(201)
+        .json({
+          msg: `successfully added user ${login}`,
+          user: user_query.rows[0],
+        });
     });
   } catch (error) {
     console.error(error);
@@ -132,18 +138,18 @@ const edit_user = async (req, res) => {
   console.log(`recieved PUT request - /users/${req.params.login}`);
   try {
     const login = req.params.login;
-    const { role, password, name, surname } = req.body;
-
-    if (!role && !password && !name && !surname) {
-      console.log("sending response 400");
-      return res.status(400).json({ error: "invalid edit request" });
-    }
+    const { role, password, name, surname, email } = req.body;
 
     if (req.user.role !== "admin" && req.user.login !== login) {
       console.log("sending response 403");
       return res
         .status(403)
         .json({ error: `you dont have permission to edit user ${login}` });
+    }
+
+    if (!role && !password && !name && !surname && !email) {
+      console.log("sending response 400");
+      return res.status(400).json({ error: "invalid edit request" });
     }
 
     const find_query = await pool.query(queries.get_user_by_login, [login]);
@@ -169,17 +175,22 @@ const edit_user = async (req, res) => {
         user.name = name ?? user.name;
         user.surname = surname ?? user.surname;
         user.password = password ? hash : user.password;
+        user.email = email ?? user.email;
 
         const edit_query = await pool.query(queries.edit_user, [
           user.role,
           user.name,
           user.surname,
           user.password,
+          user.email,
           user.login,
         ]);
 
         console.log("sending response 202");
-        res.status(202).json(edit_query.rows[0]);
+        res.status(202).json({
+          msg: `successfully edited user ${login}`,
+          user: edit_query.rows[0],
+        });
       });
     });
   } catch (error) {

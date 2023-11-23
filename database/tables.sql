@@ -12,12 +12,12 @@ drop table if exists rooms;
 drop table if exists users cascade;
 
 drop type if exists role cascade;
-drop type if exists ca_type cascade;
+drop type if exists course_activity_type cascade;
 drop type if exists recurrence_type cascade;
 drop type if exists day cascade;
 
 create type role as enum ('student', 'rozvrhář', 'vyučující', 'garant', 'admin');
-create type ca_type as enum ('přednáška', 'cvičení', 'laboratoř', 'democvičení', 'seminář');
+create type course_activity_type as enum ('přednáška', 'cvičení', 'laboratoř', 'democvičení', 'seminář');
 create type recurrence_type as enum ('každý', 'lichý', 'sudý', 'jednorázová aktivita');
 create type day as enum ('pondělí', 'úterý', 'středa', 'čtvrtek', 'pátek');
 
@@ -26,7 +26,8 @@ create table users (
 	user_password varchar(72) not null,
 	user_role role default 'student',
 	user_name varchar(50),
-	user_surname varchar(50)
+	user_surname varchar(50),
+	user_email varchar(50)
 );
 
 create table courses (
@@ -46,14 +47,14 @@ create table rooms (
 
 create table course_activities (
 	ca_id serial primary key,
-	type ca_type not null,
+	ca_type course_activity_type not null,
 	ca_recurrence recurrence_type not null,
 	ca_capacity integer not null,
 	ca_start_time time not null,
 	ca_end_time time not null,
 	ca_day_of_week day not null,
-	ca_registration_start timestamp not null,
-	ca_registration_end timestamp not null
+	ca_registration_start timestamp,
+	ca_registration_end timestamp
 );
 
 create table time_requirements (
