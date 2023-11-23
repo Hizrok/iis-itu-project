@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import appStateSlice from "./features/AppStateSlice";
-import menuStateSlice from "./features/MenuStateSlice";
+import loadingStateSlice from "./features/LoadingStateSlice";
 
 export const store = configureStore({
     reducer: {
         appState: appStateSlice,
-        menuState: menuStateSlice
+        loadingState: loadingStateSlice
     }
 });
 

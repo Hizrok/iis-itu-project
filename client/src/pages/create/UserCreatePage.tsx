@@ -7,8 +7,13 @@ import {
   InputLabel,
   MenuItem,
 } from "@mui/material";
+import { useAuthHeader } from "react-auth-kit";
 
 const UserCreatePage = () => {
+
+  const authHeader = useAuthHeader()
+
+
   const [role, setRole] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [surname, setSurname] = useState<string>("");
@@ -25,6 +30,7 @@ const UserCreatePage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "authorization": authHeader()
         },
         body: JSON.stringify(new_user),
       });
@@ -49,8 +55,9 @@ const UserCreatePage = () => {
         }}
       >
         <MenuItem value={"admin"}>admin</MenuItem>
-        <MenuItem value={"guarantor"}>guarantor</MenuItem>
-        <MenuItem value={"lecturer"}>lecturer</MenuItem>
+        <MenuItem value={"garant"}>garant</MenuItem>
+        <MenuItem value={"rozvrhář"}>rozvrhář</MenuItem>
+        <MenuItem value={"vyučující"}>vyučující</MenuItem>
         <MenuItem value={"student"}>student</MenuItem>
       </Select>
       <TextField
