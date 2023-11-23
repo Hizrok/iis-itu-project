@@ -5,7 +5,6 @@ const bcrypt = require("bcrypt");
 const saltRounds = 12;
 
 const valid_roles = ["admin", "garant", "vyučující", "rozvrhář", "student"];
-
 const get_users = async (req, res) => {
   try {
     if (req.user.role !== "admin") return res.sendStatus(403);

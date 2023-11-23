@@ -42,7 +42,7 @@ app.post("/login", async (req, res) => {
       };
 
       const access_token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-
+      
       user = {
         ...user,
         token: access_token,
