@@ -3,10 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
-const pool = require("./db");
-
 const bcrypt = require("bcrypt");
-const saltRounds = 12;
+const pool = require("./db");
 
 const user_router = require("./routes/users/routes");
 const course_router = require("./routes/courses/routes");
@@ -19,26 +17,31 @@ app.use(express.json());
 app.use(cors());
 
 app.post("/login", async (req, res) => {
+  console.log("recieved POST request - /login");
   try {
     const { login, password } = req.body;
 
-    const user_query = await pool.query(
-      "select * from users where user_login = $1",
+    const find_query = await pool.query(
+      "select user_role as role, user_password as password from users where user_login = $1",
       [login]
     );
 
-    if (user_query.rows.length == 0) {
+    if (!find_query.rowCount) {
+      console.log("sending response 404");
       return res.status(404).json({ error: `user ${login} not found` });
     }
 
-    const hash = user_query.rows[0].user_password;
+    const hash = find_query.rows[0].password;
     bcrypt.compare(password, hash, function (err, result) {
       if (err) throw err;
-      if (!result) return res.sendStatus(403);
+      if (!result) {
+        console.log("sending response 403");
+        return res.status(403).json({ error: "invalid authentication" });
+      }
 
       let user = {
         login,
-        role: user_query.rows[0].user_role,
+        role: find_query.rows[0].role,
       };
 
       const access_token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
@@ -48,11 +51,12 @@ app.post("/login", async (req, res) => {
         token: access_token,
       };
 
+      console.log("sending response 201");
       res.status(201).json(user);
     });
   } catch (error) {
     console.log(error);
-    res.sendStatus(500);
+    res.status(500).json({ error: "internal server error" });
   }
 });
 
