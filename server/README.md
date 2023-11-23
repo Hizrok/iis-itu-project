@@ -45,10 +45,38 @@ example requests:
 ```
 GET http://localhost:3000/users
 Authorization: Bearer <token>
+```
 
+```json
+[
+  ...
+  {
+    "role": "admin",
+    "login": "admin",
+    "name": null,
+    "surname": null,
+    "email": null
+  },
+  ...
+]
+```
+
+```
 GET http://localhost:3000/users/teich01
 Authorization: Bearer <token>
+```
 
+```json
+{
+  "role": "admin",
+  "login": "teich00",
+  "name": "Petr",
+  "surname": "Teichgráb",
+  "email": "petr@teichgrab.cz"
+}
+```
+
+```
 POST http://localhost:3000/users
 Authorization: Bearer <token>
 Content-Type: application/json
@@ -59,7 +87,22 @@ Content-Type: application/json
 	"surname": "Teichgráb",
 	"email": "petr@teichgrab.cz"
 }
+```
 
+```json
+{
+  "msg": "successfully added user teich01",
+  "user": {
+    "role": "admin",
+    "login": "teich01",
+    "name": "Petr",
+    "surname": "Teichgráb",
+    "email": "petr@teichgrab.cz"
+  }
+}
+```
+
+```
 PUT http://localhost:3000/users/teich00
 Authorization: Bearer <token>
 Content-Type: application/json
@@ -67,21 +110,142 @@ Content-Type: application/json
 {
 	"surname": "Svetr"
 }
+```
 
+```json
+{
+  "msg": "successfully edited user teich00",
+  "user": {
+    "role": "admin",
+    "name": "Petr",
+    "surname": "Svetr",
+    "email": "petr@teichgrab.cz"
+  }
+}
+```
+
+```
 DELETE http://localhost:3000/users/teich00
 Authorization: Bearer <token>
-
 ```
 
-courses
-
-```
-GET     /courses                get all courses
-GET     /courses/:course_id     get course by id
-POST    /courses                add new course
+```json
+{
+  "msg": "successfully deleted user teich01"
+}
 ```
 
-rooms
+### courses API
+
+| METHOD | ROUTE        | REQUIRED AUTH      | DESCRIPTION            |
+| ------ | ------------ | ------------------ | ---------------------- |
+| GET    | /courses     | NONE               | get all courses        |
+| GET    | /courses/:id | NONE               | get course by id       |
+| POST   | /users       | admin or guarantor | create new course      |
+| PUT    | /courses/:id | admin or guarantor | edit existing course   |
+| DELETE | /courses/:id | admin or guarantor | delete existing course |
+
+example requests:
+
+```
+GET http://localhost:3000/courses
+```
+
+```json
+[
+  ...
+  {
+    "id": "IMA1",
+    "name": "Tvorba uživatelského rozhraní",
+    "annotation": "lorem ipsum",
+    "guarantor": {
+      "login": "admin",
+      "name": null,
+      "surname": null,
+      "email": null
+    }
+  },
+  ...
+]
+```
+
+```
+GET http://localhost:3000/courses/ITU
+```
+
+```json
+{
+  "id": "IMA1",
+  "name": "Tvorba uživatelského rozhraní",
+  "annotation": "lorem ipsum",
+  "guarantor": {
+    "login": "admin",
+    "name": null,
+    "surname": null,
+    "email": null
+  }
+}
+```
+
+```
+POST http://localhost:3000/courses
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+	"id": "ITU",
+	"name": "Tvorba uživatelského rozhraní",
+	"annotation": "lorem ipsum",
+	"guarantor": "teich00"
+}
+```
+
+```json
+{
+  "msg": "successfully created course ITU",
+  "course": {
+    "id": "ITU",
+    "name": "Tvorba uživatelského rozhraní",
+    "annotation": "lorem ipsum",
+    "guarantor": "teich00"
+  }
+}
+```
+
+```
+PUT http://localhost:3000/courses/ITU
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+	"annotation": "lorem ipsum lorem ipsum"
+}
+```
+
+```json
+{
+  "msg": "successfully edited course",
+  "course": {
+    "id": "ITU",
+    "name": "Tvorba uživatelského rozhraní",
+    "annotation": "lorem ipsum lorem ipsum",
+    "login": "teich00"
+  }
+}
+```
+
+```
+DELETE http://localhost:3000/courses/ITU
+Authorization: Bearer <token>
+```
+
+```json
+{
+  "msg": "successfully deleted course"
+}
+```
+
+### rooms API
 
 ```
 GET     /rooms                  get all rooms

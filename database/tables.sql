@@ -31,7 +31,7 @@ create table users (
 );
 
 create table courses (
-	course_id char(3) primary key,
+	course_id varchar(10) primary key,
 	course_name varchar(50) not null,
 	course_annotation text,
 	course_guarantor_login varchar(10) not null,
