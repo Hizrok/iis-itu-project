@@ -31,7 +31,7 @@ const appRoutes: RouteType[] = [
     index: true,
     element: <HomePage />,
     authenticated: false,
-    roles: ["admin"],
+    roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
     state: "home",
     topbarText: "Registrační stránka"
   },
@@ -39,7 +39,7 @@ const appRoutes: RouteType[] = [
     path: "/account",
     element: <AccountPage />,
     authenticated: true,
-    roles: ["admin", "student"],
+    roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
     state: "account",
     topbarText: "Účet"
   },
@@ -47,7 +47,7 @@ const appRoutes: RouteType[] = [
     path: "/course",
     element: <MainCoursesListPage />,
     authenticated: false,
-    roles: ["admin", "student"],
+    roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
     state: "course_main_list",
     topbarText: "Seznam předmětů",
     sidebarProps: {
@@ -58,7 +58,7 @@ const appRoutes: RouteType[] = [
     path: "/schedule",
     element: <SchedulePage />,
     authenticated: true,
-    roles: ["admin", "student"],
+    roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
     state: "schedule",
     topbarText: "Rozvrh",
     sidebarProps: {
@@ -69,7 +69,7 @@ const appRoutes: RouteType[] = [
     path: "/registration",
     element: <RegistrationPageLayout />,
     authenticated: true,
-    roles: ["admin", "student"],
+    roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
     state: "registration",
     topbarText: "Registrace",
     sidebarProps: {
@@ -80,14 +80,14 @@ const appRoutes: RouteType[] = [
         index: true,
         element: <RegistrationIndex />,
         authenticated: true,
-        roles: ["admin", "student"],
+        roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
         state: "registration.index"
       },
       {
         path: "/registration/course_registration",
         element: <CourseRegPage />,
         authenticated: true,
-        roles: ["admin", "student"],
+        roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
         state: "registration.course_registration",
         topbarText: "Registrace předmětů",
         sidebarProps: {
@@ -98,7 +98,7 @@ const appRoutes: RouteType[] = [
         path: "/registration/class_registration",
         element: <ClassRegPage />,
         authenticated: true,
-        roles: ["admin", "student"],
+        roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
         state: "registration.class_registration",
         topbarText: "Registrace vyučování",
         sidebarProps: {
@@ -111,7 +111,7 @@ const appRoutes: RouteType[] = [
     path: "/list",
     element: <ListPageLayout />,
     authenticated: true,
-    roles: ["admin", "student"],
+    roles: ["admin"],
     state: "list",
     topbarText: "Seznamy",
     sidebarProps: {
@@ -122,14 +122,14 @@ const appRoutes: RouteType[] = [
         index: true,
         element: <ListIndex />,
         authenticated: true,
-        roles: ["admin", "student"],
+        roles: ["admin"],
         state: "list.index"
       },
       {
         path: "/list/user_list",
         element: <UserListPage />,
         authenticated: true,
-        roles: ["admin", "student"],
+        roles: ["admin"],
         state: "list.user_list",
         topbarText: "Seznam uživetelů",
         sidebarProps: {
@@ -140,7 +140,7 @@ const appRoutes: RouteType[] = [
         path: "/list/course_list",
         element: <CourseListPage />,
         authenticated: true,
-        roles: ["admin", "student"],
+        roles: ["admin"],
         state: "list.course_list",
         topbarText: "Seznam předmětů",
         sidebarProps: {
@@ -151,7 +151,7 @@ const appRoutes: RouteType[] = [
         path: "/list/room_list",
         element: <RoomListPage />,
         authenticated: true,
-        roles: ["admin", "student"],
+        roles: ["admin"],
         state: "list.room_list",
         topbarText: "Seznam místností",
         sidebarProps: {

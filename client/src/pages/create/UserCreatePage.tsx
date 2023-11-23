@@ -55,8 +55,9 @@ const UserCreatePage = () => {
         }}
       >
         <MenuItem value={"admin"}>admin</MenuItem>
-        <MenuItem value={"guarantor"}>guarantor</MenuItem>
-        <MenuItem value={"lecturer"}>lecturer</MenuItem>
+        <MenuItem value={"garant"}>garant</MenuItem>
+        <MenuItem value={"rozvrhář"}>rozvrhář</MenuItem>
+        <MenuItem value={"vyučující"}>vyučující</MenuItem>
         <MenuItem value={"student"}>student</MenuItem>
       </Select>
       <TextField

@@ -1,15 +1,33 @@
 import { Outlet } from "react-router-dom";
-import { Box, Stack, Toolbar } from "@mui/material";
+import { Backdrop, Box, Stack, Toolbar } from "@mui/material";
 import Topbar from "../common/Topbar";
 import Sidebar from "../common/Sidebar";
 import SizeConfig from "../../configs/SizeConfig";
 import ColourConfig from "../../configs/ColourConfig";
 import Footer from "../common/Footer";
+import CircularProgress from '@mui/material/CircularProgress';
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { setLoadingState } from "../../redux/features/LoadingStateSlice";
 
 const MainLayout = () => {
+    
+    const { loadingState } = useSelector((state: RootState) => state.loadingState);
+
+    const dispatch = useDispatch();
+
+    const handleClose = () => {
+        dispatch(setLoadingState(false));
+    };
 
     return(
         <Box sx={{display:"flex"}}>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => Math.max.apply(Math, Object.values(theme.zIndex)) + 1 }}
+                open={loadingState}
+                onClick={handleClose}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <Topbar/>
             <Box component="nav" sx={{width: SizeConfig.sidebar.width, flexshring: 0}}>
                 <Sidebar/>

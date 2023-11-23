@@ -1,21 +1,27 @@
-import { AppBar, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Toolbar, Typography } from '@mui/material';
+import { AppBar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fab, Stack, TextField, Toolbar, Typography } from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
 import SizeConfig from "../../configs/SizeConfig";
 import ColourConfig from "../../configs/ColourConfig";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import AppRoutes from '../../routes/AppRoutes';
-import { useIsAuthenticated, useSignIn, useSignOut } from 'react-auth-kit';
+import { useAuthUser, useIsAuthenticated, useSignIn, useSignOut } from 'react-auth-kit';
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { setLoadingState } from '../../redux/features/LoadingStateSlice';
 
 function Topbar() {
     // Top bar nav
     const location = useLocation();
-    const [output, setOutput] = useState("Registační stránka");
+    const [topbarTitle, setTopbarTitle] = useState("Registační stránka");
 
     // Account settings
     const isAuthenticated = useIsAuthenticated();
     const signOut = useSignOut();
     const signIn = useSignIn();
+    const auth = useAuthUser();
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = React.useState("");
 
@@ -26,7 +32,10 @@ function Topbar() {
     const [login, setLogin] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
+    const dispatch = useDispatch();
+
     const handleLogoutDialogClose = () => {
+        setLoginDialog(false);
         setLogoutDialog(false);
         signOut();
         navigate("/");
@@ -41,6 +50,7 @@ function Topbar() {
             };
 
             try{
+                dispatch(setLoadingState(true));
                 const request = await fetch("http://localhost:3000/login", {
                 method: "POST",
                 headers: {
@@ -52,6 +62,7 @@ function Topbar() {
                 if(request.status >= 400){
                     setErrorMessage("An incorrect login or password");
                     setPassword("");
+                    dispatch(setLoadingState(false));
                     return;
                 }
                 
@@ -66,11 +77,13 @@ function Topbar() {
                     setPassword("");
                     setErrorMessage("");
                     setLoginDialog(false);
+                    dispatch(setLoadingState(false));
                 }
             }
             catch(err){
                 console.log(err);
                 setErrorMessage("An error has occured");
+                dispatch(setLoadingState(false));
             }
             
         }
@@ -78,7 +91,7 @@ function Topbar() {
     };
 
     useEffect(() => {
-        AppRoutes.some((value) => { if(location.pathname.includes(value.path? value.path : "")){setOutput(value.topbarText? value.topbarText : output); return;}});
+        AppRoutes.some((value) => { if(location.pathname.includes(value.path? value.path : "")){setTopbarTitle(value.topbarText? value.topbarText : topbarTitle); document.title = value.topbarText? value.topbarText :topbarTitle; return;}});
     }, [location]);
 
     if(isAuthenticated()){
@@ -86,21 +99,31 @@ function Topbar() {
             <AppBar position="absolute"  sx={{width: `calc(100% - ${SizeConfig.sidebar.width})`, ml: SizeConfig.sidebar.width, boxShadow:"unset", backgroundColor:ColourConfig.topbar.bg, color:ColourConfig.topbar.colour}}>
                 <Toolbar>
                     <Typography variant='h6'>
-                        {"> " + output} 
+                        {"> " + topbarTitle} 
                     </Typography>
-                    <Box 
-                        sx={{ marginLeft: "auto" }}>
-                        <Chip label="Account" 
-                            clickable
+                    <Stack  direction="row" 
+                            spacing={2} 
+                            alignItems="center"
+                            justifyContent="center"
+                            sx={{ marginLeft: "auto"}}>
+
+                        <Fab variant="extended"
                             component={Link}
                             to={"/account"}
-                            sx={{ marginLeft: 1 }}/>
+                            sx={{maxHeight:35}}>
+                                <AccountCircleIcon sx={{ mr: 1 }}/>
+                                {isAuthenticated()?auth()!.login:"NULL"}
+                            </Fab>
 
-                        <Chip label="Logout" 
-                            clickable
+                        <Fab aria-label="add"
+                            variant="extended"
                             onClick={() => {setLogoutDialog(true);}}
-                            sx={{ marginLeft: 1 }}/> 
-                    </Box>
+                            sx={{maxHeight:35}}> 
+                                <LogoutIcon sx={{ mr: 1 }}/>
+                                Logout
+                            </Fab>
+
+                    </Stack>
                     <Dialog open={logoutDialog} onClose={() => {setLogoutDialog(false);}}>
                         <DialogTitle>Logout</DialogTitle>
                         <DialogContent>
@@ -123,14 +146,21 @@ function Topbar() {
         <AppBar position="absolute"  sx={{width: `calc(100% - ${SizeConfig.sidebar.width})`, ml: SizeConfig.sidebar.width, boxShadow:"unset", backgroundColor:ColourConfig.topbar.bg, color:ColourConfig.topbar.colour}}>
             <Toolbar>
                 <Typography variant='h6'>
-                    {"> " + output} 
+                    {"> " + topbarTitle} 
                 </Typography>
-                <Box 
-                    sx={{ marginLeft: "auto" }}>
-                    <Chip label="Login" 
-                    clickable
-                    onClick={() => {setLoginDialog(true);}}/> 
-                </Box>
+                <Stack  direction="row" 
+                            spacing={2} 
+                            alignItems="center"
+                            justifyContent="center"
+                            sx={{ marginLeft: "auto"}}>
+
+                        <Fab variant="extended"
+                            sx={{maxHeight:35}}
+                            onClick={() => {setLoginDialog(true);}}>
+                                <LoginIcon sx={{ mr: 1 }}/>
+                                Login
+                            </Fab>
+                </Stack>
                 <Dialog open={loginDialog} onClose={() => {setLoginDialog(false);}}>
                     <DialogTitle>Login</DialogTitle>
                     <DialogContent>
