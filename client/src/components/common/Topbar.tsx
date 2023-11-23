@@ -93,7 +93,7 @@ function Topbar() {
     };
 
     useEffect(() => {
-        AppRoutes.some((value) => { if(location.pathname.includes(value.path? value.path : "")){setTopbarTitle(value.topbarText? value.topbarText : topbarTitle); document.title = value.topbarText? value.topbarText :topbarTitle; return;}});
+        AppRoutes.some((value) => { if(location.pathname.includes(value.path?value.path.split(":")[0]:"")){setTopbarTitle(value.topbarText? value.topbarText : topbarTitle); document.title = value.topbarText? value.topbarText+" - Registační stránka" : topbarTitle+" - Registační stránka";}});
     }, [location]);
 
     if(isAuthenticated()){

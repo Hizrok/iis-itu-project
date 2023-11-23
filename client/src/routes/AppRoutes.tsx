@@ -61,7 +61,7 @@ const appRoutes: RouteType[] = [
     authenticated: false,
     roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
     state: "course_details",
-    topbarText: "Detail Předmětu",
+    topbarText: "Detaily Předmětu",
   },
   {
     path: "/schedule",
