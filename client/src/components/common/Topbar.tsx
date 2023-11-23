@@ -4,7 +4,7 @@ import ColourConfig from "../../configs/ColourConfig";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import AppRoutes from '../../routes/AppRoutes';
-import { useIsAuthenticated, useSignOut } from 'react-auth-kit';
+import { useIsAuthenticated, useSignIn, useSignOut } from 'react-auth-kit';
 import React from 'react';
 
 function Topbar() {
@@ -15,7 +15,9 @@ function Topbar() {
     // Account settings
     const isAuthenticated = useIsAuthenticated();
     const signOut = useSignOut();
+    const signIn = useSignIn();
     const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = React.useState("");
 
     // Handle logout popup
     const [logoutDialog, setLogoutDialog] = React.useState(false);
@@ -38,15 +40,39 @@ function Topbar() {
             password: password
             };
 
-            const request = await fetch("http://localhost:3000/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(login_user),
-            });
-            const request_json = await request.json();
-            console.log(request_json);
+            try{
+                const request = await fetch("http://localhost:3000/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(login_user),
+                });
+                
+                if(request.status >= 400){
+                    setErrorMessage("An incorrect login or password");
+                    setPassword("");
+                    return;
+                }
+                
+                const request_json = await request.json();
+                if(signIn({
+                    token: request_json.token,
+                    expiresIn:  60,
+                    tokenType: "Bearer",
+                    authState: {login: request_json.login, role: request_json.role}
+                })){
+                    setLogin("");
+                    setPassword("");
+                    setErrorMessage("");
+                    setLoginDialog(false);
+                }
+            }
+            catch(err){
+                console.log(err);
+                setErrorMessage("An error has occured");
+            }
+            
         }
         loginUser();
     };
@@ -129,6 +155,9 @@ function Topbar() {
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     </DialogContent>
+                    <DialogContentText>
+                        {errorMessage}
+                    </DialogContentText>
                     <DialogActions>
                     <Button onClick={() => {setLoginDialog(false);}}>Cancel</Button>
                     <Button onClick={handleLogin}>Login</Button>
