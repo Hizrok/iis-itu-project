@@ -36,13 +36,19 @@ app.post("/login", async (req, res) => {
       if (err) throw err;
       if (!result) return res.sendStatus(403);
 
-      const user = {
+      let user = {
         login,
         role: user_query.rows[0].user_role,
       };
 
       const access_token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-      res.status(201).json({ token: access_token });
+
+      user = {
+        ...user,
+        token: access_token,
+      };
+
+      res.status(201).json(user);
     });
   } catch (error) {
     console.log(error);
