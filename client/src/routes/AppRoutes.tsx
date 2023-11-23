@@ -25,6 +25,7 @@ import CourseCreatePage from "../pages/create/CourseCreatePage";
 import RoomCreatePage from "../pages/create/RoomCreatePage";
 
 import NotFound from "../pages/error/NotFoundPage";
+import CourseDetailsPage from "../pages/course/CourseDetailsPage";
 
 const appRoutes: RouteType[] = [
   {
@@ -53,6 +54,14 @@ const appRoutes: RouteType[] = [
     sidebarProps: {
       displayText: "Seznam předmětů"
     }
+  },
+  {
+    path: "/course_details/:courseID",
+    element: <CourseDetailsPage />,
+    authenticated: false,
+    roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
+    state: "course_details",
+    topbarText: "Detail Předmětu",
   },
   {
     path: "/schedule",
