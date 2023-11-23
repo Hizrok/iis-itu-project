@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useAuthHeader, useAuthUser, useIsAuthenticated } from "react-auth-kit";
 import { useDispatch } from "react-redux";
@@ -6,9 +7,11 @@ import { Fab, FormControl, Grid, IconButton, InputAdornment, InputLabel, Outline
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import React from "react";
 
+
 const AccountPage = () => {
 
     const auth = useAuthUser();
+
     const authHeader = useAuthHeader();
     const isAuthenticated = useIsAuthenticated();
 
@@ -206,7 +209,6 @@ const AccountPage = () => {
             </Grid>
             
         </Grid>
-        
     )
   };
 
