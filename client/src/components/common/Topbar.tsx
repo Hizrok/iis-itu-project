@@ -2,6 +2,8 @@ import { AppBar, Button, Dialog, DialogActions, DialogContent, DialogContentText
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+
 import SizeConfig from "../../configs/SizeConfig";
 import ColourConfig from "../../configs/ColourConfig";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -98,8 +100,9 @@ function Topbar() {
         return(
             <AppBar position="absolute"  sx={{width: `calc(100% - ${SizeConfig.sidebar.width})`, ml: SizeConfig.sidebar.width, boxShadow:"unset", backgroundColor:ColourConfig.topbar.bg, color:ColourConfig.topbar.colour}}>
                 <Toolbar>
+                    <ArrowForwardIosIcon/>
                     <Typography variant='h6'>
-                        {"> " + topbarTitle} 
+                        {topbarTitle} 
                     </Typography>
                     <Stack  direction="row" 
                             spacing={2} 
@@ -145,9 +148,10 @@ function Topbar() {
     return(
         <AppBar position="absolute"  sx={{width: `calc(100% - ${SizeConfig.sidebar.width})`, ml: SizeConfig.sidebar.width, boxShadow:"unset", backgroundColor:ColourConfig.topbar.bg, color:ColourConfig.topbar.colour}}>
             <Toolbar>
+                <ArrowForwardIosIcon/>
                 <Typography variant='h6'>
-                    {"> " + topbarTitle} 
-                </Typography>
+                        {topbarTitle} 
+                    </Typography>
                 <Stack  direction="row" 
                             spacing={2} 
                             alignItems="center"

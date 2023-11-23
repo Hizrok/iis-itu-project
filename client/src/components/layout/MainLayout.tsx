@@ -25,10 +25,10 @@ const MainLayout = () => {
             <Box component="nav" sx={{width: SizeConfig.sidebar.width, flexshring: 0}}>
                 <Sidebar/>
             </Box>
-            <Stack spacing={1} sx={{flexGrow:1, width: `calc(100% -${SizeConfig.sidebar.width})`, paddingLeft:"auto" , minHeight: "100vh"}} >
+            <Stack spacing={1} sx={{ flexGrow:1, width: `calc(100% -${SizeConfig.sidebar.width})`, paddingLeft:"auto" , minHeight: "100vh"}} >
                 <Box component="main" sx={{flexGrow:1, p:3, width: `calc(100% -${SizeConfig.sidebar.width})`, paddingLeft:"auto" , minHeight: "100vh", backgroundColor: ColourConfig.mainBg}} >
-                    <Backdrop open={loadingContentState} sx={{display: 'flex', justifyContent: 'center', alignItems: "center"}}>
-                        <CircularProgress color="inherit" sx={{paddingLeft:"auto"}}/>
+                    <Backdrop open={loadingContentState}>
+                        <CircularProgress color="inherit"/>
                     </Backdrop>
                     <Toolbar/>
                     <Outlet/>
