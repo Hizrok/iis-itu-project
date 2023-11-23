@@ -40,8 +40,6 @@ create table courses (
 
 create table rooms (
 	room_id char(4) primary key,
-	room_building char(1) not null default 'A' check ((room_building >= 'A') and (room_building <= 'Z')),
-	room_number char(3) not null default '100' check (length(room_number) = 3),
 	room_capacity integer not null default 20
 );
 

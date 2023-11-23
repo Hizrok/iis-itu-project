@@ -1,4 +1,4 @@
-# REST API server
+# REST API
 
 ## installation
 
@@ -247,9 +247,103 @@ Authorization: Bearer <token>
 
 ### rooms API
 
+| METHOD | ROUTE      | REQUIRED AUTH | DESCRIPTION          |
+| ------ | ---------- | ------------- | -------------------- |
+| GET    | /rooms     | NONE          | get all rooms        |
+| GET    | /rooms/:id | NONE          | get room by id       |
+| POST   | /rooms     | admin         | create new room      |
+| PUT    | /rooms/:id | admin         | edit existing room   |
+| DELETE | /rooms/:id | admin         | delete existing room |
+
 ```
-GET     /rooms                  get all rooms
-GET     /rooms/:id              get room by id
-POST    /rooms                  add new room
-DELETE  /rooms/:id              delete room with id
+GET http://localhost:3000/rooms
+```
+
+```json
+[
+  ...
+  {
+    "id": "B199",
+    "building": "B",
+    "floor": 1,
+    "number": 99,
+    "capacity": 100
+  },
+  ...
+]
+```
+
+```
+GET http://localhost:3000/rooms/A101
+```
+
+```json
+{
+  "id": "A101",
+  "building": "A",
+  "floor": 1,
+  "number": 1,
+  "capacity": 100
+}
+```
+
+```
+POST http://localhost:3000/rooms
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+	"building": "A",
+	"floor": 1,
+	"number": 1,
+	"capacity": 100
+}
+```
+
+```json
+{
+  "msg": "successfully added a new room",
+  "room": {
+    "id": "A101",
+    "building": "A",
+    "floor": 1,
+    "number": 1,
+    "capacity": 20
+  }
+}
+```
+
+```
+PUT http://localhost:3000/rooms/A101
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+	"capacity": 100
+}
+
+```
+
+```json
+{
+  "msg": "successfully edited room",
+  "room": {
+    "id": "A101",
+    "building": "A",
+    "floor": 1,
+    "number": 1,
+    "capacity": 100
+  }
+}
+```
+
+```
+DELETE http://localhost:3000/rooms/A101
+Authorization: Bearer <token>
+```
+
+```json
+{
+  "msg": "successfully deleted room A101"
+}
 ```
