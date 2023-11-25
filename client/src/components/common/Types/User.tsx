@@ -1,7 +1,7 @@
 type User = {
-    user_login: string,
-    user_role: string,
-    user_name: string,
-    user_surname: string
+    login: string,
+    role: string,
+    name: string,
+    surname: string
 }
 export default User;
