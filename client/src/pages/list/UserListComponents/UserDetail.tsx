@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import User from "../../../components/common/Types/User";
-import '../../../styles/style.css';
+import "../../../styles/style.css";
 
 interface UserDetailProps {
-    selectedUser: User;
-    onEditUser: (user: User) => void;
+  selectedUser: User;
+  onEditUser: (user: User) => void;
 }
 
 const UserDetail: React.FC<UserDetailProps> = (props) => {
-
-    const { selectedUser, onEditUser } = props;
+  const { selectedUser, onEditUser } = props;
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(selectedUser.name);
   const [editedSurname, setEditedSurname] = useState(selectedUser.surname);
@@ -21,30 +20,37 @@ const UserDetail: React.FC<UserDetailProps> = (props) => {
 
   const handleSaveClick = () => {
     selectedUser.name = editedName;
-    onEditUser(selectedUser)
+    onEditUser(selectedUser);
     setIsEditing(false);
   };
   return (
     <div className="user-detail-container">
       <div className="purple-bar"></div>
-      <img src="https://www.pngkey.com/png/full/988-9886269_blank-person-facebook-no-profile.png" alt="Fotka uživatele" />
+      <img
+        src="https://www.pngkey.com/png/full/988-9886269_blank-person-facebook-no-profile.png"
+        alt="Fotka uživatele"
+      />
       <div className="user-detail-properties">
-        <p>Jméno:</p>{' '}
-          {isEditing ? (
-            <input
-              type="text"
-              value={editedName}
-              onChange={(e) => setEditedName(e.target.value)}
-            />) : (<p>{selectedUser.name}</p>
-          )}
-        <p>Přijmení:</p>{' '}
-          {isEditing ? (
-            <input
-              type="text"
-              value={editedSurname}
-              onChange={(e) => setEditedSurname(e.target.value)}
-            />) : (<p>{selectedUser.surname}</p>
-          )}
+        <p>Jméno:</p>{" "}
+        {isEditing ? (
+          <input
+            type="text"
+            value={editedName}
+            onChange={(e) => setEditedName(e.target.value)}
+          />
+        ) : (
+          <p>{selectedUser.name}</p>
+        )}
+        <p>Přijmení:</p>{" "}
+        {isEditing ? (
+          <input
+            type="text"
+            value={editedSurname}
+            onChange={(e) => setEditedSurname(e.target.value)}
+          />
+        ) : (
+          <p>{selectedUser.surname}</p>
+        )}
         {isEditing ? (
           <button onClick={handleSaveClick}>Uložit</button>
         ) : (
