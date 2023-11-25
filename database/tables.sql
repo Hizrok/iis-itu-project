@@ -59,7 +59,8 @@ create table course_activity_lecturers (
 	course_activity serial,
 	lecturer varchar(10),
 	foreign key (course_activity) references course_activities(id),
-	foreign key (lecturer) references users(id)
+	foreign key (lecturer) references users(id),
+	primary key (course_activity, lecturer)
 );
 
 create table course_activity_instances (
@@ -68,6 +69,7 @@ create table course_activity_instances (
 	room char(4),
 	lecturer varchar(10),
 	start_time time,
+	day DAY,
 	foreign key (course_activity) references course_activities(id),
 	foreign key (room) references rooms(id),
 	foreign key (lecturer) references users(id)
