@@ -2,6 +2,8 @@ const pool = require("../../db");
 const queries = require("./queries");
 
 const check_room_id = (id) => {
+  if (id.length !== 4) return false;
+
   const building = id.substring(0, 1);
   const floor = parseInt(id.substring(1, 2));
   const number = parseInt(id.substring(2, 4));
@@ -28,7 +30,6 @@ const get_new_room_id = (old_id, building, floor, number) => {
 };
 
 const get_rooms = async (req, res) => {
-  console.log("recieved GET request - /rooms");
   try {
     const search_query = await pool.query(queries.get_all_rooms);
 
@@ -45,68 +46,50 @@ const get_rooms = async (req, res) => {
       };
     });
 
-    console.log("sending response 200");
     res.status(200).json(rooms);
   } catch (error) {
-    res.status(500).json(error);
     console.error(error);
+    res.sendStatus(500);
   }
 };
 
-const get_room_by_id = async (req, res) => {
-  console.log(`recieved GET request - /rooms/${req.params.id}`);
+const get_room = async (req, res) => {
   try {
     const id = req.params.id;
 
-    if (!check_room_id(id)) {
-      console.log("sending response 400");
-      return res.status(400).json({ error: "invalid room id" });
-    }
+    if (!check_room_id(id)) return res.sendStatus(400);
 
-    const find_query = await pool.query(queries.get_room_by_id, [id]);
-    if (find_query.rowCount) {
-      const building = find_query.rows[0].id.substring(0, 1);
-      const floor = parseInt(find_query.rows[0].id.substring(1, 2));
-      const number = parseInt(find_query.rows[0].id.substring(2, 4));
+    const find_query = await pool.query(queries.get_room, [id]);
+    if (!find_query.rowCount) return res.sendStatus(404);
 
-      const room = {
-        id: find_query.rows[0].id,
-        building,
-        floor,
-        number,
-        capacity: find_query.rows[0].capacity,
-      };
+    const building = find_query.rows[0].id.substring(0, 1);
+    const floor = parseInt(find_query.rows[0].id.substring(1, 2));
+    const number = parseInt(find_query.rows[0].id.substring(2, 4));
 
-      console.log("sending response 200");
-      res.status(200).json(room);
-    } else {
-      console.log("sending response 404");
-      res.status(404).json({ error: `room ${id} not found` });
-    }
+    const room = {
+      id: find_query.rows[0].id,
+      building,
+      floor,
+      number,
+      capacity: find_query.rows[0].capacity,
+    };
+
+    res.status(200).json(room);
   } catch (error) {
-    res.status(500).json(error);
     console.error(error);
+    res.sendStatus(500);
   }
 };
 
 const add_room = async (req, res) => {
-  console.log("recieved POST request - /rooms");
   try {
-    if (req.user.role !== "admin") {
-      console.log("sending response 403");
-      return res
-        .status(403)
-        .json({ error: "you don't have permission to create a new room" });
-    }
-
     const { building, floor, number, capacity } = req.body;
 
-    const id = `${building}${floor}${number < 10 ? "0" : ""}${number}`;
+    const id = `${building}${floor}${
+      number >= 0 && number < 10 ? "0" : ""
+    }${number}`;
 
-    if (!check_room_id(id)) {
-      console.log("sending response 400");
-      return res.status(400).json({ error: "invalid room attributes" });
-    }
+    if (!check_room_id(id)) return res.sendStatus(400);
 
     await pool.query(queries.add_room, [id, capacity]);
 
@@ -118,44 +101,25 @@ const add_room = async (req, res) => {
       capacity,
     };
 
-    console.log("sending response 201");
-    res.status(201).json({ msg: "successfully added a new room", room });
+    res.status(201).json(room);
   } catch (error) {
-    if (error.code) {
-      if (error.code === "23505") {
-        console.log("sending response 400");
-        return res.status(400).json({ error: "room already exists" });
-      }
-    }
-    res.status(500).json(error);
+    if (error.code === "23505") return res.sendStatus(400);
     console.error(error);
+    res.sendStatus(500);
   }
 };
 
 const edit_room = async (req, res) => {
   console.log(`recieved PUT request - /rooms/${req.params.id}`);
   try {
-    if (req.user.role !== "admin") {
-      console.log("sending response 403");
-      return res
-        .send(403)
-        .json({ error: "you don't have permission to delete this room" });
-    }
-
     const old_id = req.params.id;
     let { building, floor, number, capacity } = req.body;
 
-    if (!check_room_id(old_id)) {
-      console.log("sending response 400");
-      return res.status(400).json({ error: "invalid room id" });
-    }
+    if (!check_room_id(old_id)) return res.sendStatus(400);
 
     const new_id = get_new_room_id(old_id, building, floor, number);
 
-    if (!check_room_id(new_id)) {
-      console.log("sending response 400");
-      return res.status(400).json({ error: "invalid room attributes" });
-    }
+    if (!check_room_id(new_id)) return res.sendStatus(400);
 
     const values = [new_id, capacity].filter((value) => value);
 
@@ -164,64 +128,46 @@ const edit_room = async (req, res) => {
       ...values,
     ]);
 
-    if (edit_query.rowCount) {
-      building = new_id.substring(0, 1);
-      floor = parseInt(new_id.substring(1, 2));
-      number = parseInt(new_id.substring(2, 4));
-      const room = {
-        id: new_id,
-        building,
-        floor,
-        number,
-        capacity: edit_query.rows[0].capacity,
-      };
+    if (!edit_query.rowCount) return res.sendStatus(404);
 
-      console.log("sending response 202");
-      res.status(202).json({ msg: "successfully edited room", room });
-    } else {
-      console.log("sending response 404");
-      res.status(404).json({ error: `room ${old_id} was not found` });
-    }
+    building = new_id.substring(0, 1);
+    floor = parseInt(new_id.substring(1, 2));
+    number = parseInt(new_id.substring(2, 4));
+    const room = {
+      id: new_id,
+      building,
+      floor,
+      number,
+      capacity: edit_query.rows[0].capacity,
+    };
+
+    res.status(202).json(room);
   } catch (error) {
-    res.status(500).json(error);
+    if (error.code === "23505") return res.sendStatus(400);
     console.error(error);
+    res.sendStatus(500);
   }
 };
 
 const delete_room = async (req, res) => {
-  console.log(`recieved DELETE request - /rooms/${req.params.id}`);
   try {
-    if (req.user.role !== "admin") {
-      console.log("sending response 403");
-      return res
-        .send(403)
-        .json({ error: "you don't have permission to delete this room" });
-    }
-
     const id = req.params.id;
 
-    if (!check_room_id(id)) {
-      console.log("sending response 400");
-      return res.status(400).json({ error: "invalid room id" });
-    }
+    if (!check_room_id(id)) return res.sendStatus(400);
 
     const delete_query = await pool.query(queries.delete_room, [id]);
-    if (delete_query.rowCount) {
-      console.log("sending response 202");
-      res.status(202).json({ msg: `successfully deleted room ${id}` });
-    } else {
-      console.log("sending response 404");
-      res.status(404).json({ error: `room ${id} was not found` });
-    }
+    if (!delete_query.rowCount) return res.sendStatus(404);
+
+    res.sendStatus(202);
   } catch (error) {
-    res.status(500).json(error);
     console.error(error);
+    res.sendStatus(500);
   }
 };
 
 module.exports = {
   get_rooms,
-  get_room_by_id,
+  get_room,
   add_room,
   edit_room,
   delete_room,
