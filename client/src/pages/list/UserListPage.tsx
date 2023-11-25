@@ -2,18 +2,26 @@ import React, { useState, useEffect } from "react";
 import User from "../../components/common/Types/User";
 import '../../styles/style.css';
 import UserDetail from "./UserListComponents/UserDetail";
+import { useAuthHeader } from "react-auth-kit";
 
 const UserListPage = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    
+    const authHeader = useAuthHeader();
 
     useEffect(() => {
         async function fetchUsers() {
             try {
-                const response = await fetch("http://localhost:3000/users");
-                const users_json = await response.json();
-                setUsers(users_json);
-                console.log(users_json);
+                const response = await fetch("http://localhost:3000/users", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "authorization": authHeader()
+                    },
+                });
+                const json_users = await response.json();
+                setUsers(json_users.filter((user : User) => user.name !== null));
             } catch (error) {
                 console.error("Error fetching users:", error);
             }
@@ -24,29 +32,31 @@ const UserListPage = () => {
 
     const handleUserClick = (user: User) => {
         setSelectedUser(user);
+        console.log(user);
     };
 
     const handleEditUser = (editedUser: User) => {
         console.log(editedUser);
-        
+
         const toBeUpdatedUser = {
-            user_role : editedUser.user_role,
-            user_name : editedUser.user_name,
-            user_surname : editedUser.user_surname
+            user_role: editedUser.role,
+            user_name: editedUser.name,
+            user_surname: editedUser.surname
         };
 
         async function fetchCourses() {
-            const request = await fetch("http://localhost:3000/users/" + editedUser.user_login, {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(toBeUpdatedUser),
+            const request = await fetch("http://localhost:3000/users/" + editedUser.login, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(toBeUpdatedUser),
             });
             const request_json = await request.json();
+            console.log("SERVER DATA");
             console.log(request_json);
-          }
-          fetchCourses();
+        }
+        fetchCourses();
     };
 
     const handleDeleteUser = () => {
@@ -63,12 +73,12 @@ const UserListPage = () => {
                         <span className="header-item">Příjmení</span>
                         <span className="header-item">Role</span>
                     </li>
-                    {users.map((user) => (
-                        <li key={user.user_login} className="list-item-properties" onClick={() => handleUserClick(user)}>
-                            <span className="list-item-property">{user.user_name}</span>
-                            <span className="list-item-property">{user.user_surname}</span>
-                            <span className="list-item-property user-role">{user.user_role}</span>
-                        </li>
+                    {users.map((user : User) => (
+                        <li key={user.login} className="list-item-properties" onClick={() => handleUserClick(user)}>
+                        <span className="list-item-property">{user.name}</span>
+                        <span className="list-item-property">{user.surname}</span>
+                        <span className="list-item-property user-role">{user.role}</span>
+                    </li>
                     ))}
                 </ul>
             </div>

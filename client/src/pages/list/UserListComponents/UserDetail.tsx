@@ -11,16 +11,16 @@ const UserDetail: React.FC<UserDetailProps> = (props) => {
 
     const { selectedUser, onEditUser } = props;
   const [isEditing, setIsEditing] = useState(false);
-  const [editedName, setEditedName] = useState(selectedUser.user_name);
-  const [editedSurname, setEditedSurname] = useState(selectedUser.user_surname);
+  const [editedName, setEditedName] = useState(selectedUser.name);
+  const [editedSurname, setEditedSurname] = useState(selectedUser.surname);
 
   const handleEditClick = () => {
-    setEditedName(selectedUser.user_name);
+    setEditedName(selectedUser.name);
     setIsEditing(true);
   };
 
   const handleSaveClick = () => {
-    selectedUser.user_name = editedName;
+    selectedUser.name = editedName;
     onEditUser(selectedUser)
     setIsEditing(false);
   };
@@ -35,7 +35,7 @@ const UserDetail: React.FC<UserDetailProps> = (props) => {
               type="text"
               value={editedName}
               onChange={(e) => setEditedName(e.target.value)}
-            />) : (<p>{selectedUser.user_name}</p>
+            />) : (<p>{selectedUser.name}</p>
           )}
         <p>Přijmení:</p>{' '}
           {isEditing ? (
@@ -43,7 +43,7 @@ const UserDetail: React.FC<UserDetailProps> = (props) => {
               type="text"
               value={editedSurname}
               onChange={(e) => setEditedSurname(e.target.value)}
-            />) : (<p>{selectedUser.user_surname}</p>
+            />) : (<p>{selectedUser.surname}</p>
           )}
         {isEditing ? (
           <button onClick={handleSaveClick}>Uložit</button>
