@@ -33,6 +33,7 @@ const CourseCreatePage = () => {
         "authorization": authHeader()
       },
       body: JSON.stringify(new_course),
+
     });
     const request_json = await request.json();
     console.log(request_json);

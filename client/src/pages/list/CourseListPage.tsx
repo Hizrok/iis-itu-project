@@ -4,16 +4,17 @@ import { useDispatch } from "react-redux";
 import { setLoadingContentState } from "../../redux/features/LoadingContentStateSlice";
 import CourseList from "../../components/lists/courseListComponent";
 import Course from "../../components/common/Types/Course";
+import Filter from "../../components/common/Filters/filter";
 import User from "../../components/common/Types/User";
 import AddIcon from '@mui/icons-material/Add';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-
 
 const CourseListPage = () => {
   const authHeader = useAuthHeader();
   const dispatch = useDispatch();
 
   const [courses, setCourses] = useState<Course[]>([]);
+  const [filteredCourses, setFilteredCourses] = useState<Course[]>(courses);
 
   const [id, setId] = useState<string>("");
   const [name, setName] = useState<string>("");
@@ -36,18 +37,42 @@ const CourseListPage = () => {
   async function fetchCourses() {
     dispatch(setLoadingContentState(true));
     const response = await fetch("http://localhost:3000/courses", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: authHeader(),
-        },
-      });
-      const json_courses = await response.json();
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: authHeader(),
+      },
+    });
+    const json_courses = await response.json();
 
     setCourses(json_courses);
+    setFilteredCourses(json_courses);
     dispatch(setLoadingContentState(false));
   }
 
+  const sortCourses = (courses: Course[], sortBy: string, descending: boolean) => {
+    return courses.slice().sort((a: any, b: any) => {
+      const order = descending ? -1 : 1;
+      return a[sortBy].localeCompare(b[sortBy]) * order;
+    });
+  };
+
+  const filterCourses = (filterType: string, isDescending: boolean) => {
+    setFilteredCourses(sortCourses(courses, filterType, isDescending));
+  }
+
+
+  if (courses.length !== 0) {
+    return (
+      <div className="course-page">
+        <h2>Seznam Předmětů</h2>
+        <Filter onFilterChange={filterCourses} />
+        <CourseList courses={filteredCourses} />
+      </div>
+    );
+  }
+  else {
+    return (<>Loading...</>);
   async function fetchUsers() {
     try {
       dispatch(setLoadingContentState(true));
@@ -106,7 +131,8 @@ const CourseListPage = () => {
             <h2>Seznam Předmětů <AddIcon sx={{border:1}} onClick= {() => setCreateDialog(true)}/></h2>
           </div>
         </div>
-        <CourseList courses={courses}/>
+        <Filter onFilterChange={filterCourses} />
+        <CourseList courses={filteredCourses} />
         <Dialog
           open={createDialog}
           onClose={() => {

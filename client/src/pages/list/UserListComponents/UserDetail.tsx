@@ -70,9 +70,9 @@ const UserDetail: React.FC<UserDetailProps> = (props) => {
           >
             <MenuItem value="admin">Admin</MenuItem>
             <MenuItem value="garant">Garant</MenuItem>
-            <MenuItem value="rozvrhar">Rozvrhář</MenuItem> 
+            <MenuItem value="rozvrhar">Rozvrhář</MenuItem>
             <MenuItem value="student">Student</MenuItem>
-            </Select>
+          </Select>
         ) : (
           <p>{selectedUser.role}</p>
         )}
@@ -81,7 +81,7 @@ const UserDetail: React.FC<UserDetailProps> = (props) => {
         ) : (
           <Button variant="outlined" onClick={handleEditClick}>Upravit</Button>
         )}
-        <DeleteButton user={selectedUser} onDelete={handleDeleteClick}/>
+        <DeleteButton onDelete={handleDeleteClick} />
       </div>
     </div>
   );
