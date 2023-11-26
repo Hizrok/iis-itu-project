@@ -31,7 +31,6 @@ const CourseListPage = () => {
 
   useEffect(() => {
     fetchCourses();
-    fetchUsers();
   }, []);
 
   async function fetchCourses() {
@@ -61,37 +60,6 @@ const CourseListPage = () => {
     setFilteredCourses(sortCourses(courses, filterType, isDescending));
   }
 
-
-  if (courses.length !== 0) {
-    return (
-      <div className="course-page">
-        <h2>Seznam Předmětů</h2>
-        <Filter onFilterChange={filterCourses} />
-        <CourseList courses={filteredCourses} />
-      </div>
-    );
-  }
-  else {
-    return (<>Loading...</>);
-  async function fetchUsers() {
-    try {
-      dispatch(setLoadingContentState(true));
-      const response = await fetch("http://localhost:3000/users", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: authHeader(),
-        },
-      });
-      const json_users = await response.json();
-      setUsers(json_users.filter((user: User) => user.name !== null));
-      dispatch(setLoadingContentState(false));
-    } catch (error) {
-      dispatch(setLoadingContentState(false));
-      console.error("Error fetching users:", error);
-    }
-  }
-
   async function createCourses() {
 
     const new_course = {
@@ -101,7 +69,7 @@ const CourseListPage = () => {
       guarantor: garant,
     };
 
-    try{
+    try {
       dispatch(setLoadingContentState(true));
       const request = await fetch("http://localhost:3000/courses", {
         method: "POST",
@@ -117,22 +85,22 @@ const CourseListPage = () => {
       dispatch(setLoadingContentState(false));
       fetchCourses();
     }
-    catch(err){
+    catch (err) {
       setErrorMessage("Error during creation!");
       dispatch(setLoadingContentState(false));
     }
   }
 
-  if(courses.length!==0){
+  if (courses.length !== 0) {
     return (
       <>
         <div className="course-page">
           <div className="list-pages-list-container">
-            <h2>Seznam Předmětů <AddIcon sx={{border:1}} onClick= {() => setCreateDialog(true)}/></h2>
+            <h2>Seznam Předmětů <AddIcon sx={{ border: 1 }} onClick={() => setCreateDialog(true)} /></h2>
           </div>
+          <Filter onFilterChange={filterCourses} />
+          <CourseList courses={filteredCourses} />
         </div>
-        <Filter onFilterChange={filterCourses} />
-        <CourseList courses={filteredCourses} />
         <Dialog
           open={createDialog}
           onClose={() => {
@@ -179,10 +147,10 @@ const CourseListPage = () => {
               }}
             >
               {users.map((user: User) => (
-                user.role === "garant"?
-                <MenuItem value={user.id}>{user.id}</MenuItem>
-                :
-                null
+                user.role === "garant" ?
+                  <MenuItem value={user.id}>{user.id}</MenuItem>
+                  :
+                  null
               ))}
             </Select>
           </DialogContent>
@@ -196,13 +164,13 @@ const CourseListPage = () => {
             </Button>
             <Button onClick={createCourses}>Vytvořit</Button>
           </DialogActions>
-      </Dialog>
+        </Dialog>
       </>
-      
+
     );
-  }  
-  else{
-    return(<></>);
+  }
+  else {
+    return (<></>);
   }
 }
 
