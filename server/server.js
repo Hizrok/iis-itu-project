@@ -10,6 +10,7 @@ const pool = require("./db");
 const user_router = require("./routes/users/routes");
 const rooms_router = require("./routes/rooms/routes");
 const course_router = require("./routes/courses/routes");
+const registration_router = require("./routes/registrations/routes");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -56,6 +57,7 @@ app.post("/login", async (req, res) => {
 app.use("/users", user_router);
 app.use("/rooms", rooms_router);
 app.use("/courses", course_router);
+app.use("/registrations", registration_router);
 
 app.listen(port, () => {
   console.log(`listening on port ${port}`);
