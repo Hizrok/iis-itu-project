@@ -11,59 +11,81 @@ const UserListPage = () => {
   const authHeader = useAuthHeader();
 
   useEffect(() => {
-    async function fetchUsers() {
-      try {
-        const response = await fetch("http://localhost:3000/users", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: authHeader(),
-          },
-        });
-        const json_users = await response.json();
-        setUsers(json_users.filter((user: User) => user.name !== null));
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    }
-
     fetchUsers();
   }, []);
 
+  async function fetchUsers() {
+    try {
+      const response = await fetch("http://localhost:3000/users", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: authHeader(),
+        },
+      });
+      const json_users = await response.json();
+      setUsers(json_users.filter((user: User) => user.name !== null));
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  }
+
   const handleUserClick = (user: User) => {
     setSelectedUser(user);
-    console.log(user);
   };
+  
+  const handleDeleteUser = (toBeDeletedUser: User) => {  
+    const deleteUser = async () => {
+      try {
+        await fetch(
+          "http://localhost:3000/users/" + toBeDeletedUser.id,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: authHeader(),
+            },
+          }
+        );
+  
+        // call fetch users after deleting user
+        fetchUsers();
+      } catch (error) {
+        console.error("Error deleting user:", error);
+      }
+    };
+    deleteUser();
+  }
 
-  const handleEditUser = (editedUser: User) => {
-    console.log(editedUser);
-
+  const handleEditUser = (editedUser: User) => {  
     const toBeUpdatedUser = {
       role: editedUser.role,
       name: editedUser.name,
       surname: editedUser.surname,
     };
-
-    async function fetchCourses() {
-      const request = await fetch(
-        "http://localhost:3000/users/" + editedUser.id,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(toBeUpdatedUser),
-        }
-      );
-      const request_json = await request.json();
-      console.log("SERVER DATA");
-      console.log(request_json);
-    }
-    fetchCourses();
-  };
-
-  const handleDeleteUser = () => {
-    console.log("Smazat uživatele:", selectedUser);
+  
+    const updateUser = async () => {
+      try {
+        await fetch(
+          "http://localhost:3000/users/" + editedUser.id,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: authHeader(),
+            },
+            body: JSON.stringify(toBeUpdatedUser),
+          }
+        );
+  
+        // call fetch users after update user
+        fetchUsers();
+      } catch (error) {
+        console.error("Error updating user:", error);
+      }
+    };
+  
+    updateUser();
   };
 
   return (
@@ -91,8 +113,9 @@ const UserListPage = () => {
       </div>
       {selectedUser && (
         <UserDetail
-          selectedUser={selectedUser}
-          onEditUser={handleEditUser}
+        selectedUser={selectedUser}
+        onEditUser={handleEditUser}
+        onDeleteUser={handleDeleteUser}
         ></UserDetail>
       )}
     </div>
