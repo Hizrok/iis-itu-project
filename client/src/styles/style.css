@@ -1,114 +1,136 @@
 /* userlist.css */
 .list-pages-list-container {
-    max-width: 600px;
-    margin-left: 10%;
-  }
-  
- .list-pages-list-container ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .list-pages-list-container .list-header {
-    background-color: #A453F5;
-    border-bottom: 1px solid #ddd;
-    color: #f4f4f4;
-    font-weight: bold;
-    padding: 10px;
-    display: flex;
-  }
-  
-  .list-pages-list-container .header-item {
-    flex: 1;
-    text-align: center;
-  }
-  
-  .list-pages-list-container li {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    margin-bottom: 3px;
-    padding: 10px;
-    border-radius: 5px;
-    display: flex;
-  }
+  max-width: 600px;
+}
 
-  .list-pages-list-container li span {
-    flex: 1;
-    text-align: center;
-  }
-  
-  .list-pages-list-container .list-item-properties:hover {
-    background-color: #e0e0e0;
-  }
-  
-  .list-pages-list-container .user-role {
-    color: #007bff;
-  }
+.course-list-pages-list-container {
+  margin-right: 10%;
+}
+
+.list-pages-list-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.list-pages-list-container .list-header {
+  background-color: #A453F5;
+  border-bottom: 1px solid #ddd;
+  color: #f4f4f4;
+  font-weight: bold;
+  padding: 10px;
+  display: flex;
+}
+
+.list-pages-list-container .header-item {
+  flex: 1;
+  text-align: center;
+}
+
+.list-pages-list-container li {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  margin-bottom: 3px;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+}
+
+.list-pages-list-container li span {
+  flex: 1;
+  text-align: center;
+}
+
+.list-pages-list-container .list-item-properties:hover {
+  background-color: #e0e0e0;
+}
+
+.list-pages-list-container .user-role {
+  color: #007bff;
+}
 
 .users-page {
-    display: flex;
+  display: flex;
 }
+
 .rooms-page {
   display: flex;
 }
+
 .activities-page {
   display: flex;
 }
 
 .list-pages-list-container {
-    flex: 1; 
-    margin-right: 20px; 
+  flex: 1;
+  margin-right: 20px;
 }
 
 .user-detail-container {
-    margin-left: 15px;
-    border-radius: 5px;
-    max-width: 30%;
-    max-height: 500px;
-    background-color: white;
-    margin-top: 75px;
-    border: 1px solid #ddd;
-    flex: 1; 
+  margin-left: 15px;
+  border-radius: 5px;
+  max-width: 30%;
+  max-height: 500px;
+  background-color: white;
+  margin-top: 75px;
+  border: 1px solid #ddd;
+  flex: 1;
 }
 
-.user-detail-properties{
-    margin-left: 10%;
-    display: grid;
-    grid-template-columns: 30% 40%;
+.user-detail-properties {
+  margin-left: 10%;
+  display: grid;
+  grid-template-columns: 30% 40%;
 }
 
-.user-detail-properties p{
-    font-size: 1.2em;
+.user-detail-properties p {
+  font-size: 1.2em;
 }
 
 .user-detail-properties p:nth-child(odd) {
-    font-weight: bold; /* Zvýraznění textu v prvním sloupci */
+  font-weight: bold;
+  /* Zvýraznění textu v prvním sloupci */
 }
 
-.user-detail-properties h2{
-    color: white;
+.user-detail-properties h2 {
+  color: white;
 }
 
-.user-detail-header{
-    background-color: #A453F5;
+.user-detail-header {
+  background-color: #A453F5;
 }
 
 .purple-bar {
-    background-color: #A453F5;
-    height: 45px;
-    width: 100%;
-    border-radius: 5px 5px 0 0;
-    top: 0;
-    left: 0;
+  background-color: #A453F5;
+  height: 45px;
+  width: 100%;
+  border-radius: 5px 5px 0 0;
+  top: 0;
+  left: 0;
 }
 
 .user-detail-container img {
-    margin-left: 10%;
-    margin-top: 5%;
-    width: 125px; 
-    height: auto; 
-    border: 2px solid #ccc; 
-    border-radius: 5px; 
-    bottom: 10px; 
+  margin-left: 10%;
+  margin-top: 5%;
+  width: 125px;
+  height: auto;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  bottom: 10px;
 }
-  
+
+.course-page {
+  margin-left: 10%;
+}
+
+.users-page {
+  margin-left: 10%;
+}
+
+.rooms-page {
+  margin-left: 10%;
+}
+
+.descArrowIcon {
+  margin-left: 3px;
+  margin-top: 15px;
+}
