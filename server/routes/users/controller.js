@@ -3,139 +3,89 @@ const queries = require("./queries");
 
 const bcrypt = require("bcrypt");
 const saltRounds = 12;
+const default_password = "heslo";
 
-const valid_roles = ["admin", "garant", "vyučující", "rozvrhář", "student"];
 const get_users = async (req, res) => {
   try {
-    if (req.user.role !== "admin") return res.sendStatus(403);
-
-    const users = await pool.query(queries.get_all_users);
-    res.status(200).json(users.rows);
+    const search_query = await pool.query(queries.get_all_users);
+    res.status(200).json(search_query.rows);
   } catch (error) {
-    res.status(500).json(error);
     console.error(error);
+    res.sendStatus(500);
   }
 };
 
-const get_user_by_login = async (req, res) => {
+const get_user = async (req, res) => {
   try {
-    const login = req.params.login;
-
-    if (req.user.role !== "admin" && req.user.login !== login)
-      return res.sendStatus(403);
-
-    const user = await pool.query(queries.get_user_by_login, [login]);
-    if (user.rows.length) {
-      res.status(200).json(user.rows);
-    } else {
-      res.status(404).json({ error: `user ${login} not found` });
-    }
+    const id = req.params.id;
+    const find_query = await pool.query(queries.get_user_data, [id]);
+    if (!find_query.rowCount) res.sendStatus(404);
+    res.status(200).json(find_query.rows[0]);
   } catch (error) {
-    res.status(500).json(error);
     console.error(error);
+    res.sendStatus(500);
   }
-};
-
-const generate_login = async (surname_substring) => {
-  let login = surname_substring;
-  const similar_logins = await pool.query(queries.get_similar_logins, [login]);
-
-  taken_numbers = similar_logins.rows.map((l) => l.user_login);
-  taken_numbers = taken_numbers.filter(
-    (l) => login.length === l.substring(0, l.length - 2).length
-  );
-  taken_numbers = taken_numbers.map((l) =>
-    parseInt(l.substring(l.length - 2, l.length))
-  );
-
-  for (let i = 0; i < 100; i++) {
-    if (!taken_numbers.includes(i)) {
-      login_number = "";
-      if (i < 10) {
-        login_number += "0";
-      }
-      login_number += i.toString();
-      login += login_number;
-      break;
-    }
-  }
-
-  return login;
 };
 
 const add_user = async (req, res) => {
-  try {
-    const { role, name, surname } = req.body;
-    const password = "heslo";
+  const id = req.params.id;
+  let { role, password, name, surname, email } = req.body;
 
-    if (!valid_roles.includes(role)) return res.sendStatus(400);
+  password = password ?? default_password;
 
-    if (req.user.role !== "admin") return res.sendStatus(403);
-
-    const surname_substring = surname.substring(0, 5).toLowerCase();
-    const login = await generate_login(surname_substring);
-
-    bcrypt.hash(password, saltRounds, async function (err, hash) {
+  bcrypt.hash(password, saltRounds, async function (err, hash) {
+    try {
       if (err) throw err;
-      const user = await pool.query(queries.add_user, [
+      const user_query = await pool.query(queries.add_user, [
+        id,
         role,
-        login,
         hash,
         name,
         surname,
+        email,
       ]);
-      res.status(201).json(user.rows);
-    });
-  } catch (error) {
-    res.status(500).json(error);
-    console.error(error);
-  }
+      res.status(201).json(user_query.rows[0]);
+    } catch (error) {
+      if (error.code === "22P02") return res.sendStatus(400);
+      console.error(error);
+      res.sendStatus(500);
+    }
+  });
 };
 
 const edit_user = async (req, res) => {
   try {
-    const login = req.params.login;
-    const { role, name, surname } = req.body;
+    const id = req.params.id;
+    const { role, hash, name, surname, email } = req.body;
 
-    if (req.user.role !== "admin" && req.user.login !== login)
-      return res.sendStatus(403);
+    const edit_query = await pool.query(
+      queries.get_edit_query(role, hash, name, surname, email),
+      [id, role, hash, name, surname, email].filter((value) => value)
+    );
 
-    const user = await pool.query(queries.edit_user, [
-      role,
-      name,
-      surname,
-      login,
-    ]);
-    res.status(202).json(user.rows);
+    if (!edit_query.rowCount) return res.sendStatus(404);
+    res.status(202).json(edit_query.rows[0]);
   } catch (error) {
-    res.status(500).json(error);
     console.error(error);
+    res.status(500).json(error);
   }
 };
 
 const delete_user = async (req, res) => {
   try {
-    const login = req.params.login;
-
-    if (req.user.role !== "admin" && req.user.login !== login)
-      return res.sendStatus(403);
-
-    const delete_query = await pool.query(queries.delete_user, [login]);
-    // delete query will be one if user with that login was found
-    if (delete_query.rowCount) {
-      res.status(202).json({ message: `successfully deleted user ${login}` });
-    } else {
-      res.status(404).json({ message: `user ${login} was not found` });
-    }
+    const id = req.params.id;
+    const delete_query = await pool.query(queries.delete_user, [id]);
+    if (!delete_query.rowCount) res.sendStatus(404);
+    res.sendStatus(202);
   } catch (error) {
-    res.status(500).json(error);
     console.error(error);
+    res.sendStatus(500);
   }
 };
 
 module.exports = {
   get_users,
-  get_user_by_login,
+  get_user,
   add_user,
   edit_user,
   delete_user,

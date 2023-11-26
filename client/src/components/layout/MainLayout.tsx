@@ -6,13 +6,15 @@ import SizeConfig from "../../configs/SizeConfig";
 import ColourConfig from "../../configs/ColourConfig";
 import Footer from "../common/Footer";
 import CircularProgress from '@mui/material/CircularProgress';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-
+import { setLoadingState } from "../../redux/features/LoadingStateSlice";
 const MainLayout = () => {
     
     const { loadingState } = useSelector((state: RootState) => state.loadingState);
+
     const { loadingContentState } = useSelector((state: RootState) => state.loadingContetnState);
+
 
     return(
         <Box sx={{display:"flex"}}>

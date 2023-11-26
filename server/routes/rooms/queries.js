@@ -1,15 +1,21 @@
-const get_all_rooms = "select * from rooms;";
+const get_all_rooms = "select id, capacity from rooms;";
 
-const add_room =
-  "insert into rooms (room_id, room_building, room_number, room_capacity) values ($1, $2, $3, $4) returning *;";
+const get_room = "select id, capacity from rooms where id = $1;";
 
-const get_room_by_id = "select * from rooms where room_id = $1;";
+const add_room = "insert into rooms (id, capacity) values ($1, $2);";
 
-const delete_room = "delete from rooms where room_id = $1;";
+const get_edit_query = (capacity) => {
+  return `update rooms set id=$2${
+    capacity ? ",capacity=$3" : ""
+  } where id=$1 returning id, capacity;`;
+};
+
+const delete_room = "delete from rooms where id = $1;";
 
 module.exports = {
   get_all_rooms,
   add_room,
-  get_room_by_id,
+  get_room,
+  get_edit_query,
   delete_room,
 };
