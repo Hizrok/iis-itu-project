@@ -141,10 +141,10 @@ const evaluate_activities = async (id) => {
 
 const get_registered_courses = async (req, res) => {
   try {
-    const { id, student } = req.params;
+    const { reg_id, student } = req.params;
 
     const search_query = await pool.query(queries.get_registered_courses, [
-      id,
+      reg_id,
       student,
     ]);
 
@@ -172,14 +172,14 @@ const get_registered_courses = async (req, res) => {
 
 const get_activities = async (req, res) => {
   try {
-    const { id, student, state } = req.params;
+    const { reg_id, student, state } = req.params;
 
     const query =
       state === "FINISHED"
         ? queries.get_registered_instances
         : queries.get_selected_instances;
 
-    const search_query = await pool.query(query, [id, student]);
+    const search_query = await pool.query(query, [reg_id, student]);
 
     if (!search_query.rowCount) return res.sendStatus(404);
 
@@ -192,13 +192,13 @@ const get_activities = async (req, res) => {
 
 const register_course = async (req, res) => {
   try {
-    const { id, state } = req.params;
+    const { reg_id, state } = req.params;
     const { course, student } = req.body;
 
     if (state !== "COURSES IN PROGRESS") return res.sendStatus(400);
 
     const add_query = await pool.query(queries.register_course, [
-      id,
+      reg_id,
       course,
       student,
     ]);
@@ -213,13 +213,13 @@ const register_course = async (req, res) => {
 
 const register_activity = async (req, res) => {
   try {
-    const { id, state } = req.params;
+    const { reg_id, state } = req.params;
     const { activity, student, order } = req.body;
 
     if (state !== "ACTIVITIES IN PROGRESS") return res.sendStatus(400);
 
     const add_query = await pool.query(queries.register_activity, [
-      id,
+      reg_id,
       activity,
       student,
       order,
@@ -235,7 +235,7 @@ const register_activity = async (req, res) => {
 
 const unregister = async (req, res) => {
   try {
-    const { id, type, object_id, student, state } = req.params;
+    const { reg_id, type, object_id, student, state } = req.params;
 
     const proper_state =
       type === "courses" ? "COURSES IN PROGRESS" : "ACTIVITIES IN PROGRESS";
@@ -247,7 +247,7 @@ const unregister = async (req, res) => {
         ? queries.unregister_course
         : queries.unregister_activity;
 
-    const delete_query = await pool.query(query, [id, object_id, student]);
+    const delete_query = await pool.query(query, [reg_id, object_id, student]);
 
     if (!delete_query.rowCount) return res.sendStatus(404);
 
