@@ -4,13 +4,19 @@ import { setLoadingContentState } from "../../redux/features/LoadingContentState
 import { useParams } from "react-router-dom";
 import { Fab, Stack, TextField, Typography } from "@mui/material";
 import { useAuthUser } from "react-auth-kit";
-import { Announcement } from "@mui/icons-material";
+
+type User = {
+    id: string;
+    role: string;
+    name: string;
+    surname: string;
+};
 
 type Course = {
-  course_id: string;
-  course_name: string;
-  course_annotation: string;
-  course_guarantor_login: string;
+    id: string;
+    name: string;
+    annotation: string;
+    guarantor: User;
 };
 
 const CourseDetailsPage = () => {
@@ -22,7 +28,7 @@ const CourseDetailsPage = () => {
     const [course, setCourse] = useState<Course>();
 
     
-    const [courseid, setCourseID] = useState<string>("");
+    const [id, setCourseID] = useState<string>("");
     const [name, setName] = useState<string>("");
     const [garant, setGarant] = useState<string>("");
     const [annotation, setAnnotation] = useState<string>("");
@@ -31,7 +37,6 @@ const CourseDetailsPage = () => {
         return;
     };
 
-    useEffect(() => {
     async function fetchcourse() {
         dispatch(setLoadingContentState(true));
         try{
@@ -44,12 +49,12 @@ const CourseDetailsPage = () => {
             });
             const course_json = await response.json();
         
-            setCourse(course_json[0]);
+            setCourse(course_json);
 
-            setCourseID(course_json[0]? course_json[0].course_id:"");
-            setName(course_json[0]? course_json[0].course_name:"");
-            setGarant(course_json[0]? course_json[0].course_guarantor_login:"");
-            setAnnotation(course_json[0]? course_json[0].course_annotation:"");
+            setCourseID(course_json? course_json.id:"");
+            setName(course_json? course_json.name:"");
+            setGarant(course_json? course_json.guarantor.id:"");
+            setAnnotation(course_json? course_json.annotation:"");
 
             
             dispatch(setLoadingContentState(false));
@@ -61,7 +66,8 @@ const CourseDetailsPage = () => {
         
     }
 
-    fetchcourse();
+    useEffect(() => {
+        fetchcourse();
     }, [params]);
 
     if(course && ((auth()? auth()!.role : "test") === "admin" || (auth()? auth()!.role : "test")==="garant")){
@@ -72,7 +78,9 @@ const CourseDetailsPage = () => {
                 spacing={2}
                 component="form"
                 sx={{
-                    '& .MuiTextField-root': { m: 1, width: '25ch' }
+                    '& .MuiTextField-root': { m: 1, width: '25ch' },
+                    display: 'flex',
+                    flexWrap: 'wrap',
                 }}
                 noValidate
                 autoComplete="off"
@@ -82,7 +90,7 @@ const CourseDetailsPage = () => {
                 <TextField
                     id="filled"
                     label="ID"
-                    value={courseid}
+                    value={id}
                     variant="filled"
                     onChange={(e) => setCourseID(e.target.value)} />
                 <TextField
@@ -105,6 +113,10 @@ const CourseDetailsPage = () => {
                     label="Annotace"
                     value={annotation}
                     variant="filled"
+                    multiline
+                    sx={{
+                        margin: 100,
+                        minWidth:500}}
                     onChange={(e) => setAnnotation(e.target.value)} />
                 <Fab variant="extended"
                     onClick={updateInfoHandle}
@@ -118,9 +130,9 @@ const CourseDetailsPage = () => {
   else if(course){
     return(
         <Stack spacing={2}>
-            <Typography variant='h6'>{course?.course_name} ({course?.course_id})</Typography>
-            <Typography>Garant: {course?.course_guarantor_login}</Typography>
-            <Typography>Anotace: {course?.course_annotation}</Typography>
+            <Typography variant='h6'>{course?.name} ({course?.id})</Typography>
+            <Typography>Garant: {course?.guarantor.id}</Typography>
+            <Typography>Anotace: {course?.annotation}</Typography>
         </Stack>
     )
   }

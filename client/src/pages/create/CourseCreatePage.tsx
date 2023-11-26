@@ -10,31 +10,31 @@ const CourseCreatePage = () => {
 
   const authHeader = useAuthHeader()
 
+  async function createCourses() {
+    // TODO: course_guarantor == authenticated user
+
+    const new_course = {
+      id: id,
+      name: name,
+      annotation: annotation,
+      guarantor: garant,
+    };
+
+    const request = await fetch("http://localhost:3000/courses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "authorization": authHeader()
+      },
+      body: JSON.stringify(new_course),
+    });
+    const request_json = await request.json();
+    console.log(request_json);
+    console.log(JSON.stringify(new_course));
+  }
+
   const handleClick = () => {
-    async function fetchCourses() {
-      // TODO: course_guarantor == authenticated user
-
-      const new_course = {
-        id: id,
-        name: name,
-        annotation: annotation,
-        guarantor: garant,
-      };
-
-      const request = await fetch("http://localhost:3000/courses", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "authorization": authHeader()
-        },
-        body: JSON.stringify(new_course),
-      });
-      const request_json = await request.json();
-      console.log(request_json);
-      console.log(JSON.stringify(new_course));
-    }
-
-    fetchCourses();
+    createCourses();
   };
 
   return (

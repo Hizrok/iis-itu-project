@@ -52,7 +52,7 @@ const MainCoursesListPage = () => {
     );
   }  
   else{
-    return(<>Loading...</>);
+    return(<></>);
   }
 };
 

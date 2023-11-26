@@ -1,39 +1,46 @@
 import { useEffect, useState } from "react";
+import { useAuthHeader } from "react-auth-kit";
+import { useDispatch } from "react-redux";
+import { setLoadingContentState } from "../../redux/features/LoadingContentStateSlice";
+import CourseList from "../../components/lists/courseListComponent";
+import Course from "../../components/common/Types/Course";
+
 
 const CourseListPage = () => {
-    type Course = {
-        course_id: string,
-        course_name: string,
-        course_annotation: string,
-        course_guarantor_login: string
-    }
-        
-    const [courses, setCourses] = useState<Course[]>([]);
+    const authHeader = useAuthHeader();
+  const dispatch = useDispatch();
 
-    // let courses = "loading..."
+  const [courses, setCourses] = useState<Course[]>([]);
 
-    useEffect(() => {
-        async function fetchCourses() {
-            const response = await fetch("http://localhost:3000/courses");
-            const courses_json = await response.json();
-    
-            setCourses(courses_json);
-            console.log(courses_json);
-        }
-        
-        fetchCourses();
-    }, []);
+  // let courses = "loading..."
 
+  useEffect(() => {
+    fetchCourses();
+  }, []);
 
-    return(
-        <div>
-            {
-                courses.map(course => {
-                    return <div key={course.course_id}>{course.course_id}</div>
-                })
-            }
-        </div>
-    )
+  async function fetchCourses() {
+    dispatch(setLoadingContentState(true));
+    const response = await fetch("http://localhost:3000/courses", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: authHeader(),
+        },
+      });
+      const json_courses = await response.json();
+
+    setCourses(json_courses);
+    dispatch(setLoadingContentState(false));
+  }
+
+  if(courses.length!==0){
+    return (
+      <CourseList courses={courses}/>
+    );
+  }  
+  else{
+    return(<>Loading...</>);
+  }
 }
 
 export default CourseListPage;

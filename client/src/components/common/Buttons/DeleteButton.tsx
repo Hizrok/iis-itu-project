@@ -4,7 +4,7 @@ import DeleteButtonProps from './DeleteButtonProps';
 import DeleteConfirmationModal from '../Dialogs/DeleteDialog';
 
 
-const DeleteButton: React.FC<DeleteButtonProps> = ({ user, onDelete }) => {
+const DeleteButton: React.FC<DeleteButtonProps> = ({ onDelete }) => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const handleDeleteClick = () => {
