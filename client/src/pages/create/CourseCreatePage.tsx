@@ -5,6 +5,7 @@ import { useAuthHeader } from "react-auth-kit";
 const CourseCreatePage = () => {
   const [id, setId] = useState<string>("");
   const [name, setName] = useState<string>("");
+  const [garant, setGarant] = useState<string>("");
   const [annotation, setAnnotation] = useState<string>("");
 
   const authHeader = useAuthHeader()
@@ -14,10 +15,10 @@ const CourseCreatePage = () => {
       // TODO: course_guarantor == authenticated user
 
       const new_course = {
-        course_id: id,
-        course_name: name,
-        course_annotation: annotation,
-        course_guarantor: "kapsa00",
+        id: id,
+        name: name,
+        annotation: annotation,
+        guarantor: garant,
       };
 
       const request = await fetch("http://localhost:3000/courses", {
@@ -49,6 +50,12 @@ const CourseCreatePage = () => {
         variant="outlined"
         sx={{ m: 1, width: "25ch" }}
         onChange={(e) => setName(e.target.value)}
+      />
+      <TextField
+        label="Garant předmětu"
+        variant="outlined"
+        sx={{ m: 1, width: "25ch" }}
+        onChange={(e) => setGarant(e.target.value)}
       />
       <TextField
         label="Anotace předmětu"

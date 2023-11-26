@@ -3,12 +3,15 @@ import User from "../../components/common/Types/User";
 import "../../styles/style.css";
 import UserDetail from "./UserListComponents/UserDetail";
 import { useAuthHeader } from "react-auth-kit";
+import { setLoadingContentState } from "../../redux/features/LoadingContentStateSlice";
+import { useDispatch } from "react-redux";
 
 const UserListPage = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const authHeader = useAuthHeader();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetchUsers();
@@ -16,6 +19,7 @@ const UserListPage = () => {
 
   async function fetchUsers() {
     try {
+      dispatch(setLoadingContentState(true));
       const response = await fetch("http://localhost:3000/users", {
         method: "GET",
         headers: {
@@ -25,7 +29,9 @@ const UserListPage = () => {
       });
       const json_users = await response.json();
       setUsers(json_users.filter((user: User) => user.name !== null));
+      dispatch(setLoadingContentState(false));
     } catch (error) {
+      dispatch(setLoadingContentState(false));
       console.error("Error fetching users:", error);
     }
   }
@@ -37,6 +43,7 @@ const UserListPage = () => {
   const handleDeleteUser = (toBeDeletedUser: User) => {  
     const deleteUser = async () => {
       try {
+        dispatch(setLoadingContentState(true));
         await fetch(
           "http://localhost:3000/users/" + toBeDeletedUser.id,
           {
@@ -50,7 +57,9 @@ const UserListPage = () => {
   
         // call fetch users after deleting user
         fetchUsers();
+        dispatch(setLoadingContentState(false));
       } catch (error) {
+        dispatch(setLoadingContentState(false));
         console.error("Error deleting user:", error);
       }
     };
@@ -66,6 +75,7 @@ const UserListPage = () => {
   
     const updateUser = async () => {
       try {
+        dispatch(setLoadingContentState(true));
         await fetch(
           "http://localhost:3000/users/" + editedUser.id,
           {
@@ -80,8 +90,10 @@ const UserListPage = () => {
   
         // call fetch users after update user
         fetchUsers();
+        dispatch(setLoadingContentState(false));
       } catch (error) {
         console.error("Error updating user:", error);
+        dispatch(setLoadingContentState(false));
       }
     };
   
@@ -123,3 +135,4 @@ const UserListPage = () => {
 };
 
 export default UserListPage;
+
