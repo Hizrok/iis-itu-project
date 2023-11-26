@@ -3,6 +3,10 @@
   max-width: 600px;
 }
 
+.course-page .list-pages-list-container{
+  max-width: 1000px;
+}
+
 .course-list-pages-list-container {
   margin-right: 10%;
 }

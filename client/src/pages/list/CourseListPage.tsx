@@ -31,8 +31,8 @@ const CourseListPage = () => {
 
   useEffect(() => {
     fetchCourses();
-    fetchUsers();
   }, []);
+
 
   async function fetchCourses() {
     dispatch(setLoadingContentState(true));
@@ -59,37 +59,6 @@ const CourseListPage = () => {
 
   const filterCourses = (filterType: string, isDescending: boolean) => {
     setFilteredCourses(sortCourses(courses, filterType, isDescending));
-  }
-
-
-  if (courses.length !== 0) {
-    return (
-      <div className="course-page">
-        <h2>Seznam Předmětů</h2>
-        <Filter onFilterChange={filterCourses} />
-        <CourseList courses={filteredCourses} />
-      </div>
-    );
-  }
-  else {
-    return (<>Loading...</>);
-  async function fetchUsers() {
-    try {
-      dispatch(setLoadingContentState(true));
-      const response = await fetch("http://localhost:3000/users", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: authHeader(),
-        },
-      });
-      const json_users = await response.json();
-      setUsers(json_users.filter((user: User) => user.name !== null));
-      dispatch(setLoadingContentState(false));
-    } catch (error) {
-      dispatch(setLoadingContentState(false));
-      console.error("Error fetching users:", error);
-    }
   }
 
   async function createCourses() {
@@ -130,9 +99,9 @@ const CourseListPage = () => {
           <div className="list-pages-list-container">
             <h2>Seznam Předmětů <AddIcon sx={{border:1}} onClick= {() => setCreateDialog(true)}/></h2>
           </div>
-        </div>
         <Filter onFilterChange={filterCourses} />
         <CourseList courses={filteredCourses} />
+        </div>
         <Dialog
           open={createDialog}
           onClose={() => {
