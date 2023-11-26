@@ -1,18 +1,26 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setLoadingContentState } from "../../redux/features/LoadingContentStateSlice";
-import { Link } from "react-router-dom";
+import CourseList from "../../components/lists/courseListComponent";
+import { useAuthHeader } from "react-auth-kit";
+
+type User = {
+  id: string;
+  role: string;
+  name: string;
+  surname: string;
+}
 
 type Course = {
-  course_id: string;
-  course_name: string;
-  course_annotation: string;
-  course_guarantor_login: string;
+  id: string;
+  name: string;
+  annotation: string;
+  guarantor: User;
 };
 
 const MainCoursesListPage = () => {
 
-  
+  const authHeader = useAuthHeader();
   const dispatch = useDispatch();
 
   const [courses, setCourses] = useState<Course[]>([]);
@@ -20,31 +28,32 @@ const MainCoursesListPage = () => {
   // let courses = "loading..."
 
   useEffect(() => {
-    dispatch(setLoadingContentState(true));
-    async function fetchCourses() {
-      const response = await fetch("http://localhost:3000/courses");
-      const courses_json = await response.json();
-
-      setCourses(courses_json);
-      console.log(courses_json);
-      dispatch(setLoadingContentState(false));
-    }
-
     fetchCourses();
   }, []);
 
-  return (
-    <ul>
-      {courses.map((course) => {
-        return (
-          <li key={course.course_id}>
-            <Link to={`/course_details/${course.course_id}`}>{course.course_name}</Link>, {course.course_id} , {course.course_annotation}
-            , {course.course_guarantor_login}
-          </li>
-        );
-      })}
-    </ul>
-  );
+  async function fetchCourses() {
+    dispatch(setLoadingContentState(true));
+    const response = await fetch("http://localhost:3000/courses", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: authHeader(),
+        },
+      });
+      const json_courses = await response.json();
+
+    setCourses(json_courses);
+    dispatch(setLoadingContentState(false));
+  }
+
+  if(courses.length!==0){
+    return (
+      <CourseList courses={courses}/>
+    );
+  }  
+  else{
+    return(<></>);
+  }
 };
 
 export default MainCoursesListPage;

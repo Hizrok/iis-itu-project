@@ -5,35 +5,36 @@ import { useAuthHeader } from "react-auth-kit";
 const CourseCreatePage = () => {
   const [id, setId] = useState<string>("");
   const [name, setName] = useState<string>("");
+  const [garant, setGarant] = useState<string>("");
   const [annotation, setAnnotation] = useState<string>("");
 
   const authHeader = useAuthHeader()
 
+  async function createCourses() {
+    // TODO: course_guarantor == authenticated user
+
+    const new_course = {
+      id: id,
+      name: name,
+      annotation: annotation,
+      guarantor: garant,
+    };
+
+    const request = await fetch("http://localhost:3000/courses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "authorization": authHeader()
+      },
+      body: JSON.stringify(new_course),
+    });
+    const request_json = await request.json();
+    console.log(request_json);
+    console.log(JSON.stringify(new_course));
+  }
+
   const handleClick = () => {
-    async function fetchCourses() {
-      // TODO: course_guarantor == authenticated user
-
-      const new_course = {
-        course_id: id,
-        course_name: name,
-        course_annotation: annotation,
-        course_guarantor: "kapsa00",
-      };
-
-      const request = await fetch("http://localhost:3000/courses", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "authorization": authHeader()
-        },
-        body: JSON.stringify(new_course),
-      });
-      const request_json = await request.json();
-      console.log(request_json);
-      console.log(JSON.stringify(new_course));
-    }
-
-    fetchCourses();
+    createCourses();
   };
 
   return (
@@ -49,6 +50,12 @@ const CourseCreatePage = () => {
         variant="outlined"
         sx={{ m: 1, width: "25ch" }}
         onChange={(e) => setName(e.target.value)}
+      />
+      <TextField
+        label="Garant předmětu"
+        variant="outlined"
+        sx={{ m: 1, width: "25ch" }}
+        onChange={(e) => setGarant(e.target.value)}
       />
       <TextField
         label="Anotace předmětu"
