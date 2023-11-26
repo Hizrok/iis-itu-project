@@ -1,3 +1,4 @@
+import Activity from "./Activity";
 import User from "./User";
 
 type Course = {
@@ -5,5 +6,6 @@ type Course = {
     name: string;
     annotation: string;
     guarantor: User;
+    activities?: Activity;
 };
 export default Course;

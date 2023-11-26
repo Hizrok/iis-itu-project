@@ -51,6 +51,9 @@
 .rooms-page {
   display: flex;
 }
+.activities-page {
+  display: flex;
+}
 
 .list-pages-list-container {
     flex: 1; 
