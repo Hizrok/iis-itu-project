@@ -208,7 +208,7 @@ const UserListPage = () => {
             label="Jméno"
             type="login"
             fullWidth
-            variant="standard"
+            variant="outlined"
             onChange={(e) => setName(e.target.value)}
           />
           <TextField
@@ -218,7 +218,7 @@ const UserListPage = () => {
             label="Příjmení"
             type="login"
             fullWidth
-            variant="standard"
+            variant="outlined"
             onChange={(e) => setSurname(e.target.value)}
           />
         </DialogContent>

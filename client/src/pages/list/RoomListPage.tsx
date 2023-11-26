@@ -192,34 +192,31 @@ const RoomListPage = () => {
               label="Budova místnosti"
               type="text"
               fullWidth
-              variant="standard"
+              variant="outlined"
               onChange={(e) => setBuilding(e.target.value)}
             />
             <TextField
-              autoFocus
               margin="dense"
               label="Patro místnosti"
               type="text"
               fullWidth
-              variant="standard"
+              variant="outlined"
               onChange={(e) => setFloor(e.target.value)}
             />
             <TextField
-              autoFocus
               margin="dense"
               label="Číslo místnosti"
               type="text"
               fullWidth
-              variant="standard"
+              variant="outlined"
               onChange={(e) => setNumber(e.target.value)}
             />
             <TextField
-              autoFocus
               margin="dense"
               label="Kapacita místnosti"
               type="text"
               fullWidth
-              variant="standard"
+              variant="outlined"
               onChange={(e) => setCapacity(e.target.value)}
             />
           </DialogContent>

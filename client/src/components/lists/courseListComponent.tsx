@@ -16,7 +16,6 @@ const CourseList = (props: CourseListProps) => {
   return (
     <div className="course-page">
       <div className="list-pages-list-container">
-        <h2>Seznam Předmětů</h2>
         <ul>
             <li className="list-header"
             key="header">

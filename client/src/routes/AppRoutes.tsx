@@ -21,7 +21,6 @@ import RoomListPage from "../pages/list/RoomListPage";
 import CreatePageLayout from "../pages/create/CreatePageLayout";
 import CreateIndex from "../pages/create/CreateIndex";
 import CourseCreatePage from "../pages/create/CourseCreatePage";
-import RoomCreatePage from "../pages/create/RoomCreatePage";
 
 import NotFound from "../pages/error/NotFoundPage";
 import CourseDetailsPage from "../pages/course/CourseDetailsPage";
@@ -186,17 +185,6 @@ const appRoutes: RouteType[] = [
         authenticated: true,
         roles: ["admin"],
         state: "create.index"
-      },
-      {
-        path: "/create/course_create",
-        element: <CourseCreatePage />,
-        authenticated: true,
-        roles: ["admin"],
-        state: "create.course_create",
-        topbarText: "Vytvořit předmět",
-        sidebarProps: {
-          displayText: "Předmět"
-        }
       },
       {
         path: "/create/activity_create",
