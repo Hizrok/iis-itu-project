@@ -20,7 +20,6 @@ import RoomListPage from "../pages/list/RoomListPage";
 
 import CreatePageLayout from "../pages/create/CreatePageLayout";
 import CreateIndex from "../pages/create/CreateIndex";
-import UserCreatePage from "../pages/create/UserCreatePage";
 import CourseCreatePage from "../pages/create/CourseCreatePage";
 import RoomCreatePage from "../pages/create/RoomCreatePage";
 
@@ -187,17 +186,6 @@ const appRoutes: RouteType[] = [
         authenticated: true,
         roles: ["admin"],
         state: "create.index"
-      },
-      {
-        path: "/create/user_create",
-        element: <UserCreatePage />,
-        authenticated: true,
-        roles: ["admin"],
-        state: "create.user_create",
-        topbarText: "Vytvořit uživatele",
-        sidebarProps: {
-          displayText: "Uživatele"
-        }
       },
       {
         path: "/create/course_create",
