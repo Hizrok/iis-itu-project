@@ -1,17 +1,20 @@
 import React, { useState } from "react";
-import User from "../../../components/common/Types/User";
 import "../../../styles/style.css";
-
-interface UserDetailProps {
-  selectedUser: User;
-  onEditUser: (user: User) => void;
-}
+import {
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+} from "@mui/material";
+import DeleteButton from "../../../components/common/Buttons/DeleteButton";
+import UserDetailProps from "./UserDetailProps";
 
 const UserDetail: React.FC<UserDetailProps> = (props) => {
-  const { selectedUser, onEditUser } = props;
+  const { selectedUser, onEditUser, onDeleteUser } = props;
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(selectedUser.name);
   const [editedSurname, setEditedSurname] = useState(selectedUser.surname);
+  const [editedRole, setEditedRole] = useState(selectedUser.role);
 
   const handleEditClick = () => {
     setEditedName(selectedUser.name);
@@ -19,10 +22,17 @@ const UserDetail: React.FC<UserDetailProps> = (props) => {
   };
 
   const handleSaveClick = () => {
-    selectedUser.name = editedName;
-    onEditUser(selectedUser);
     setIsEditing(false);
+    selectedUser.name = editedName;
+    selectedUser.surname = editedSurname;
+    selectedUser.role = editedRole;
+    onEditUser(selectedUser);
   };
+
+  const handleDeleteClick = () => {
+    onDeleteUser(selectedUser);
+  };
+
   return (
     <div className="user-detail-container">
       <div className="purple-bar"></div>
@@ -33,7 +43,7 @@ const UserDetail: React.FC<UserDetailProps> = (props) => {
       <div className="user-detail-properties">
         <p>Jméno:</p>{" "}
         {isEditing ? (
-          <input
+          <TextField
             type="text"
             value={editedName}
             onChange={(e) => setEditedName(e.target.value)}
@@ -43,7 +53,7 @@ const UserDetail: React.FC<UserDetailProps> = (props) => {
         )}
         <p>Přijmení:</p>{" "}
         {isEditing ? (
-          <input
+          <TextField
             type="text"
             value={editedSurname}
             onChange={(e) => setEditedSurname(e.target.value)}
@@ -51,11 +61,27 @@ const UserDetail: React.FC<UserDetailProps> = (props) => {
         ) : (
           <p>{selectedUser.surname}</p>
         )}
+        <p>Role:</p>{" "}
         {isEditing ? (
-          <button onClick={handleSaveClick}>Uložit</button>
+          <Select
+            type="text"
+            value={editedRole}
+            onChange={(e) => setEditedRole(e.target.value)}
+          >
+            <MenuItem value="admin">Admin</MenuItem>
+            <MenuItem value="garant">Garant</MenuItem>
+            <MenuItem value="rozvrhar">Rozvrhář</MenuItem> 
+            <MenuItem value="student">Student</MenuItem>
+            </Select>
         ) : (
-          <button onClick={handleEditClick}>Upravit</button>
+          <p>{selectedUser.role}</p>
         )}
+        {isEditing ? (
+          <Button variant="outlined" color="success" onClick={handleSaveClick}>Uložit</Button>
+        ) : (
+          <Button variant="outlined" onClick={handleEditClick}>Upravit</Button>
+        )}
+        <DeleteButton user={selectedUser} onDelete={handleDeleteClick}/>
       </div>
     </div>
   );
