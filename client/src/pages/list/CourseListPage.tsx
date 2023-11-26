@@ -31,6 +31,7 @@ const CourseListPage = () => {
 
   useEffect(() => {
     fetchCourses();
+    fetchUsers();
   }, []);
 
   async function fetchCourses() {
@@ -47,6 +48,25 @@ const CourseListPage = () => {
     setCourses(json_courses);
     setFilteredCourses(json_courses);
     dispatch(setLoadingContentState(false));
+  }
+
+  async function fetchUsers() {
+    try {
+      dispatch(setLoadingContentState(true));
+      const response = await fetch("http://localhost:3000/users", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: authHeader(),
+        },
+      });
+      const json_users = await response.json();
+      setUsers(json_users.filter((user: User) => user.name !== null));
+      dispatch(setLoadingContentState(false));
+    } catch (error) {
+      dispatch(setLoadingContentState(false));
+      console.error("Error fetching users:", error);
+    }
   }
 
   const sortCourses = (courses: Course[], sortBy: string, descending: boolean) => {
