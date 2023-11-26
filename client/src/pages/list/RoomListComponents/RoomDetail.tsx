@@ -10,13 +10,17 @@ import RoomDetailProps from "./RoomDetailProps";
 const UserDetail: React.FC<RoomDetailProps> = (props) => {
   const { selectedRoom, onEditRoom, onDeleteRoom } = props;
   const [isEditing, setIsEditing] = useState(false);
+
   const [editedBuilding, setEditedBuilding] = useState(selectedRoom.building);
   const [editedFloor, setEditedFloor] = useState(selectedRoom.floor);
   const [editedNumber, setEditedNumber] = useState(selectedRoom.number);
-  const [editedCapacity, setEditedCapacity] = useState(selectedRoom.number);
+  const [editedCapacity, setEditedCapacity] = useState(selectedRoom.capacity);
 
   const handleEditClick = () => {
     setEditedBuilding(selectedRoom.building);
+    setEditedFloor(selectedRoom.floor);
+    setEditedNumber(selectedRoom.number);
+    setEditedCapacity(selectedRoom.capacity);
     setIsEditing(true);
   };
 
@@ -51,7 +55,7 @@ const UserDetail: React.FC<RoomDetailProps> = (props) => {
         {isEditing ? (
           <TextField
             type="text"
-            value={editedBuilding}
+            value={editedFloor}
             onChange={(e) => setEditedFloor(e.target.value)}
           />
         ) : (
@@ -61,7 +65,7 @@ const UserDetail: React.FC<RoomDetailProps> = (props) => {
         {isEditing ? (
           <TextField
             type="text"
-            value={editedBuilding}
+            value={editedNumber}
             onChange={(e) => setEditedNumber(e.target.value)}
           />
         ) : (
@@ -71,7 +75,7 @@ const UserDetail: React.FC<RoomDetailProps> = (props) => {
         {isEditing ? (
           <TextField
             type="text"
-            value={editedBuilding}
+            value={editedCapacity}
             onChange={(e) => setEditedCapacity(e.target.value)}
           />
         ) : (
