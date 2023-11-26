@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import User from "../../components/common/Types/User";
 import { useAuthHeader } from "react-auth-kit";
 import { setLoadingContentState } from "../../redux/features/LoadingContentStateSlice";
 import { useDispatch } from "react-redux";

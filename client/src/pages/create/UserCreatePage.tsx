@@ -44,7 +44,7 @@ const UserCreatePage = () => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
-      <InputLabel id="select-label">role</InputLabel>
+      <InputLabel id="select-label">Role</InputLabel>
       <Select
         sx={{ m: 1, width: "25ch" }}
         labelId="select-label"
