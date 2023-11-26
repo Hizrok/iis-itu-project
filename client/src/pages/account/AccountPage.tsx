@@ -13,12 +13,11 @@ const AccountPage = () => {
     const auth = useAuthUser();
 
     const authHeader = useAuthHeader();
-    const isAuthenticated = useIsAuthenticated();
 
     const dispatch = useDispatch();
 
     
-    const [login, setLogin] = useState<string>("");
+    const [id, setID] = useState<string>("");
     const [name, setName] = useState<string>("");
     const [surname, setSurname] = useState<string>("");
     const [email, setEmail] = useState<string>("");
@@ -40,7 +39,7 @@ const AccountPage = () => {
       async function fetchUser() {
         dispatch(setLoadingContentState(true));
         try{
-            const response = await fetch("http://localhost:3000/users/" + auth()!.login, {
+            const response = await fetch(`http://localhost:3000/users/${auth()!.id}`, {
                 method: "GET", 
                 headers: {
                   "Content-Type": "application/json",
@@ -49,10 +48,10 @@ const AccountPage = () => {
             });
             const user_json = await response.json();
         
-            setLogin(user_json[0].user_login !== null?user_json[0].user_login:"");
-            setName(user_json[0].user_name !== null?user_json[0].user_name:"");
-            setSurname(user_json[0].user_surname !== null?user_json[0].user_surname:"");
-            setEmail("placeholder@test.cz");
+            setID(user_json.id !== null?user_json.id:"");
+            setName(user_json.name !== null?user_json.name:"");
+            setSurname(user_json.surname !== null?user_json.surname:"");
+            setEmail(user_json.email !== null?user_json.email:"");
             
             dispatch(setLoadingContentState(false));
         }
@@ -93,7 +92,7 @@ const AccountPage = () => {
                     <TextField
                         id="filled"
                         label="Login"
-                        value={login}
+                        value={id}
                         variant="filled"
                         InputProps={{
                             readOnly: true,}}/>
