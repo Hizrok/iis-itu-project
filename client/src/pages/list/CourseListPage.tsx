@@ -163,12 +163,15 @@ const CourseListPage = () => {
           <DialogContentText>{errorMessage}</DialogContentText>
           <DialogActions>
             <Button
+              variant="outlined"
               onClick={() => {
                 setCreateDialog(false);
               }}>
               Zrušit
             </Button>
-            <Button onClick={createCourses}>Vytvořit</Button>
+            <Button 
+              variant="outlined"
+              onClick={createCourses}>Vytvořit</Button>
           </DialogActions>
       </Dialog>
       </>

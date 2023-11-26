@@ -212,7 +212,6 @@ const UserListPage = () => {
             onChange={(e) => setName(e.target.value)}
           />
           <TextField
-            autoFocus
             margin="dense"
             id="password"
             label="Příjmení"
@@ -225,12 +224,15 @@ const UserListPage = () => {
         <DialogContentText>{errorMessage}</DialogContentText>
         <DialogActions>
           <Button
+            variant="outlined"
             onClick={() => {
               setCreateDialog(false);
             }}>
             Zrušit
           </Button>
-          <Button onClick={createUser}>Vytvořit</Button>
+          <Button 
+            variant="outlined"
+            onClick={createUser}>Vytvořit</Button>
         </DialogActions>
       </Dialog>
     </>

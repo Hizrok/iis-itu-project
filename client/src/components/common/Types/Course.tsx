@@ -6,6 +6,6 @@ type Course = {
     name: string;
     annotation: string;
     guarantor: User;
-    activities?: Activity;
+    activities?: Activity[];
 };
 export default Course;
