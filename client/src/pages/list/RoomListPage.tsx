@@ -4,8 +4,21 @@ import { setLoadingContentState } from "../../redux/features/LoadingContentState
 import { useDispatch } from "react-redux";
 import Room from "../../components/common/Types/Room";
 import RoomDetail from "./RoomListComponents/RoomDetail";
+import AddIcon from '@mui/icons-material/Add';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
 
 const RoomListPage = () => {
+
+  const [building, setBuilding] = useState<string>("");
+  const [floor, setFloor] = useState<string>("");
+  const [number, setNumber] = useState<string>("");
+  const [capacity, setCapacity] = useState<string>("");
+
+  
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const [createDialog, setCreateDialog] = useState<boolean>(false);
+
     const [rooms, setRooms] = useState<Room[]>([]);
     const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
 
@@ -100,10 +113,40 @@ const RoomListPage = () => {
     updateRoom();
     };
 
+    async function createRoom() {
+      // TODO: course_guarantor == authenticated user
+  
+      const new_room = {
+          building: building,
+          floor: floor,
+          number: number,
+          capacity: capacity,
+      };
+  
+      try{
+        await fetch("http://localhost:3000/rooms", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "authorization": authHeader()
+          },
+          body: JSON.stringify(new_room),  
+        });
+        setCreateDialog(false);
+        fetchRooms();
+        dispatch(setLoadingContentState(false));
+      }
+      catch(err){
+        setErrorMessage("Error during creation!");
+        dispatch(setLoadingContentState(false));
+      }
+    }
+
     return (
-        <div className="rooms-page">
+      <>
+       <div className="rooms-page">
           <div className="list-pages-list-container">
-            <h2>Seznam Místností</h2>
+            <h2>Seznam Místností <AddIcon sx={{border:1}} onClick= {() => setCreateDialog(true)}/></h2>
             <ul>
               <li className="list-header">
                 <span className="header-item">ID</span>
@@ -135,6 +178,63 @@ const RoomListPage = () => {
             />
           )}
         </div>
+      
+        <Dialog
+          open={createDialog}
+          onClose={() => {
+            setCreateDialog(false);
+          }}>
+          <DialogTitle>Vytvořit Místnost</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Budova místnosti"
+              type="text"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setBuilding(e.target.value)}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Patro místnosti"
+              type="text"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setFloor(e.target.value)}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Číslo místnosti"
+              type="text"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setNumber(e.target.value)}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Kapacita místnosti"
+              type="text"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setCapacity(e.target.value)}
+            />
+          </DialogContent>
+          <DialogContentText>{errorMessage}</DialogContentText>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                setCreateDialog(false);
+              }}>
+              Zrušit
+            </Button>
+            <Button onClick={createRoom}>Vytvořit</Button>
+          </DialogActions>
+        </Dialog>
+      </>
       );
 }
 

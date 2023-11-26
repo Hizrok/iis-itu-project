@@ -178,12 +178,13 @@ const UserListPage = () => {
           ></UserDetail>
         )}
       </div>
+      
       <Dialog
         open={createDialog}
         onClose={() => {
           setCreateDialog(false);
         }}>
-        <DialogTitle>Login</DialogTitle>
+        <DialogTitle>Vytvořit Uživatele</DialogTitle>
         <DialogContent>
           <InputLabel id="select-label">Role</InputLabel>
           <Select

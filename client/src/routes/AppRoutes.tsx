@@ -199,17 +199,6 @@ const appRoutes: RouteType[] = [
         }
       },
       {
-        path: "/create/room_create",
-        element: <RoomCreatePage />,
-        authenticated: true,
-        roles: ["admin"],
-        state: "create.room_create",
-        topbarText: "Vytvořit místnost",
-        sidebarProps: {
-          displayText: "Místnost"
-        }
-      },
-      {
         path: "/create/activity_create",
         element: <ActivityCreatePage />,
         authenticated: true,
