@@ -7,7 +7,7 @@ import Course from "../../components/common/Types/Course";
 
 
 const CourseListPage = () => {
-    const authHeader = useAuthHeader();
+  const authHeader = useAuthHeader();
   const dispatch = useDispatch();
 
   const [courses, setCourses] = useState<Course[]>([]);

@@ -26,6 +26,7 @@ import RoomCreatePage from "../pages/create/RoomCreatePage";
 
 import NotFound from "../pages/error/NotFoundPage";
 import CourseDetailsPage from "../pages/course/CourseDetailsPage";
+import ActivityCreatePage from "../pages/create/ActivityCreatePage";
 
 const appRoutes: RouteType[] = [
   {
@@ -173,7 +174,7 @@ const appRoutes: RouteType[] = [
     path: "/create",
     element: <CreatePageLayout />,
     authenticated: true,
-    roles: ["admin"],
+    roles: ["admin", "garant"],
     state: "create",
     topbarText: "Vytvořit",
     sidebarProps: {
@@ -218,6 +219,17 @@ const appRoutes: RouteType[] = [
         topbarText: "Vytvořit místnost",
         sidebarProps: {
           displayText: "Místnost"
+        }
+      },
+      {
+        path: "/create/activity_create",
+        element: <ActivityCreatePage />,
+        authenticated: true,
+        roles: ["admin", "garant"],
+        state: "create.activity_create",
+        topbarText: "Vytvořit aktivitu",
+        sidebarProps: {
+          displayText: "Aktivitu"
         }
       }
     ]
