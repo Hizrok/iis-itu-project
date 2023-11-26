@@ -19,7 +19,7 @@ const UserCreatePage = () => {
   const [surname, setSurname] = useState<string>("");
 
   const handleClick = () => {
-    async function fetchCourses() {
+    async function createUser() {
       const new_user = {
         role: role,
         name: name,
@@ -39,7 +39,7 @@ const UserCreatePage = () => {
       console.log(JSON.stringify(new_user));
     }
 
-    fetchCourses();
+    createUser();
   };
 
   return (
