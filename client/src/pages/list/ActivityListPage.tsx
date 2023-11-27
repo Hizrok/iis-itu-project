@@ -255,7 +255,7 @@ const ActivityListPage = () => {
             <MenuItem value="democvičení">democvičení</MenuItem>
             <MenuItem value="seminář">seminář</MenuItem>
           </Select>
-          <InputLabel id="select-label">Typ</InputLabel>
+          <InputLabel id="select-label">Rekurence</InputLabel>
           <Select
             sx={{ m: 1, width: "25ch" }}
             labelId="select-label"
