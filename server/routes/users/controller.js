@@ -17,7 +17,7 @@ const get_users = async (req, res) => {
 
 const get_user = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = req.params.user_id;
     const find_query = await pool.query(queries.get_user_data, [id]);
     if (!find_query.rowCount) res.sendStatus(404);
     res.status(200).json(find_query.rows[0]);
@@ -55,7 +55,7 @@ const add_user = async (req, res) => {
 
 const edit_user = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = req.params.user_id;
     const { role, hash, name, surname, email } = req.body;
 
     const edit_query = await pool.query(
@@ -73,7 +73,7 @@ const edit_user = async (req, res) => {
 
 const delete_user = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = req.params.user_id;
     const delete_query = await pool.query(queries.delete_user, [id]);
     if (!delete_query.rowCount) res.sendStatus(404);
     res.sendStatus(202);

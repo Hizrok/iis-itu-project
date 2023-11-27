@@ -6,6 +6,8 @@ const controller = require("./controller");
 const router = Router();
 
 router.get("/", controller.get_courses);
+// get all instances of all courses
+router.get("/instances", controller.get_all_instances);
 router.get("/:id", controller.get_course);
 router.get("/:course/activities", controller.get_activities);
 router.get("/:course/activities/:id", controller.get_activity);
