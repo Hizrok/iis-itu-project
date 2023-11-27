@@ -4,20 +4,7 @@ import { setLoadingContentState } from "../../redux/features/LoadingContentState
 import CourseList from "../../components/lists/courseListComponent";
 import { useAuthHeader } from "react-auth-kit";
 import Filter from "../../components/common/Filters/filter";
-
-type User = {
-  id: string;
-  role: string;
-  name: string;
-  surname: string;
-}
-
-type Course = {
-  id: string;
-  name: string;
-  annotation: string;
-  guarantor: User;
-};
+import Course from "../../components/common/Types/Course";
 
 const MainCoursesListPage = () => {
 
@@ -46,7 +33,8 @@ const MainCoursesListPage = () => {
 
   async function fetchCourses() {
     dispatch(setLoadingContentState(true));
-    const response = await fetch(import.meta.env.VITE_SERVER_HOST+"courses", {
+    try{
+      const response = await fetch(import.meta.env.VITE_SERVER_HOST+"courses", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -55,9 +43,14 @@ const MainCoursesListPage = () => {
       });
       const json_courses = await response.json();
     
-    setFilteredCourses(json_courses);
-    setCourses(json_courses);
-    dispatch(setLoadingContentState(false));
+      setFilteredCourses(json_courses);
+      setCourses(json_courses);
+      dispatch(setLoadingContentState(false));
+    }
+    catch(err){
+      console.log(err);
+      dispatch(setLoadingContentState(false));
+    }
   }
 
   if(courses.length!==0){

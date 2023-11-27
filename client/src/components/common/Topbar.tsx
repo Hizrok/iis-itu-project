@@ -162,7 +162,7 @@ function Topbar() {
               sx={{ maxHeight: 35 }}
             >
               <LogoutIcon sx={{ mr: 1 }} />
-              Logout
+              Odhlásit
             </Fab>
           </Stack>
           <Dialog
@@ -171,9 +171,9 @@ function Topbar() {
               setLogoutDialog(false);
             }}
           >
-            <DialogTitle>Logout</DialogTitle>
+            <DialogTitle>Odhlásit</DialogTitle>
             <DialogContent>
-              <DialogContentText>Are you sure to logout?</DialogContentText>
+              <DialogContentText>Checete se odhlásit?</DialogContentText>
             </DialogContent>
             <DialogActions>
               <Button
@@ -181,9 +181,9 @@ function Topbar() {
                   setLogoutDialog(false);
                 }}
               >
-                Cancel
+                Ne
               </Button>
-              <Button onClick={handleLogoutDialogClose}>Logout</Button>
+              <Button onClick={handleLogoutDialogClose}>Ano</Button>
             </DialogActions>
           </Dialog>
         </Toolbar>
@@ -219,7 +219,7 @@ function Topbar() {
             }}
           >
             <LoginIcon sx={{ mr: 1 }} />
-            Login
+            Přihlásit
           </Fab>
         </Stack>
         <Dialog
@@ -228,7 +228,7 @@ function Topbar() {
             setLoginDialog(false);
           }}
         >
-          <DialogTitle>Login</DialogTitle>
+          <DialogTitle>Přihlášení</DialogTitle>
           <DialogContent>
             <TextField
               autoFocus
@@ -241,10 +241,9 @@ function Topbar() {
               onChange={(e) => setId(e.target.value)}
             />
             <TextField
-              autoFocus
               margin="dense"
               id="password"
-              label="Password"
+              label="Heslo"
               type="password"
               fullWidth
               variant="standard"
@@ -258,9 +257,9 @@ function Topbar() {
                 setLoginDialog(false);
               }}
             >
-              Cancel
+              Zrušit
             </Button>
-            <Button onClick={handleLogin}>Login</Button>
+            <Button onClick={handleLogin}>Přihlásit</Button>
           </DialogActions>
         </Dialog>
       </Toolbar>
