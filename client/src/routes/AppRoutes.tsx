@@ -19,6 +19,7 @@ import CourseListPage from "../pages/list/CourseListPage";
 import UserListPage from "../pages/list/UserListPage";
 import RoomListPage from "../pages/list/RoomListPage";
 import ActivityListPage from "../pages/list/ActivityListPage";
+import RegistrationListPage from "../pages/list/RegistrationListPage";
 
 import NotFound from "../pages/error/NotFoundPage";
 
@@ -29,7 +30,7 @@ const appRoutes: RouteType[] = [
     authenticated: false,
     roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
     state: "home",
-    topbarText: "Registrační stránka"
+    topbarText: "Registrační stránka",
   },
   {
     path: "/account",
@@ -37,7 +38,7 @@ const appRoutes: RouteType[] = [
     authenticated: true,
     roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
     state: "account",
-    topbarText: "Účet"
+    topbarText: "Účet",
   },
   {
     path: "/course",
@@ -47,8 +48,8 @@ const appRoutes: RouteType[] = [
     state: "main",
     topbarText: "Seznam předmětů",
     sidebarProps: {
-      displayText: "Seznam předmětů"
-    }
+      displayText: "Seznam předmětů",
+    },
   },
   {
     path: "/course_details/:courseID",
@@ -66,8 +67,8 @@ const appRoutes: RouteType[] = [
     state: "schedule",
     topbarText: "Rozvrh",
     sidebarProps: {
-      displayText: "Rozvrh"
-    }
+      displayText: "Rozvrh",
+    },
   },
   {
     path: "/registration",
@@ -77,7 +78,7 @@ const appRoutes: RouteType[] = [
     state: "registration",
     topbarText: "Registrace",
     sidebarProps: {
-      displayText: "Registace"
+      displayText: "Registace",
     },
     child: [
       {
@@ -85,7 +86,7 @@ const appRoutes: RouteType[] = [
         element: <RegistrationIndex />,
         authenticated: true,
         roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
-        state: "registration.index"
+        state: "registration.index",
       },
       {
         path: "/registration/course_registration",
@@ -95,8 +96,8 @@ const appRoutes: RouteType[] = [
         state: "registration.course_registration",
         topbarText: "Registrace předmětů",
         sidebarProps: {
-          displayText: "Registrace předmětu"
-        }
+          displayText: "Registrace předmětu",
+        },
       },
       {
         path: "/registration/class_registration",
@@ -106,10 +107,10 @@ const appRoutes: RouteType[] = [
         state: "registration.class_registration",
         topbarText: "Registrace vyučování",
         sidebarProps: {
-          displayText: "Registrace vyučování"
-        }
-      }
-    ]
+          displayText: "Registrace vyučování",
+        },
+      },
+    ],
   },
   {
     path: "/list",
@@ -119,7 +120,7 @@ const appRoutes: RouteType[] = [
     state: "list",
     topbarText: "Seznamy",
     sidebarProps: {
-      displayText: "Seznamy"
+      displayText: "Seznamy",
     },
     child: [
       {
@@ -127,7 +128,18 @@ const appRoutes: RouteType[] = [
         element: <ListIndex />,
         authenticated: true,
         roles: ["admin"],
-        state: "list.index"
+        state: "list.index",
+      },
+      {
+        path: "/list/registration_list",
+        element: <RegistrationListPage />,
+        authenticated: true,
+        roles: ["admin"],
+        state: "list.registration_list",
+        topbarText: "Seznam registrací",
+        sidebarProps: {
+          displayText: "Registrace",
+        },
       },
       {
         path: "/list/user_list",
@@ -137,8 +149,8 @@ const appRoutes: RouteType[] = [
         state: "list.user_list",
         topbarText: "Seznam uživetelů",
         sidebarProps: {
-          displayText: "Uživatelé"
-        }
+          displayText: "Uživatelé",
+        },
       },
       {
         path: "/list/course_list",
@@ -148,8 +160,8 @@ const appRoutes: RouteType[] = [
         state: "list.course_list",
         topbarText: "Seznam předmětů",
         sidebarProps: {
-          displayText: "Předmětů"
-        }
+          displayText: "Předmětů",
+        },
       },
       {
         path: "/list/room_list",
@@ -159,8 +171,8 @@ const appRoutes: RouteType[] = [
         state: "list.room_list",
         topbarText: "Seznam místností",
         sidebarProps: {
-          displayText: "Místnotí"
-        }
+          displayText: "Místnotí",
+        },
       },
       {
         path: "/list/activity_list",
@@ -170,18 +182,18 @@ const appRoutes: RouteType[] = [
         state: "list.activity_list",
         topbarText: "Seznam aktivit",
         sidebarProps: {
-          displayText: "Aktivit"
-        }
-      }
-    ]
+          displayText: "Aktivit",
+        },
+      },
+    ],
   },
   {
     path: "*",
     element: <NotFound />,
     authenticated: false,
     roles: ["admin", "student"],
-    state: "not_found"
-  }
+    state: "not_found",
+  },
 ];
 
 export default appRoutes;
