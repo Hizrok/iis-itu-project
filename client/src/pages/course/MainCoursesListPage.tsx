@@ -46,7 +46,7 @@ const MainCoursesListPage = () => {
 
   async function fetchCourses() {
     dispatch(setLoadingContentState(true));
-    const response = await fetch("http://localhost:3000/courses", {
+    const response = await fetch(import.meta.env.VITE_SERVER_HOST+"courses", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

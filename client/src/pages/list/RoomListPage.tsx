@@ -32,7 +32,7 @@ const RoomListPage = () => {
     async function fetchRooms() {
     try {
         dispatch(setLoadingContentState(true));
-        const response = await fetch("http://localhost:3000/rooms", {
+        const response = await fetch(import.meta.env.VITE_SERVER_HOST+"rooms", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -57,14 +57,14 @@ const RoomListPage = () => {
             try {
             dispatch(setLoadingContentState(true));
             await fetch(
-                "http://localhost:3000/rooms/" + toBeDeletedUser.id,
-                {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    authorization: authHeader(),
-                },
-                }
+              import.meta.env.VITE_SERVER_HOST+"rooms/" + toBeDeletedUser.id,
+              {
+              method: "DELETE",
+              headers: {
+                  "Content-Type": "application/json",
+                  authorization: authHeader(),
+              },
+              }
             );
 
             // call fetch users after deleting user
@@ -90,15 +90,15 @@ const RoomListPage = () => {
         try {
         dispatch(setLoadingContentState(true));
         await fetch(
-            "http://localhost:3000/rooms/" + editedRoom.id,
-            {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                authorization: authHeader(),
-            },
-            body: JSON.stringify(toBeUpdatedRoom),
-            }
+          import.meta.env.VITE_SERVER_HOST+"rooms/" + editedRoom.id,
+          {
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json",
+              authorization: authHeader(),
+          },
+          body: JSON.stringify(toBeUpdatedRoom),
+          }
         );
 
         // call fetch rooms after update room
@@ -124,7 +124,7 @@ const RoomListPage = () => {
       };
   
       try{
-        await fetch("http://localhost:3000/rooms", {
+        await fetch(import.meta.env.VITE_SERVER_HOST+"rooms", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

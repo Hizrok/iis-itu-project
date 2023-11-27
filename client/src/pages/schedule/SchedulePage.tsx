@@ -14,7 +14,7 @@ const SchedulePage = () => {
     async function fetchActivities() {
         try{
             dispatch(setLoadingContentState(true));
-            const response = await fetch(`http://localhost:3000/registrations/activities/${auth()?auth()!.id:``}`, {
+            const response = await fetch(import.meta.env.VITE_SERVER_HOST+`registrations/activities/${auth()?auth()!.id:``}`, {
                 method: "GET",
                 headers: {
                 "Content-Type": "application/json",

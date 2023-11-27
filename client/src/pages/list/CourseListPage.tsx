@@ -36,7 +36,7 @@ const CourseListPage = () => {
 
   async function fetchCourses() {
     dispatch(setLoadingContentState(true));
-    const response = await fetch("http://localhost:3000/courses", {
+    const response = await fetch(import.meta.env.VITE_SERVER_HOST+"courses", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -53,7 +53,7 @@ const CourseListPage = () => {
   async function fetchUsers() {
     try {
       dispatch(setLoadingContentState(true));
-      const response = await fetch("http://localhost:3000/users", {
+      const response = await fetch(import.meta.env.VITE_SERVER_HOST+"users", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -91,7 +91,7 @@ const CourseListPage = () => {
 
     try {
       dispatch(setLoadingContentState(true));
-      const request = await fetch("http://localhost:3000/courses", {
+      const request = await fetch(import.meta.env.VITE_SERVER_HOST+"courses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
