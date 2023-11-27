@@ -2,7 +2,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=iso-8859-2"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <title>Projekt IIS</title>
     <style type="text/css">
     	table { border-collapse: collapse; }
@@ -15,37 +15,36 @@
 <!-- Zkontrolujte prosím nastavení kódování v hlavičce dokumentu 
      podle použitého editoru -->
 
-<h1>Název zadání (editujte)</h1> <!-- Nahradte názvem svého zadání -->
+<h1>Plánování rozvrhů </h1> <!-- Nahradte názvem svého zadání -->
 
 <dl>
 	<dt>Autoři</dt>
-	<dd>První jméno <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
-	    <a href="mailto:xautor01@stud.fit.vutbr.cz">xautor01@stud.fit.vutbr.cz</a> -
+	<dd>Jan Kapsa  <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xkapsa00@stud.fit.vutbr.cz">xkapsa00@stud.fit.vutbr.cz</a> -
 		popis činnosti v týmu
 	</dd>
-	<dd>Druhé jméno <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
-	    <a href="mailto:xautor02@stud.fit.vutbr.cz">xautor02@stud.fit.vutbr.cz</a> - 
+	<dd>Tomáš Vlach  <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xvlach24@stud.fit.vutbr.cz">xvlach24@stud.fit.vutbr.cz</a> - 
 		popis činnosti v týmu
 	</dd>
-  <dd>Třetí jméno <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
-	    <a href="mailto:xautor03@stud.fit.vutbr.cz">xautor03@stud.fit.vutbr.cz</a> - 
+  <dd>Petr Teichgráb  <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xteich01@stud.fit.vutbr.cz">xteich01@stud.fit.vutbr.cz</a> - 
 		popis činnosti v týmu
 	</dd>
 	<dt>URL aplikace</dt>
-	<dd><a href="http://www.stud.fit.vutbr.cz/~xautor01/IIS">http://www.stud.fit.vutbr.cz/~xautor01/IIS</a></dd>
-	<dd>(pokud má aplikace více vstupních stránek, napište obdobně další URL)</dd>
+	<dd><a href="https://registration-website-7zsy.onrender.com/">https://registration-website-7zsy.onrender.com/</a></dd>
+	<dd>Kvůli limitacím serveru bude první přihlášení chvíli trvat, ale pak již chod stránky nebude omezován</dd>
 </dl>
 
 <h2>Uživatelé systému pro testování</h2>
-<p>Uveďte prosím existující zástupce <strong>všech rolí uživatelů</strong>.</p>
 <table>
 <tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
 <tr><td>admin</td><td>admin</td><td>Administrátor</td></tr>
-<tr><td>prodavac</td><td>prodavac</td><td>Prodavač</td></tr>
-<tr><td>franta</td><td>franta</td><td>Zákazník</td></tr>
+<tr><td>garant</td><td>garant</td><td>Garant</td></tr>
+<tr><td>vyucujici</td><td>vyucujici</td><td>Vyučující</td></tr>
+<tr><td>student</td><td>student</td><td>Student</td></tr>
 </table>
-
-<p>(Diagram případů užití není nutné vkládat, pokud IS implementuje role a případy užití definované zadáním.)</p> 
+<p>Jakékoliv nové účty v systému budou mít výchozí heslo: "heslo"</p>
 
 <h3>Video</h3>
 
@@ -56,15 +55,56 @@
 
 <h3>Databáze</h3>
 
-Zde vložte grafické schéma relační databáze (tabulek v databázi).
+<img src="sql_scheme.png" alt="SQL scheme of our database">
 
 <h2>Instalace</h2>
 
-Stručně popište: 
+Rozbalení
 <ul>
-<li>postup instalace na server,</li>
-<li>softwarové požadavky (verze PHP apod.),</li>
-<li>jak rozbalit, konfigurovat, inicializovat databázi, ...</li>
+<li>Rozbalit archiv v novém adresáři pomocí aplikace schopné rozbalovat .zip</li>
+</ul>
+
+Client:
+<ul>
+	<li>Otevřete adresář 'client/'</li>
+	<li>Vytvoříte souber s názvem '.env'</li>
+	<li>Do tohoto souboru vložte položky 
+		"<code>VITE_SERVER_HOST = "{server adress}"</code>""
+	</li>
+	<li>Otevřete si příkazovou řádku v daném adrešáři</li>
+	<li>Použijte příkaz "<code>npm install</code>" pro instalaci potřebných node modulů</li>
+	<li>Pro spuštění webové stránky v módu development použijte příkaz "<code>npm run dev</code>"</li>
+	<li>Pro postavení statické webové stránky použijte příkaz "<code>npm run build</code>"</li>
+</ul>
+
+Server:
+<ul>
+	<li>Otevřete adresář 'server/'</li>
+	<li>Vytvoříte souber s názvem '.env'</li>
+	<li>Do tohoto souboru vložte položky "
+		<code>ACCESS_TOKEN_SECRET={jwt secret}<br>
+		CORS_ALLOW = "*"<br>
+		PG_USER={postgresql user}<br>
+		PG_PASSWORD={postgresql user password}<br>
+		PG_HOST={postgresql hosting}<br>
+		PG_DATABASE={database name}<br>
+		PG_PORT={database port}<br>
+		PORT=3000<br></code>"
+	</li>
+	<li>Pro spuštění serveru v módu development použijte příkaz "<code>npm run dev</code>"</li>
+	<li>Pro spuštění serveru použijte příkaz "<code>npm start</code>"</li>
+	<li>Pro postavení serveru pro deployment použijte příkaz "<code>yarn</code>"</li>
+</ul>
+
+Databáze:
+<ul>
+	<li>Nainstalujte server a zapněte postgresql server (min v. 15)</li>
+	<li>Vytvořte uživatele pro přístup k databázi</li>
+	<li>Vytvořte databázi</li>
+	<li>Přesuňte se v příkazové řádce do adřesáře 'database/'</li>
+	<li>Použijte příkaz "<code>psql -H {server hostname} -U {created user} -D {created database} -F table.sql</code>"</li>
+	<li>Pokud vše prošlo bez problému měl by terminál vypsat všechny vytvořené tabulky</li>
+	<li>Údáje databáze, uživatele a hosta vložte do .env souboru v adřesáři 'server/'</li>
 </ul>
 
 <h2>Známé problémy</h2>
