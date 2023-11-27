@@ -4,10 +4,21 @@ import { setLoadingContentState } from "../../redux/features/LoadingContentState
 import CourseList from "../../components/lists/courseListComponent";
 import { useAuthHeader } from "react-auth-kit";
 import Filter from "../../components/common/Filters/filter";
-import Course from "../../components/common/Types/Course";
+
+// type User = {
+//   id: string;
+//   role: string;
+//   name: string;
+//   surname: string;
+// }
+
+type Course = {
+  id: string;
+  name: string;
+  guarantor: string;
+};
 
 const MainCoursesListPage = () => {
-
   const authHeader = useAuthHeader();
   const dispatch = useDispatch();
 
@@ -20,7 +31,11 @@ const MainCoursesListPage = () => {
     fetchCourses();
   }, []);
 
-  const sortCourses = (courses: Course[], sortBy: string, descending: boolean) => {
+  const sortCourses = (
+    courses: Course[],
+    sortBy: string,
+    descending: boolean
+  ) => {
     return courses.slice().sort((a: any, b: any) => {
       const order = descending ? -1 : 1;
       return a[sortBy].localeCompare(b[sortBy]) * order;
@@ -29,7 +44,7 @@ const MainCoursesListPage = () => {
 
   const filterCourses = (filterType: string, isDescending: boolean) => {
     setFilteredCourses(sortCourses(courses, filterType, isDescending));
-  }
+  };
 
   async function fetchCourses() {
     dispatch(setLoadingContentState(true));
@@ -53,26 +68,25 @@ const MainCoursesListPage = () => {
     }
   }
 
-  if(courses.length!==0){
+  if (courses.length !== 0) {
     return (
       <div className="course-page">
-          <div className="list-pages-list-container">
-            <h2>Seznam Předmětů</h2>
-          </div>
-          <Filter onFilterChange={filterCourses} />
-          <CourseList courses={filteredCourses} />
+        <div className="list-pages-list-container">
+          <h2>Seznam Předmětů</h2>
         </div>
-    );
-  }  
-  else{
-    return(
-    <div className="course-page">
-      <div className="list-pages-list-container">
-        <h2>Seznam Předmětů</h2>
+        <Filter onFilterChange={filterCourses} />
+        <CourseList courses={filteredCourses} />
       </div>
-      Žádné předměty nebyli načteny
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div className="course-page">
+        <div className="list-pages-list-container">
+          <h2>Seznam Předmětů</h2>
+        </div>
+        Žádné předměty nebyli načteny
+      </div>
+    );
   }
 };
 
