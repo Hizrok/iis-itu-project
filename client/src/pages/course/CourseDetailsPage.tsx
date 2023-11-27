@@ -30,7 +30,7 @@ const CourseDetailsPage = () => {
     async function fetchCourse() {
         dispatch(setLoadingContentState(true));
         try{
-        const link = import.meta.env.VITE_SERVER_HOST+`/courses/${params.courseID}`;
+        const link = import.meta.env.VITE_SERVER_HOST+`courses/${params.courseID}`;
             const response = await fetch(link, {
                 method: "GET", 
                 headers: {

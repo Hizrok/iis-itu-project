@@ -102,8 +102,9 @@ const CourseListPage = () => {
       const request_json = await request.json();
       console.log(request_json);
       console.log(JSON.stringify(new_course));
-      dispatch(setLoadingContentState(false));
       fetchCourses();
+      setCreateDialog(false);
+      dispatch(setLoadingContentState(false));
     }
     catch (err) {
       setErrorMessage("Error during creation!");
