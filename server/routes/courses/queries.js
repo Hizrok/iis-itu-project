@@ -1,5 +1,8 @@
 const get_all_courses =
-  "select courses.id, courses.name, annotation, guarantor, users.name as guarantor_name, surname, email from courses left join users on users.id=guarantor;";
+  "select c.id, c.name, guarantor, u.name as guarantor_name, surname from courses as c left join users as u on u.id=guarantor;";
+
+const get_all_courses_of_guarantor =
+  "select c.id, c.name, guarantor, u.name as guarantor_name, surname from courses as c left join users as u on u.id=guarantor where guarantor=$1;";
 
 const get_course =
   "select courses.id, courses.name, annotation, guarantor, users.name as guarantor_name, surname, email from courses left join users on users.id=guarantor where courses.id=$1;";
@@ -16,8 +19,17 @@ const get_lecturers =
 const get_instances =
   "select id, room, lecturer, start_time, day from course_activity_instances where course_activity=$1;";
 
+const get_all_instances =
+  "select cai.id, ca.course, ca.type, ca.recurrence, ca.capacity, cai.day, cai.start_time, ca.duration, cai.room, cai.lecturer, u.name, u.surname from course_activity_instances as cai left join course_activities as ca on cai.course_activity=ca.id left join users as u on cai.lecturer=u.id;";
+
+const get_all_instances_of_lecturer =
+  "select cai.id, ca.course, ca.type, ca.recurrence, ca.capacity, cai.day, cai.start_time, ca.duration, cai.room, cai.lecturer, u.name, u.surname from course_activity_instances as cai left join course_activities as ca on cai.course_activity=ca.id left join users as u on cai.lecturer=u.id where lecturer=$1;";
+
+// const get_instance =
+//   "select room, lecturer, start_time, day from course_activity_instances where id=$1;";
+
 const get_instance =
-  "select room, lecturer, start_time, day from course_activity_instances where id=$1;";
+  "select cai.id, ca.type, ca.recurrence, cai.day, cai.start_time, ca.duration, cai.room, cai.lecturer, u.name, u.surname from course_activity_instances as cai left join course_activities as ca on cai.course_activity=ca.id left join users as u on cai.lecturer=u.id where ca.course=$1;";
 
 const add_course =
   "insert into courses (id, name, annotation, guarantor) values ($1, $2, $3, $4) returning id, name, annotation, guarantor;";
@@ -99,6 +111,9 @@ const delete_instance = "delete from course_activity_instances where id=$1;";
 
 module.exports = {
   get_all_courses,
+  get_all_courses_of_guarantor,
+  get_all_instances,
+  get_all_instances_of_lecturer,
   get_course,
   get_activities,
   get_activity,

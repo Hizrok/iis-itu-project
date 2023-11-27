@@ -1,7 +1,7 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
-const authenticate = (roles, id = false) => {
+const authenticate = (roles, ids = []) => {
   return (req, res, next) => {
     const auth_header = req.headers["authorization"];
     const token = auth_header && auth_header.split(" ")[1];
@@ -11,7 +11,15 @@ const authenticate = (roles, id = false) => {
       if (err) return res.sendStatus(403);
 
       const role_check = roles.includes(user.role);
-      const id_check = id && req.params.id === user.id;
+
+      let id_check = false;
+      for (let index = 0; index < ids.length; index++) {
+        if (user.role === ids[index] && user.id === req.params.user_id) {
+          id_check = true;
+          break;
+        }
+      }
+
       if (!role_check && !id_check) return res.sendStatus(403);
 
       req.params.user = user;

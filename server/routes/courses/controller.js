@@ -3,45 +3,50 @@ const queries = require("./queries");
 
 const get_courses = async (req, res) => {
   try {
-    const search_query = await pool.query(queries.get_all_courses);
-    const courses = await Promise.all(
-      search_query.rows.map(async (course) => {
-        const activities_query = await pool.query(queries.get_activities, [
-          course.id,
-        ]);
-        const activities = await Promise.all(
-          activities_query.rows.map(async (activity) => {
-            const lecturers_query = await pool.query(queries.get_lecturers, [
-              course.id,
-              activity.id,
-            ]);
-            const instances_query = await pool.query(queries.get_instances, [
-              activity.id,
-            ]);
+    const guarantor = req.query.guarantor;
 
-            return {
-              ...activity,
-              lecturers: lecturers_query.rows,
-              instaces: instances_query.rows,
-            };
-          })
-        );
-
-        return {
-          id: course.id,
-          name: course.name,
-          annotation: course.annotation,
-          guarantor: {
-            id: course.guarantor,
-            name: course.guarantor_name,
-            surname: course.surname,
-            email: course.email,
-          },
-          activities,
-        };
-      })
-    );
+    const search_query = guarantor
+      ? await pool.query(queries.get_all_courses_of_guarantor, [guarantor])
+      : await pool.query(queries.get_all_courses);
+    const courses = search_query.rows.map((course) => {
+      return {
+        id: course.id,
+        name: course.name,
+        guarantor:
+          course.guarantor_name && course.surname
+            ? `${course.guarantor_name} ${course.surname}`
+            : course.guarantor,
+      };
+    });
     res.status(200).json(courses);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
+};
+
+const get_all_instances = async (req, res) => {
+  try {
+    const lecturer = req.query.lecturer;
+
+    const search_query = lecturer
+      ? await pool.query(queries.get_all_instances_of_lecturer, [lecturer])
+      : await pool.query(queries.get_all_instances);
+    const instaces = search_query.rows.map((i) => {
+      return {
+        id: i.id,
+        course: i.course,
+        type: i.type,
+        recurrence: i.recurrence,
+        capacity: i.capacity,
+        day: i.day,
+        start_time: i.start_time,
+        duration: i.duration,
+        room: i.room,
+        lecturer: i.name && i.surname ? `${i.name} ${i.surname}` : i.lecturer,
+      };
+    });
+    res.status(200).json(instaces);
   } catch (error) {
     console.error(error);
     res.sendStatus(500);
@@ -54,27 +59,32 @@ const get_course = async (req, res) => {
     const course_query = await pool.query(queries.get_course, [id]);
     if (!course_query.rowCount) return res.sendStatus(404);
 
-    const activities_query = await pool.query(queries.get_activities, [id]);
+    const instances_query = await pool.query(queries.get_instance, [id]);
 
     const course = {
       id: course_query.rows[0].id,
       name: course_query.rows[0].name,
-      annotation: course_query.rows[0].annotation,
       guarantor: {
         id: course_query.rows[0].guarantor,
-        name: course_query.rows[0].guarantor_name,
-        surname: course_query.rows[0].surname,
+        name: `${course_query.rows[0].guarantor_name} ${course_query.rows[0].surname}`,
         email: course_query.rows[0].email,
       },
-      activities: await Promise.all(
-        activities_query.rows.map(async (activity) => {
-          const lecturers_query = await pool.query(queries.get_lecturers, [
-            id,
-            activity.id,
-          ]);
-          return { ...activity, lecturers: lecturers_query.rows };
-        })
-      ),
+      annotation: course_query.rows[0].annotation,
+      instances: instances_query.rows.map((instance) => {
+        return {
+          id: instance.id,
+          type: instance.type,
+          recurrence: instance.recurrence,
+          day: instance.day,
+          start_time: instance.start_time,
+          duration: instance.duration,
+          room: instance.room,
+          lecturer:
+            instance.name && instance.surname
+              ? `${instance.name} ${instance.surname}`
+              : instance.lecturer,
+        };
+      }),
     };
 
     res.status(200).json(course);
@@ -130,11 +140,14 @@ const get_lecturers = async (req, res) => {
     const { course, id } = req.params;
     const search_query = await pool.query(queries.get_lecturers, [course, id]);
 
-    console.log(search_query);
+    const lecturers = search_query.rows.map((l) => ({
+      id: l.id,
+      role: l.role,
+      name: l.name && l.surname ? `${l.name} ${l.surname}` : null,
+      email: l.email,
+    }));
 
-    if (!search_query.rowCount) return res.sendStatus(404);
-
-    res.status(200).json(search_query.rows);
+    res.status(200).json(lecturers);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
@@ -390,6 +403,7 @@ const delete_instance = async (req, res) => {
 };
 
 module.exports = {
+  get_all_instances,
   get_courses,
   get_course,
   get_activities,
