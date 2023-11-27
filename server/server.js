@@ -46,6 +46,7 @@ app.post("/login", async (req, res) => {
         ...user,
         token: access_token,
       };
+      res.setHeader("Access-Control-Allow-Origin", process.env.CORS_ALLOW);
       res.status(201).json(user);
     });
   } catch (error) {

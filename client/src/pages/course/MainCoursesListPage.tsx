@@ -72,7 +72,14 @@ const MainCoursesListPage = () => {
     );
   }  
   else{
-    return(<></>);
+    return(
+    <div className="course-page">
+      <div className="list-pages-list-container">
+        <h2>Seznam Předmětů</h2>
+      </div>
+      Žádné předměty nebyli načteny
+    </div>
+  );
   }
 };
 
