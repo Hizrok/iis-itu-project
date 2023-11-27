@@ -62,6 +62,8 @@ const get_room = async (req, res) => {
     const find_query = await pool.query(queries.get_room, [id]);
     if (!find_query.rowCount) return res.sendStatus(404);
 
+    const search_query = await pool.query(queries.get_instances_in_room, [id]);
+
     const building = find_query.rows[0].id.substring(0, 1);
     const floor = parseInt(find_query.rows[0].id.substring(1, 2));
     const number = parseInt(find_query.rows[0].id.substring(2, 4));
@@ -72,6 +74,21 @@ const get_room = async (req, res) => {
       floor,
       number,
       capacity: find_query.rows[0].capacity,
+      instances: search_query.rows.map((instance) => {
+        return {
+          id: instance.id,
+          course: instance.course,
+          type: instance.type,
+          recurrence: instance.recurrence,
+          day: instance.day,
+          start_time: instance.start_time,
+          duration: instance.duration,
+          lecturer:
+            instance.name && instance.surname
+              ? `${instance.name} ${instance.surname}`
+              : instance.lecturer,
+        };
+      }),
     };
 
     res.status(200).json(room);

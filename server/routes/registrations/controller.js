@@ -71,12 +71,12 @@ const start = async (req, res) => {
     const { id, state } = req.params;
     const type = req.body.type;
 
-    if (type === "COURSE") {
+    if (type === "COURSES") {
       if (state === "IDLE") {
         await pool.query(queries.set_state, ["COURSES IN PROGRESS", id]);
         return res.sendStatus(202);
       }
-    } else if (type === "ACTIVITY") {
+    } else if (type === "INSTANCES") {
       if (state === "SCHEDULING") {
         await pool.query(queries.set_state, ["ACTIVITIES IN PROGRESS", id]);
         return res.sendStatus(202);
@@ -95,12 +95,12 @@ const stop = async (req, res) => {
     const { id, state } = req.params;
     const type = req.body.type;
 
-    if (type === "COURSE") {
+    if (type === "COURSES") {
       if (state === "COURSES IN PROGRESS") {
         await pool.query(queries.set_state, ["SCHEDULING", id]);
         return res.sendStatus(202);
       }
-    } else if (type === "ACTIVITY") {
+    } else if (type === "INSTANCES") {
       if (state === "ACTIVITIES IN PROGRESS") {
         await pool.query(queries.set_state, ["EVALUATING", id]);
         res.sendStatus(202);
@@ -141,29 +141,110 @@ const evaluate_activities = async (id) => {
 
 const get_registered_courses = async (req, res) => {
   try {
-    const { reg_id, student } = req.params;
+    const { reg_id, user_id } = req.params;
 
     const search_query = await pool.query(queries.get_registered_courses, [
       reg_id,
-      student,
+      user_id,
     ]);
 
     if (!search_query.rowCount) return res.sendStatus(404);
 
-    const courses = await Promise.all(
-      search_query.rows.map(async (course) => {
-        const instances_query = await pool.query(
-          queries.get_instances_of_course,
-          [course.id]
-        );
+    res.status(200).json(search_query.rows);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+};
+
+const get_courses_with_reg_data = async (req, res) => {
+  try {
+    const { reg_id, user_id } = req.params;
+
+    const search_query = await pool.query(queries.get_courses_with_reg_data, [
+      reg_id,
+      user_id,
+    ]);
+
+    if (!search_query.rowCount) return res.sendStatus(404);
+
+    res.status(200).json(search_query.rows);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+};
+
+const get_registered_instances = async (req, res) => {
+  try {
+    const { reg_id, user_id } = req.params;
+
+    const search_query = await pool.query(queries.get_registered_instances, [
+      reg_id,
+      user_id,
+    ]);
+
+    if (!search_query.rowCount) return res.sendStatus(404);
+
+    res.status(200).json(
+      search_query.rows.map((instance) => {
         return {
-          ...course,
-          instances: instances_query.rows,
+          course: instance.course,
+          type: instance.type,
+          recurrence: instance.recurrence,
+          day: instance.day,
+          start_time: instance.start_time,
+          duration: instance.duration,
+          room: instance.room,
+          lecturer:
+            instance.name && instance.surname
+              ? `${instance.name} ${instance.surname}`
+              : instance.lecturer,
         };
       })
     );
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+};
 
-    res.status(200).json(courses);
+const get_instances_with_reg_data = async (req, res) => {
+  try {
+    const { reg_id, user_id } = req.params;
+
+    const search_query = await pool.query(queries.get_instances_with_reg_data, [
+      reg_id,
+      user_id,
+    ]);
+
+    if (!search_query.rowCount) return res.sendStatus(404);
+
+    res.status(200).json(
+      search_query.rows.map((i) => ({
+        id: i.id,
+        course: i.course,
+        type: i.type,
+        recurrence: i.recurrence,
+        day: i.day,
+        start_time: i.start_time,
+        duration: i.duration,
+        capacity: i.capacity,
+        room: i.room,
+        lecturer: i.name && i.surname ? `${i.name} ${i.surname}` : i.lecturer,
+        order: i.order,
+        registered: i.registered,
+      }))
+    );
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+};
+
+const get_active_registration = async (req, res) => {
+  try {
+    res.status(200).json(req.params.state);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
@@ -211,16 +292,16 @@ const register_course = async (req, res) => {
   }
 };
 
-const register_activity = async (req, res) => {
+const register_instance = async (req, res) => {
   try {
     const { reg_id, state } = req.params;
-    const { activity, student, order } = req.body;
+    const { instance, student, order } = req.body;
 
     if (state !== "ACTIVITIES IN PROGRESS") return res.sendStatus(400);
 
-    const add_query = await pool.query(queries.register_activity, [
+    const add_query = await pool.query(queries.register_instance, [
       reg_id,
-      activity,
+      instance,
       student,
       order,
     ]);
@@ -260,6 +341,11 @@ const unregister = async (req, res) => {
 
 module.exports = {
   get_registrations,
+  get_active_registration,
+  get_registered_courses,
+  get_courses_with_reg_data,
+  get_registered_instances,
+  get_instances_with_reg_data,
   add_registration,
   delete_registration,
   set_status,
@@ -267,8 +353,7 @@ module.exports = {
   stop,
   reset,
   register_course,
-  get_registered_courses,
   unregister,
-  register_activity,
+  register_instance,
   get_activities,
 };
