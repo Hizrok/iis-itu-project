@@ -15,8 +15,6 @@ const ActivityListPage = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
 
-  
-
   const [courseID, setCourseID] = useState<string>("");
   const [type, setType] = useState<string>("");
   const [recurrence, setRecurrence] = useState<string>("");

@@ -30,22 +30,22 @@ const RoomListPage = () => {
     }, []);
 
     async function fetchRooms() {
-    try {
-        dispatch(setLoadingContentState(true));
-        const response = await fetch(import.meta.env.VITE_SERVER_HOST+"rooms", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            authorization: authHeader(),
-        },
-        });
-        const json_users = await response.json();
-        setRooms(json_users.filter((room: Room) => room.id !== null));
-        dispatch(setLoadingContentState(false));
-    } catch (error) {
-        console.error("Error fetching users:", error);
-        dispatch(setLoadingContentState(false));
-    }
+      try {
+          dispatch(setLoadingContentState(true));
+          const response = await fetch(import.meta.env.VITE_SERVER_HOST+"rooms", {
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              authorization: authHeader(),
+          },
+          });
+          const json_users = await response.json();
+          setRooms(json_users.filter((room: Room) => room.id !== null));
+          dispatch(setLoadingContentState(false));
+      } catch (error) {
+          console.error("Error fetching users:", error);
+          dispatch(setLoadingContentState(false));
+      }
     }
 
     const handleRoomClick = (room: Room) => {

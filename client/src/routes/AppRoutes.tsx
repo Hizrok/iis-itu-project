@@ -22,6 +22,7 @@ import ActivityListPage from "../pages/list/ActivityListPage";
 import RegistrationListPage from "../pages/list/RegistrationListPage";
 
 import NotFound from "../pages/error/NotFoundPage";
+import InstanceListPage from "../pages/list/InstanceListPage";
 
 const appRoutes: RouteType[] = [
   {
@@ -183,6 +184,17 @@ const appRoutes: RouteType[] = [
         topbarText: "Seznam aktivit",
         sidebarProps: {
           displayText: "Aktivit",
+        },
+      },
+      {
+        path: "/list/instance_list",
+        element: <InstanceListPage />,
+        authenticated: true,
+        roles: ["admin"],
+        state: "list.instance_list",
+        topbarText: "Seznam instancí",
+        sidebarProps: {
+          displayText: "Instancí",
         },
       },
     ],
