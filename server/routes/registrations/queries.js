@@ -3,6 +3,9 @@ const get_registrations = "select id, state, status from registrations;";
 const get_registration =
   "select id, state, status from registrations where id=$1;";
 
+const get_active_registration =
+  "select id, state, status from registrations where status='ACTIVE';";
+
 const add_registration = "insert into registrations default values;";
 
 const delete_registration = "delete from registrations where id=$1;";
@@ -40,6 +43,7 @@ const unregister_activity =
 module.exports = {
   get_registrations,
   get_registration,
+  get_active_registration,
   add_registration,
   delete_registration,
   check_status,
