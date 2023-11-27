@@ -31,7 +31,7 @@ const UserListPage = () => {
   async function fetchUsers() {
     try {
       dispatch(setLoadingContentState(true));
-      const response = await fetch("http://localhost:3000/users", {
+      const response = await fetch(import.meta.env.VITE_SERVER_HOST+"users", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -56,7 +56,7 @@ const UserListPage = () => {
       try {
         dispatch(setLoadingContentState(true));
         await fetch(
-          "http://localhost:3000/users/" + toBeDeletedUser.id,
+          import.meta.env.VITE_SERVER_HOST+"users/" + toBeDeletedUser.id,
           {
             method: "DELETE",
             headers: {
@@ -88,7 +88,7 @@ const UserListPage = () => {
       try {
         dispatch(setLoadingContentState(true));
         await fetch(
-          "http://localhost:3000/users/" + editedUser.id,
+          import.meta.env.VITE_SERVER_HOST+"users/" + editedUser.id,
           {
             method: "PUT",
             headers: {
@@ -121,7 +121,7 @@ const UserListPage = () => {
       };
 
       try{
-          const request = await fetch("http://localhost:3000/users", {
+          const request = await fetch(import.meta.env.VITE_SERVER_HOST+"users", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

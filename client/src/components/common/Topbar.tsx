@@ -69,7 +69,7 @@ function Topbar() {
 
       try {
         dispatch(setLoadingState(true));
-        const request = await fetch("http://localhost:3000/login", {
+        const request = await fetch(import.meta.env.VITE_SERVER_HOST+"login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

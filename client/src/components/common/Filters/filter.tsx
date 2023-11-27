@@ -1,6 +1,4 @@
 import {
-  Button,
-  TextField,
   Select,
   MenuItem,
 } from "@mui/material";
@@ -9,8 +7,6 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import React, { useState } from "react";
 import FilterProps from "./FilterProps";
-import { Margin } from "@mui/icons-material";
-
 
 const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
   const [selectedAttribute, setSelectedAttribute] = useState<string>("name");

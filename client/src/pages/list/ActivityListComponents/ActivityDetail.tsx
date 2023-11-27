@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "../../../styles/style.css";
 import {
   Button,
-  InputLabel,
   MenuItem,
   Select,
   TextField

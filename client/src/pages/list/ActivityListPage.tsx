@@ -41,7 +41,7 @@ const ActivityListPage = () => {
 
   async function fetchCourses() {
     dispatch(setLoadingContentState(true));
-    const response = await fetch("http://localhost:3000/courses", {
+    const response = await fetch(import.meta.env.VITE_SERVER_HOST+"courses", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -59,7 +59,7 @@ const ActivityListPage = () => {
     console.log(selectedCourseID);
     dispatch(setLoadingContentState(true));
     try{
-      const response = await fetch(`http://localhost:3000/courses/${selectedCourseID}/activities`, {
+      const response = await fetch(import.meta.env.VITE_SERVER_HOST+`courses/${selectedCourseID}/activities`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -96,7 +96,7 @@ const ActivityListPage = () => {
     };
     try {
       dispatch(setLoadingContentState(true));
-      await fetch("http://localhost:3000/courses/"+courseID, {
+      await fetch(import.meta.env.VITE_SERVER_HOST+"courses/"+courseID, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -119,7 +119,7 @@ const ActivityListPage = () => {
       try {
         dispatch(setLoadingContentState(true));
         await fetch(
-          `http://localhost:3000/${selectedCourseID}/activities/${toBeDeletedActivity.id}`,
+          import.meta.env.VITE_SERVER_HOST+`${selectedCourseID}/activities/${toBeDeletedActivity.id}`,
           {
             method: "DELETE",
             headers: {
@@ -150,7 +150,7 @@ const ActivityListPage = () => {
       try {
         dispatch(setLoadingContentState(true));
         await fetch(
-          `http://localhost:3000/${selectedCourseID}/activities/${editedActivity.id}`,
+          import.meta.env.VITE_SERVER_HOST+`${selectedCourseID}/activities/${editedActivity.id}`,
           {
             method: "PUT",
             headers: {
@@ -255,7 +255,7 @@ const ActivityListPage = () => {
             <MenuItem value="democvičení">democvičení</MenuItem>
             <MenuItem value="seminář">seminář</MenuItem>
           </Select>
-          <InputLabel id="select-label">Typ</InputLabel>
+          <InputLabel id="select-label">Rekurence</InputLabel>
           <Select
             sx={{ m: 1, width: "25ch" }}
             labelId="select-label"
