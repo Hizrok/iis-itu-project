@@ -71,7 +71,7 @@ const CourseRegPage = () => {
         dispatch(setLoadingContentState(true));
 
         if (!registered) {
-          await fetch("http://localhost:3000/registrations/course", {
+          await fetch("http://localhost:3000/registrations/courses", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
