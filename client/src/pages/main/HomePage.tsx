@@ -19,35 +19,35 @@ const HomePage = () => {
     // let courses = "loading..."
 
     useEffect(() => {
-        if(isAuthenticated()){
-            if(auth()!.role == "student"){
-                fetchCoursesStudent();
-            }
-            else if(auth()!.role == "vyučující" || auth()!.role == "garant"){
-                fetchCoursesTeacher();
-            }
-        }
+        getCourses();
     }, []);
 
     useEffect(() => {
-        if(isAuthenticated()){
-            if(auth()!.role == "student"){
-                fetchCoursesStudent();
-            }
-            else if(auth()!.role == "vyučující" ){
-                fetchCoursesTeacher();
-            }
-            else if(auth()!.role == "garant"){
-                fetchCoursesGarant();
-            }
-        }
+        getCourses();
     }, [isAuthenticated()]);
 
+    const getCourses = () => {
+        if(isAuthenticated()){
+            if(auth()!.role === "student"){
+                fetchCoursesStudent();
+                //fetchActivitiesStudent():
+            }
+            else if(auth()!.role === "vyučující" ){
+                fetchCoursesTeacher();
+                //fetchActivitiesTeacher():
+            }
+            else if(auth()!.role === "garant"){
+                fetchCoursesGarant();
+                //fetchActivitiesGarant():
+            }
+        }
+    };
+
     const sortCourses = (courses: Course[], sortBy: string, descending: boolean) => {
-    return courses.slice().sort((a: any, b: any) => {
-        const order = descending ? -1 : 1;
-        return a[sortBy].localeCompare(b[sortBy]) * order;
-    });
+        return courses.slice().sort((a: any, b: any) => {
+            const order = descending ? -1 : 1;
+            return a[sortBy].localeCompare(b[sortBy]) * order;
+        });
     };
 
     const filterCourses = (filterType: string, isDescending: boolean) => {
@@ -101,7 +101,7 @@ const HomePage = () => {
     async function fetchCoursesGarant() {
         dispatch(setLoadingContentState(true));
         try{
-            const response = await fetch(import.meta.env.VITE_SERVER_HOST+"course/"+auth()!.id, {
+            const response = await fetch(import.meta.env.VITE_SERVER_HOST+"courses?guarantor="+auth()!.id, {
                 method: "GET",
                 headers: {
                 "Content-Type": "application/json",
@@ -120,36 +120,12 @@ const HomePage = () => {
         }
     }
 
-    if(isAuthenticated()){
-        if(auth()!.role == "student"){
-            if(courses.length!==0){
-                return (
-                  <div className="course-page">
-                      <div className="list-pages-list-container">
-                        <h2>Seznam Registrovaných Předmětů</h2>
-                      </div>
-                      <Filter onFilterChange={filterCourses} />
-                      <CourseList courses={filteredCourses} />
-                    </div>
-                );
-            }  
-            else{
-                return(
-                <div className="course-page">
-                    <div className="list-pages-list-container">
-                        <h2>Seznam Předmětů</h2>
-                    </div>
-                    Žádné předměty nejsou registrovány
-                </div>
-                );
-            }
-    }
-    else if(auth()!.role == "vyučující" || auth()!.role == "garant"){
+    const returnList = (headerName: string, errorMessage: string) => {
         if(courses.length!==0){
             return (
               <div className="course-page">
                   <div className="list-pages-list-container">
-                    <h2>Seznam Vyučovaných Předmětů</h2>
+                    <h2>Seznam Registrovaných Předmětů</h2>
                   </div>
                   <Filter onFilterChange={filterCourses} />
                   <CourseList courses={filteredCourses} />
@@ -160,13 +136,24 @@ const HomePage = () => {
             return(
             <div className="course-page">
                 <div className="list-pages-list-container">
-                    <h2>Seznam Předmětů</h2>
+                    <h2>{headerName}</h2>
                 </div>
-                Nevyučujete žádné předměty 
+                {errorMessage}
             </div>
             );
         }
-    }
+    };
+
+    if(isAuthenticated()){
+        if(auth()!.role === "student"){
+            returnList("Seznam Registrovaných Předmětů","Žádné předměty nejsou registrovány");
+        }
+        else if(auth()!.role === "vyučující"){
+            returnList("Seznam Vyučovaných Předmětů","Nevyučujete žádné předměty");
+        }   
+        else if(auth()!.role === "garant"){
+            returnList("Seznam Garantovaných Předmětů","Negarantujete žádné předměty");
+        }
     else{
         return(
             <></>
