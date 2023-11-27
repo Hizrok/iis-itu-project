@@ -2,7 +2,6 @@ import { useAuthHeader, useAuthUser, useIsAuthenticated } from "react-auth-kit";
 import { setLoadingContentState } from "../../redux/features/LoadingContentStateSlice";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { Box, Grid, Typography } from "@mui/material";
 import "../../styles/style.css";
 
 
