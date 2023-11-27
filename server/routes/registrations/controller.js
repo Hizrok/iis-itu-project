@@ -189,6 +189,7 @@ const get_registered_instances = async (req, res) => {
     res.status(200).json(
       search_query.rows.map((instance) => {
         return {
+          id: instance.id,
           course: instance.course,
           type: instance.type,
           recurrence: instance.recurrence,
@@ -213,29 +214,58 @@ const get_instances_with_reg_data = async (req, res) => {
   try {
     const { reg_id, user_id } = req.params;
 
-    const search_query = await pool.query(queries.get_instances_with_reg_data, [
-      reg_id,
-      user_id,
-    ]);
+    // get all registered courses
+    const registered_courses_query = await pool.query(
+      queries.get_registered_courses,
+      [reg_id, user_id]
+    );
 
-    if (!search_query.rowCount) return res.sendStatus(404);
+    // get their instances
+    let all_instances = [];
 
-    res.status(200).json(
-      search_query.rows.map((i) => ({
+    for (let index = 0; index < registered_courses_query.rows.length; index++) {
+      const instances_of_course_query = await pool.query(
+        queries.get_instances_of_course,
+        [registered_courses_query.rows[index].id]
+      );
+      all_instances = [...all_instances, ...instances_of_course_query.rows];
+    }
+
+    console.log(all_instances);
+
+    // get instances with an order value
+    const selected_instances_query = await pool.query(
+      queries.get_instances_with_reg_data,
+      [reg_id, user_id]
+    );
+
+    const selected_instances = selected_instances_query.rows.map((i) => ({
+      id: i.id,
+      order: i.order,
+    }));
+
+    // merge data together
+
+    const instances = all_instances.map((i) => {
+      const s_i = selected_instances.find((ins) => ins.id === i.id);
+
+      const order = s_i ? s_i.order : 0;
+
+      return {
         id: i.id,
-        course: i.course,
         type: i.type,
         recurrence: i.recurrence,
-        day: i.day,
-        start_time: i.start_time,
-        duration: i.duration,
         capacity: i.capacity,
+        duration: i.duration,
         room: i.room,
-        lecturer: i.name && i.surname ? `${i.name} ${i.surname}` : i.lecturer,
-        order: i.order,
-        registered: i.registered,
-      }))
-    );
+        lecturer: i.lecturer,
+        start_time: i.start_time,
+        day: i.day,
+        order,
+      };
+    });
+
+    res.status(200).json(instances);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
