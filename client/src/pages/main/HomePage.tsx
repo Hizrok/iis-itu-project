@@ -94,47 +94,63 @@ const HomePage = () => {
         fetchCourses(import.meta.env.VITE_SERVER_HOST+"courses?guarantor="+auth()!.id);
     }
 
-    const returnPage = (headerName: string, errorMessage: string) => {
-        if(courses.length!==0){
-            return (
-              <div className="course-page">
-                  <div className="list-pages-list-container">
-                    <h2>Seznam Registrovaných Předmětů</h2>
-                  </div>
-                  <Filter onFilterChange={filterCourses} />
-                  <CourseList courses={filteredCourses} />
-                </div>
-            );
-        }  
-        else{
-            return(
-            <div className="course-page">
-                <div className="list-pages-list-container">
-                    <h2>{headerName}</h2>
-                </div>
-                {errorMessage}
-            </div>
-            );
-        }
+    type RetrurnPageProps = {
+        headerName: string;
+        errorMessage: string;
     };
-
-    if(isAuthenticated()){
-        if(auth()!.role === "student"){
-            returnPage("Seznam Registrovaných Předmětů","Žádné předměty nejsou registrovány");
-        }
-        else if(auth()!.role === "vyučující"){
-            returnPage("Seznam Vyučovaných Předmětů","Nevyučujete žádné předměty");
-        }   
-        else if(auth()!.role === "garant"){
-            returnPage("Seznam Garantovaných Předmětů","Negarantujete žádné předměty");
-        }
-    else{
-        return(
-            <></>
+    
+    const ReturnPage = (props: RetrurnPageProps) => {
+    if (courses.length !== 0) {
+        return (
+        <div className="course-page">
+            <div className="list-pages-list-container">
+            <h2>{props.headerName}</h2>
+            </div>
+            <Filter onFilterChange={filterCourses} />
+            <CourseList courses={filteredCourses} />
+        </div>
+        );
+    } else {
+        return (
+        <div className="course-page">
+            <div className="list-pages-list-container">
+            <h2>{props.headerName}</h2>
+            </div>
+            {props.errorMessage}
+        </div>
         );
     }
-    
-    }
-}
+    };
 
-export default HomePage;
+    if (isAuthenticated()) {
+        if (auth()!.role === "student") {
+            console.log("yo");
+            return (
+                <ReturnPage
+                    headerName="Seznam Registrovaných Předmětů"
+                    errorMessage="Žádné předměty nejsou registrovány"
+                />
+            );
+        } else if (auth()!.role === "vyučující") {
+            return (
+                <ReturnPage
+                    headerName="Seznam Vyučovaných Předmětů"
+                    errorMessage="Nevyučujete žádné předměty"
+                />
+            );
+        } else if (auth()!.role === "garant") {
+            return (
+                <ReturnPage
+                    headerName="Seznam Garantovaných Předmětů"
+                    errorMessage="Negarantujete žádné předměty"
+                />
+            );
+        } else {
+            return <></>;
+        }
+    } else {
+    return <></>;
+    }
+};
+    
+    export default HomePage;

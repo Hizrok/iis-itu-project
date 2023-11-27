@@ -17,7 +17,7 @@ const set_status = "update registrations set status=$1 where id=$2;";
 const set_state = "update registrations set state=$1 where id=$2;";
 
 const get_registered_courses =
-  "select c.id, c.name from course_registrations as cr join courses as c on c.id=cr.course where cr.registration=$1 and cr.student=$2;";
+  "select c.id, c.name, c.guarantor from course_registrations as cr join courses as c on c.id=cr.course where cr.registration=$1 and cr.student=$2;";
 
 const get_courses_with_reg_data =
   "SELECT id, name, CASE WHEN cr.student=$2 and cr.registration=$1 THEN true ELSE false END AS registered FROM courses as c LEFT JOIN course_registrations as cr ON c.id = cr.course;";
