@@ -4,7 +4,13 @@ import { setLoadingContentState } from "../../redux/features/LoadingContentState
 import CourseList from "../../components/lists/courseListComponent";
 import { useAuthHeader, useAuthUser, useIsAuthenticated } from "react-auth-kit";
 import Filter from "../../components/common/Filters/filter";
-import Course from "../../components/common/Types/Course";
+
+type Course = {
+    id: string;
+    name: string;
+    guarantor: string;
+};
+  
 
 const HomePage = () => {
 
@@ -54,10 +60,10 @@ const HomePage = () => {
     setFilteredCourses(sortCourses(courses, filterType, isDescending));
     }
 
-    async function fetchCoursesStudent() {
+    async function fetchCourses (URL : string){
         dispatch(setLoadingContentState(true));
         try{
-            const response = await fetch(import.meta.env.VITE_SERVER_HOST+"registrations/courses/"+auth()!.id, {
+            const response = await fetch(URL, {
                 method: "GET",
                 headers: {
                 "Content-Type": "application/json",
@@ -74,53 +80,21 @@ const HomePage = () => {
             console.log(err);
             dispatch(setLoadingContentState(false));
         }
+    }
+
+    async function fetchCoursesStudent() {
+        fetchCourses(import.meta.env.VITE_SERVER_HOST+"registrations/courses/"+auth()!.id);
     }
 
     async function fetchCoursesTeacher() {
-        dispatch(setLoadingContentState(true));
-        try{
-            const response = await fetch(import.meta.env.VITE_SERVER_HOST+"courses/instances?lecturer="+auth()!.id, {
-                method: "GET",
-                headers: {
-                "Content-Type": "application/json",
-                authorization: authHeader(),
-                },
-            });
-            const json_courses = await response.json();
-            
-            setFilteredCourses(json_courses);
-            setCourses(json_courses);
-            dispatch(setLoadingContentState(false));
-        }
-            catch(err){
-            console.log(err);
-            dispatch(setLoadingContentState(false));
-        }
+        fetchCourses(import.meta.env.VITE_SERVER_HOST+"courses/instances?lecturer="+auth()!.id);
     }
 
     async function fetchCoursesGarant() {
-        dispatch(setLoadingContentState(true));
-        try{
-            const response = await fetch(import.meta.env.VITE_SERVER_HOST+"courses?guarantor="+auth()!.id, {
-                method: "GET",
-                headers: {
-                "Content-Type": "application/json",
-                authorization: authHeader(),
-                },
-            });
-            const json_courses = await response.json();
-            
-            setFilteredCourses(json_courses);
-            setCourses(json_courses);
-            dispatch(setLoadingContentState(false));
-        }
-            catch(err){
-            console.log(err);
-            dispatch(setLoadingContentState(false));
-        }
+        fetchCourses(import.meta.env.VITE_SERVER_HOST+"courses?guarantor="+auth()!.id);
     }
 
-    const returnList = (headerName: string, errorMessage: string) => {
+    const returnPage = (headerName: string, errorMessage: string) => {
         if(courses.length!==0){
             return (
               <div className="course-page">
@@ -146,13 +120,13 @@ const HomePage = () => {
 
     if(isAuthenticated()){
         if(auth()!.role === "student"){
-            returnList("Seznam Registrovaných Předmětů","Žádné předměty nejsou registrovány");
+            returnPage("Seznam Registrovaných Předmětů","Žádné předměty nejsou registrovány");
         }
         else if(auth()!.role === "vyučující"){
-            returnList("Seznam Vyučovaných Předmětů","Nevyučujete žádné předměty");
+            returnPage("Seznam Vyučovaných Předmětů","Nevyučujete žádné předměty");
         }   
         else if(auth()!.role === "garant"){
-            returnList("Seznam Garantovaných Předmětů","Negarantujete žádné předměty");
+            returnPage("Seznam Garantovaných Předmětů","Negarantujete žádné předměty");
         }
     else{
         return(
