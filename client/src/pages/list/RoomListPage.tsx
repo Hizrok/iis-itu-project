@@ -223,12 +223,15 @@ const RoomListPage = () => {
           <DialogContentText>{errorMessage}</DialogContentText>
           <DialogActions>
             <Button
+              variant="outlined"
               onClick={() => {
                 setCreateDialog(false);
               }}>
               Zrušit
             </Button>
-            <Button onClick={createRoom}>Vytvořit</Button>
+            <Button 
+              variant="outlined"
+              onClick={createRoom}>Vytvořit</Button>
           </DialogActions>
         </Dialog>
       </>

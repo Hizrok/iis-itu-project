@@ -4,6 +4,7 @@ import { RouteType } from "./config";
 import AccountPage from "../pages/account/AccountPage";
 
 import MainCoursesListPage from "../pages/course/MainCoursesListPage";
+import CourseDetailsPage from "../pages/course/CourseDetailsPage";
 
 import SchedulePage from "../pages/schedule/SchedulePage";
 
@@ -17,14 +18,9 @@ import ListIndex from "../pages/list/ListIndex";
 import CourseListPage from "../pages/list/CourseListPage";
 import UserListPage from "../pages/list/UserListPage";
 import RoomListPage from "../pages/list/RoomListPage";
-
-import CreatePageLayout from "../pages/create/CreatePageLayout";
-import CreateIndex from "../pages/create/CreateIndex";
-import CourseCreatePage from "../pages/create/CourseCreatePage";
+import ActivityListPage from "../pages/list/ActivityListPage";
 
 import NotFound from "../pages/error/NotFoundPage";
-import CourseDetailsPage from "../pages/course/CourseDetailsPage";
-import ActivityCreatePage from "../pages/create/ActivityCreatePage";
 
 const appRoutes: RouteType[] = [
   {
@@ -48,7 +44,7 @@ const appRoutes: RouteType[] = [
     element: <MainCoursesListPage />,
     authenticated: false,
     roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
-    state: "course_main_list",
+    state: "main",
     topbarText: "Seznam předmětů",
     sidebarProps: {
       displayText: "Seznam předmětů"
@@ -148,7 +144,7 @@ const appRoutes: RouteType[] = [
         path: "/list/course_list",
         element: <CourseListPage />,
         authenticated: true,
-        roles: ["admin"],
+        roles: ["admin", "garant"],
         state: "list.course_list",
         topbarText: "Seznam předmětů",
         sidebarProps: {
@@ -165,36 +161,16 @@ const appRoutes: RouteType[] = [
         sidebarProps: {
           displayText: "Místnotí"
         }
-      }
-    ]
-  },
-  {
-    path: "/create",
-    element: <CreatePageLayout />,
-    authenticated: true,
-    roles: ["admin", "garant"],
-    state: "create",
-    topbarText: "Vytvořit",
-    sidebarProps: {
-      displayText: "Vytvořit"
-    },
-    child: [
-      {
-        index: true,
-        element: <CreateIndex />,
-        authenticated: true,
-        roles: ["admin"],
-        state: "create.index"
       },
       {
-        path: "/create/activity_create",
-        element: <ActivityCreatePage />,
+        path: "/list/activity_list",
+        element: <ActivityListPage />,
         authenticated: true,
         roles: ["admin", "garant"],
-        state: "create.activity_create",
-        topbarText: "Vytvořit aktivitu",
+        state: "list.activity_list",
+        topbarText: "Seznam aktivit",
         sidebarProps: {
-          displayText: "Aktivitu"
+          displayText: "Aktivit"
         }
       }
     ]

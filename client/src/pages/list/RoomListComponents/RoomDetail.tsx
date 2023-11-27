@@ -7,7 +7,7 @@ import {
 import DeleteButton from "../../../components/common/Buttons/DeleteButton";
 import RoomDetailProps from "./RoomDetailProps";
 
-const UserDetail: React.FC<RoomDetailProps> = (props) => {
+const RoomDetail: React.FC<RoomDetailProps> = (props) => {
   const { selectedRoom, onEditRoom, onDeleteRoom } = props;
   const [isEditing, setIsEditing] = useState(false);
 
@@ -92,4 +92,4 @@ const UserDetail: React.FC<RoomDetailProps> = (props) => {
   );
 };
 
-export default UserDetail;
+export default RoomDetail;
