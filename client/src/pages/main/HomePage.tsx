@@ -22,12 +22,6 @@ const HomePage = () => {
     const [courses, setCourses] = useState<Course[]>([]);
     const [filteredCourses, setFilteredCourses] = useState<Course[]>(courses);
 
-    // let courses = "loading..."
-
-    useEffect(() => {
-        getCourses();
-    }, []);
-
     useEffect(() => {
         getCourses();
     }, [isAuthenticated()]);
@@ -100,31 +94,30 @@ const HomePage = () => {
     };
     
     const ReturnPage = (props: RetrurnPageProps) => {
-    if (courses.length !== 0) {
-        return (
-        <div className="course-page">
-            <div className="list-pages-list-container">
-            <h2>{props.headerName}</h2>
+        if (courses.length !== 0) {
+            return (
+            <div className="course-page">
+                <div className="list-pages-list-container">
+                <h2>{props.headerName}</h2>
+                </div>
+                <Filter onFilterChange={filterCourses} />
+                <CourseList courses={filteredCourses} />
             </div>
-            <Filter onFilterChange={filterCourses} />
-            <CourseList courses={filteredCourses} />
-        </div>
-        );
-    } else {
-        return (
-        <div className="course-page">
-            <div className="list-pages-list-container">
-            <h2>{props.headerName}</h2>
+            );
+        } else {
+            return (
+            <div className="course-page">
+                <div className="list-pages-list-container">
+                <h2>{props.headerName}</h2>
+                </div>
+                {props.errorMessage}
             </div>
-            {props.errorMessage}
-        </div>
-        );
-    }
+            );
+        }
     };
 
     if (isAuthenticated()) {
         if (auth()!.role === "student") {
-            console.log("yo");
             return (
                 <ReturnPage
                     headerName="Seznam Registrovaných Předmětů"
