@@ -58,10 +58,26 @@ const CourseDetailsPage = () => {
   const [garant, setGarant] = useState<string>("");
   const [annotation, setAnnotation] = useState<string>("");
 
+
   async function fetchCourse() {
     dispatch(setLoadingContentState(true));
 
     console.log(params.courseID);
+
+    async function fetchCourse() {
+        dispatch(setLoadingContentState(true));
+        try{
+        const link = import.meta.env.VITE_SERVER_HOST+`courses/${params.courseID}`;
+            const response = await fetch(link, {
+                method: "GET", 
+                headers: {
+                "Content-Type": "application/json"
+                }
+            });
+            const course_json = await response.json();
+        
+            setCourse(course_json);
+
 
     try {
       const link =

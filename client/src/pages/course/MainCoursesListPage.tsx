@@ -48,18 +48,24 @@ const MainCoursesListPage = () => {
 
   async function fetchCourses() {
     dispatch(setLoadingContentState(true));
-    const response = await fetch(import.meta.env.VITE_SERVER_HOST + "courses", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: authHeader(),
-      },
-    });
-    const json_courses = await response.json();
-
-    setFilteredCourses(json_courses);
-    setCourses(json_courses);
-    dispatch(setLoadingContentState(false));
+    try{
+      const response = await fetch(import.meta.env.VITE_SERVER_HOST+"courses", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: authHeader(),
+        },
+      });
+      const json_courses = await response.json();
+    
+      setFilteredCourses(json_courses);
+      setCourses(json_courses);
+      dispatch(setLoadingContentState(false));
+    }
+    catch(err){
+      console.log(err);
+      dispatch(setLoadingContentState(false));
+    }
   }
 
   if (courses.length !== 0) {
