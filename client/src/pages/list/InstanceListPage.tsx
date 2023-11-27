@@ -68,6 +68,10 @@ const ActivityListPage = () => {
     fetchUsers();
   }, []);
 
+  useEffect(() =>{
+    fetchActivities();
+  }, [course]);
+
   async function fetchUsers() {
     try {
       dispatch(setLoadingContentState(true));
@@ -307,10 +311,9 @@ const ActivityListPage = () => {
           <Select
             sx={{ m: 1, width: "25ch" }}
             labelId="select-label"
-            value={id}
+            value={course}
             onChange={(e) => {
               setCourse(e.target.value);
-              fetchActivities();
             }}
           >
             {courses.map((course: Course) => (
@@ -368,7 +371,7 @@ const ActivityListPage = () => {
             }}
           >
             {users.map((user: User) => (
-              <MenuItem value={user.id}>{user.id}</MenuItem>
+              user.role === "vyučující" || user.role === "garant"? <MenuItem value={user.id}>{user.id}</MenuItem>: null
             ))}
           </Select>
           <TextField
