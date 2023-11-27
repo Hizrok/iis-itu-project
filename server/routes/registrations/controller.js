@@ -231,8 +231,6 @@ const get_instances_with_reg_data = async (req, res) => {
       all_instances = [...all_instances, ...instances_of_course_query.rows];
     }
 
-    console.log(all_instances);
-
     // get instances with an order value
     const selected_instances_query = await pool.query(
       queries.get_instances_with_reg_data,
@@ -326,6 +324,8 @@ const register_instance = async (req, res) => {
   try {
     const { reg_id, state } = req.params;
     const { instance, student, order } = req.body;
+
+    console.log(instance, student, order);
 
     if (state !== "ACTIVITIES IN PROGRESS") return res.sendStatus(400);
 
