@@ -96,6 +96,18 @@ const SchedulePage = () => {
         }
     };
 
+    const AdminPage = () => {
+        return(
+            <div className="course-page">
+                <div className="list-pages-list-container">
+                <h2>Přihlášený jako admin</h2>
+                </div>
+                <h3>Rozvrh</h3>
+                <p>Zde uživetelé uvidí seznam všech svých zaregistrovaných aktivit.</p>
+            </div>
+        );
+    };
+
     
     if (isAuthenticated()) {
         if (auth()!.role === "student") {
@@ -119,7 +131,11 @@ const SchedulePage = () => {
                     errorMessage="Nevyučujete žádné aktivity"
                 />
             );
-        } else {
+        } else if (auth()!.role === "admin") {
+            return (
+                <AdminPage />
+            );
+        }else {
             return <></>;
         }
     } else {

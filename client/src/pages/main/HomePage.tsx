@@ -116,6 +116,25 @@ const HomePage = () => {
         }
     };
 
+    const AdminPage = () => {
+        return(
+            <div className="course-page">
+                <div className="list-pages-list-container">
+                <h2>Přihlášený jako admin</h2>
+                </div>
+                <h3>Správa stránek</h3>
+                <p>Pro tvorbu, mazání a úpravu uživatelů, předmětů, místnotí aktivit se referujete v navigaci do sekce <code>Vytvořit</code></p>
+                <p>Ve stejné sekci je možno v položce Registrace vytvořit a ovládat nynější registrační okno</p>
+
+                <h3>Ovládání registrací</h3>
+                <p>Registrace se dějí v několika fázích mezi kterými se dá přepínat. Tyto fáze jsou Idle, CoursesInProgress, Scheduling, ActivitiesInProgress, Finished. V každém stavu uživatelé mohou pouze upravovat informace odpovídající stavu. V jednu chvíli může být pouze jedna aktivní registrace.</p>
+                <p>Pro vytvoření registrace stačí kliknout na tlačitko Přidat Novou Registraci.</p>
+                <p>Pro přesunutí registrace do další fáze registrace stačí kliknout na tlačítko Další Fáze.</p>
+                <p>Pro zrušení nebo resetování registrace do původního stavu stačí kliknout jejich respektivní tlačítka.</p>
+            </div>
+        );
+    };
+
     if (isAuthenticated()) {
         if (auth()!.role === "student") {
             return (
@@ -137,6 +156,10 @@ const HomePage = () => {
                     headerName="Seznam Garantovaných Předmětů"
                     errorMessage="Negarantujete žádné předměty"
                 />
+            );
+        } else if (auth()!.role === "admin") {
+            return (
+                <AdminPage />
             );
         } else {
             return <></>;
