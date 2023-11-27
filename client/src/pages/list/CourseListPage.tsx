@@ -3,11 +3,16 @@ import { useAuthHeader } from "react-auth-kit";
 import { useDispatch } from "react-redux";
 import { setLoadingContentState } from "../../redux/features/LoadingContentStateSlice";
 import CourseList from "../../components/lists/courseListComponent";
-import Course from "../../components/common/Types/Course";
 import Filter from "../../components/common/Filters/filter";
 import User from "../../components/common/Types/User";
 import AddIcon from '@mui/icons-material/Add';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+
+type Course = {
+  id: string;
+  name: string;
+  guarantor: string;
+};
 
 const CourseListPage = () => {
   const authHeader = useAuthHeader();

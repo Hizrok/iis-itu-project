@@ -35,7 +35,8 @@ const SidebarItemCollapse = ({ item }: Props) => {
             backgroundColor: ColourConfig.sidebar.highlightBg,
             paddingY: "12px",
             paddingX: "0px",
-            marginBottom: "2px"
+            marginBottom: "2px",
+            boxShadow:5
           }}
         >
           <ListItemIcon sx={{marginLeft:"10px", color:"white"}}>
