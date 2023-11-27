@@ -32,7 +32,7 @@ const get_selected_instances =
   "select ca.course, ca.type, ca.recurrence, ca.duration, ca.recurrence, cai.room, cai.lecturer, cai start_time, cai.day, cair.order_number as order from course_activity_instance_registrations as cair left join course_activity_instances as cai on cai.id=cair.course_activity_instance left join course_activities as ca on ca.id=cai.course_activity where cair.registration=2 and cair.student='student';";
 
 const get_registered_instances =
-  "select ca.course, ca.type, ca.recurrence, cai.day, cai.start_time, ca.duration, cai.room, cai.lecturer, u.name, u.surname from course_activity_instance_registrations as cair left join course_activity_instances as cai on cai.id=cair.course_activity_instance left join course_activities as ca on ca.id=cai.course_activity left join users as u on u.id=cai.lecturer where cair.registration=$1 and cair.student=$2 and registered=true;";
+  "select cai.id, ca.course, ca.type, ca.recurrence, cai.day, cai.start_time, ca.duration, cai.room, cai.lecturer, u.name, u.surname from course_activity_instance_registrations as cair left join course_activity_instances as cai on cai.id=cair.course_activity_instance left join course_activities as ca on ca.id=cai.course_activity left join users as u on u.id=cai.lecturer where cair.registration=$1 and cair.student=$2 and registered=true;";
 
 const register_course =
   "insert into course_registrations (registration, course, student) values ($1, $2, $3);";
