@@ -38,7 +38,7 @@ const SchedulePage = () => {
     };
 
     async function fetchActivitiesStudent() {
-        fetchActivities(import.meta.env.VITE_SERVER_HOST+`registrations/activities/${auth()?auth()!.id:``}`);
+        fetchActivities(import.meta.env.VITE_SERVER_HOST+`registrations/instances/${auth()?auth()!.id:``}`);
     }
 
     async function fetchActivitiesTeacher() {

@@ -133,7 +133,7 @@ function Topbar() {
           color: ColourConfig.topbar.colour,
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{boxShadow:3}}>
           <ArrowForwardIosIcon />
           <Typography variant="h6">{topbarTitle}</Typography>
           <Stack
