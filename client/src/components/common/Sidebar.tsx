@@ -16,15 +16,30 @@ const Sidebar = () => {
                 sx={{
                 width: SizeConfig.sidebar.width,
                 flexShrink: 0,
-                "& .MuiDrawer-paper": {width: SizeConfig.sidebar.width, boxSizing: "border-box", borderRight: "0px", backgroundColor: ColourConfig.sidebar.bg, color: ColourConfig.sidebar.colour}}} >
+                "& .MuiDrawer-paper": {width: SizeConfig.sidebar.width, 
+                    boxSizing: "border-box", 
+                    borderRight: "0px", 
+                    backgroundColor: ColourConfig.sidebar.bg,
+                    color: ColourConfig.sidebar.colour
+                }}} >
             <List>
                 <Toolbar
                     sx={{margin:3}}
                     component={Link}
                     to={"/"}>
                     <Stack>
-                        <Typography variant='h6' textAlign={'center'} sx={{paddingLeft:8, paddingRight:8, paddingTop:6, paddingBottom:6, color:"#FFFFFF", background:ColourConfig.sidebar.highlightBg}}>
-                            LOGO
+                        <Typography 
+                            variant='h6' 
+                            textAlign={'center'} 
+                            sx={{paddingLeft:8, 
+                                paddingRight:8, 
+                                paddingTop:6, 
+                                paddingBottom:6, 
+                                color:"#FFFFFF", 
+                                background:ColourConfig.sidebar.highlightBg,
+                                "&: hover": {backgroundColor: ColourConfig.sidebar.hoverBg},
+                                boxShadow:5}}>
+                                LOGO
                         </Typography>
                     </Stack>
                 </Toolbar>
