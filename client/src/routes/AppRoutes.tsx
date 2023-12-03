@@ -16,7 +16,7 @@ import ClassRegPage from "../pages/registration/ClassRegPage";
 import ListPageLayout from "../pages/list/ListPageLayout";
 import ListIndex from "../pages/list/ListIndex";
 import CourseListPage from "../pages/list/CourseListPage";
-import UserListPage from "../pages/list/UserListPage";
+import UserListPage from "../pages/list/UserList/UserListPage";
 import RoomListPage from "../pages/list/RoomListPage";
 import ActivityListPage from "../pages/list/ActivityListPage";
 import RegistrationListPage from "../pages/list/RegistrationListPage";
@@ -143,7 +143,7 @@ const appRoutes: RouteType[] = [
         },
       },
       {
-        path: "/list/user_list",
+        path: "/list/users",
         element: <UserListPage />,
         authenticated: true,
         roles: ["admin"],

@@ -1,7 +1,17 @@
-type User = {
+export type User = {
   id: string;
   role: string;
   name: string;
   surname: string;
+  email: string;
 };
-export default User;
+
+export type SpecificUser = {
+  id: string;
+  role: string;
+  name: string;
+  surname: string;
+  email: string;
+  courses: string[];
+  instances: string[];
+};

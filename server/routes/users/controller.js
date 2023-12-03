@@ -18,8 +18,9 @@ const get_users = async (req, res) => {
     return {
       id: u.id,
       role: u.role,
-      name: u.name && u.surname ? `${u.name} ${u.surname}` : u.id,
-      email: u.email,
+      name: u.name ? u.name : "",
+      surname: u.surname ? u.surname : "",
+      email: u.email ? u.email : "",
     };
   });
 
@@ -41,11 +42,9 @@ const get_user = async (req, res) => {
   const user = {
     id: find_query.rows[0].id,
     role: find_query.rows[0].role,
-    name:
-      find_query.rows[0].name && find_query.rows[0].surname
-        ? `${find_query.rows[0].name} ${find_query.rows[0].surname}`
-        : find_query.rows[0].id,
-    email: find_query.rows[0].email,
+    name: find_query.rows[0].name ? find_query.rows[0].name : "",
+    surname: find_query.rows[0].surname ? find_query.rows[0].surname : "",
+    email: find_query.rows[0].email ? find_query.rows[0].email : "",
     courses: [],
     instances: [],
   };
