@@ -7,6 +7,7 @@ const controller = require("./controller");
 const router = Router();
 
 router.get("/", authenticate(["admin"]), controller.get_users);
+
 router.get(
   "/:user_id",
   authenticate(["admin"], ["garant", "rozvrhář", "vyučující", "student"]),

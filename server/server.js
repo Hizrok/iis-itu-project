@@ -6,6 +6,7 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const pool = require("./db");
+const { query_database } = require("./middleware");
 
 const user_router = require("./routes/users/routes");
 const rooms_router = require("./routes/rooms/routes");
@@ -20,39 +21,43 @@ app.use(cors());
 app.use(morgan("dev"));
 
 app.post("/login", async (req, res) => {
-  try {
-    const { id, password } = req.body;
+  const { id, password } = req.body;
 
-    const find_query = await pool.query(
-      "select role, password from users where id=$1",
-      [id]
-    );
+  const [find_query, err] = await query_database(
+    res,
+    "select role, password from users where id=$1",
+    [id]
+  );
+  if (err) return;
 
-    if (!find_query.rowCount) return res.sendStatus(404);
+  if (!find_query.rowCount)
+    return res.status(404).json({ error: `login ${id} was not found` });
 
-    const hash = find_query.rows[0].password;
-    bcrypt.compare(password, hash, (err, result) => {
-      if (err) throw err;
-      if (!result) return res.sendStatus(403);
+  const hash = find_query.rows[0].password;
+  bcrypt.compare(password, hash, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+      return;
+    }
 
-      let user = {
-        id,
-        role: find_query.rows[0].role,
-      };
+    if (!result)
+      return res.status(403).json({ error: "invalid login or password" });
 
-      const access_token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+    let user = {
+      id,
+      role: find_query.rows[0].role,
+    };
 
-      user = {
-        ...user,
-        token: access_token,
-      };
-      res.setHeader("Access-Control-Allow-Origin", process.env.CORS_ALLOW);
-      res.status(201).json(user);
-    });
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
-  }
+    const access_token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+
+    user = {
+      ...user,
+      token: access_token,
+    };
+    res.setHeader("Access-Control-Allow-Origin", process.env.CORS_ALLOW);
+    res.status(201).json(user);
+  });
 });
 
 app.use("/users", user_router);
