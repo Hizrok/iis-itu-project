@@ -1,48 +1,42 @@
 import { useEffect, useState } from "react";
 import { useAuthHeader } from "react-auth-kit";
+
+import "../styles.css";
+import { Button, CircularProgress, TextField } from "@mui/material";
 import axios from "axios";
 
-import {
-  CircularProgress,
-  InputLabel,
-  Button,
-  TextField,
-  Select,
-  MenuItem,
-} from "@mui/material";
-
-type UserDetailProps = {
+type RoomDetailProps = {
   id: string;
-  editUser: Function;
-  deleteUser: Function;
+  editRoom: Function;
+  deleteRoom: Function;
 };
 
-const UserDetail = ({ id, editUser, deleteUser }: UserDetailProps) => {
+const RoomDetail = ({ id, editRoom, deleteRoom }: RoomDetailProps) => {
   const authHeader = useAuthHeader();
 
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
-  const [role, setRole] = useState("");
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [email, setEmail] = useState("");
+  const [building, setBuilding] = useState("");
+  const [floor, setFloor] = useState(0);
+  const [number, setNumber] = useState(0);
+  const [capacity, setCapacity] = useState(0);
 
-  const getUser = async () => {
+  const getRoom = async () => {
     setLoading(true);
     axios
-      .get(`${import.meta.env.VITE_SERVER_HOST}users/${id}`, {
+      .get(`${import.meta.env.VITE_SERVER_HOST}rooms/${id}`, {
         headers: {
           Authorization: authHeader(),
         },
       })
       .then((res) => {
-        setRole(res.data.role);
-        setName(res.data.name);
-        setSurname(res.data.surname);
-        setEmail(res.data.email);
+        setBuilding(res.data.building);
+        setFloor(res.data.floor);
+        setNumber(res.data.number);
+        setCapacity(res.data.capacity);
       })
-      .catch((err) => console.error(err))
+      .catch((err) => console.error(err.message))
       .finally(() => {
         setLoading(false);
       });
@@ -50,19 +44,19 @@ const UserDetail = ({ id, editUser, deleteUser }: UserDetailProps) => {
 
   const handleEdit = () => {
     setDisabled(true);
-    editUser(role, name, surname, email);
+    editRoom(building, floor, number, capacity);
     setDisabled(false);
   };
 
   const handleDelete = () => {
     setDisabled(true);
-    deleteUser();
+    deleteRoom();
     setDisabled(false);
   };
 
   useEffect(() => {
     if (id) {
-      getUser();
+      getRoom();
     }
   }, [id]);
 
@@ -91,56 +85,51 @@ const UserDetail = ({ id, editUser, deleteUser }: UserDetailProps) => {
                 Delete
               </Button>
             </div>
-            <InputLabel>Role</InputLabel>
-            <Select
-              className="role-select"
-              fullWidth
-              disabled={disabled}
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-            >
-              <MenuItem value={"admin"}>admin</MenuItem>
-              <MenuItem value={"garant"}>garant</MenuItem>
-              <MenuItem value={"rozvrhář"}>rozvrhář</MenuItem>
-              <MenuItem value={"vyučující"}>vyučující</MenuItem>
-              <MenuItem value={"student"}>student</MenuItem>
-            </Select>
             <TextField
               margin="dense"
-              label="Jméno"
+              label="Building"
               disabled={disabled}
               fullWidth
               variant="outlined"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={building}
+              onChange={(e) => setBuilding(e.target.value)}
             />
             <TextField
               margin="dense"
-              label="Příjmení"
+              label="Floor"
               disabled={disabled}
               fullWidth
               variant="outlined"
-              value={surname}
-              onChange={(e) => setSurname(e.target.value)}
+              value={floor}
+              onChange={(e) => setFloor(parseInt(e.target.value))}
             />
             <TextField
               margin="dense"
-              label="Email"
+              label="Number"
               disabled={disabled}
               fullWidth
               variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={number}
+              onChange={(e) => setNumber(parseInt(e.target.value))}
+            />
+            <TextField
+              margin="dense"
+              label="Capacity"
+              disabled={disabled}
+              fullWidth
+              variant="outlined"
+              value={capacity}
+              onChange={(e) => setCapacity(parseInt(e.target.value))}
             />
           </div>
         )
       ) : (
         <div className="nothing-selected-container">
-          <h3>select user</h3>
+          <h3>select room</h3>
         </div>
       )}
     </div>
   );
 };
 
-export default UserDetail;
+export default RoomDetail;

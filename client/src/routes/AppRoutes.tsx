@@ -17,7 +17,7 @@ import ListPageLayout from "../pages/list/ListPageLayout";
 import ListIndex from "../pages/list/ListIndex";
 import CourseListPage from "../pages/list/CourseListPage";
 import UserListPage from "../pages/list/UserList/UserListPage";
-import RoomListPage from "../pages/list/RoomListPage";
+import RoomListPage from "../pages/list/RoomList/RoomListPage";
 import ActivityListPage from "../pages/list/ActivityListPage";
 import RegistrationListPage from "../pages/list/RegistrationListPage";
 
@@ -165,7 +165,7 @@ const appRoutes: RouteType[] = [
         },
       },
       {
-        path: "/list/room_list",
+        path: "/list/rooms",
         element: <RoomListPage />,
         authenticated: true,
         roles: ["admin"],

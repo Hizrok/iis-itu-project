@@ -5,7 +5,7 @@ import UserDetail from "./UserDetail";
 import { Button, CircularProgress } from "@mui/material";
 import axios from "axios";
 
-import "./styles.css";
+import "../styles.css";
 import CreateUserDialog from "./CreateUserDialog";
 
 const UserListPage = () => {
@@ -128,9 +128,9 @@ const UserListPage = () => {
       <Button variant="contained" onClick={() => toggleDialog(true)}>
         create user
       </Button>
-      <div className="user-page-content">
-        <div className="user-list">
-          <div className="user-list-header">
+      <div className="list-page-content">
+        <div className="list">
+          <div className="list-header user-list">
             <span>id</span>
             <span>role</span>
             <span>name</span>
@@ -143,8 +143,8 @@ const UserListPage = () => {
           ) : (
             users.map((user: User, i) => (
               <div
-                className={`user-list-item ${
-                  user.id === seleted && "user-list-item-selected"
+                className={`list-item user-list ${
+                  user.id === seleted && "list-item-selected"
                 }`}
                 key={i}
                 onClick={() => handleSelect(user.id, i)}
