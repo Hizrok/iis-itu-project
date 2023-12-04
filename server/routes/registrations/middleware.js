@@ -1,16 +1,16 @@
 const pool = require("../../db");
+const { query_database } = require("../../middleware");
 const queries = require("./queries");
 
 const get_active_registration = async (req, res, next) => {
   try {
-    const find_query = await pool.query(queries.get_active_registration);
+    const [find_query, err] = await query_database(
+      res,
+      queries.get_active_registration
+    );
+    if (err) return;
 
-    if (!find_query.rowCount) return res.sendStatus(404);
-
-    const registration = find_query.rows[0];
-
-    req.params.reg_id = registration.id;
-    req.params.state = registration.state;
+    req.params.reg_id = !find_query.rowCount ? null : find_query.rows[0].id;
     next();
   } catch (error) {
     console.log(error);

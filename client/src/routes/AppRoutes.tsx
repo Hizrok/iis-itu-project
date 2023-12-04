@@ -132,7 +132,7 @@ const appRoutes: RouteType[] = [
         state: "list.index",
       },
       {
-        path: "/list/registration_list",
+        path: "/list/registrations",
         element: <RegistrationListPage />,
         authenticated: true,
         roles: ["admin"],
