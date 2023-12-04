@@ -31,6 +31,10 @@
   grid-template-columns: 1fr 100px 100px 100px 100px;
 }
 
+.course-list {
+  grid-template-columns: 50px 2fr 1fr;
+}
+
 .list-item {
   display: grid;
 

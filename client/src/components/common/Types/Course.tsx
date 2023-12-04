@@ -1,11 +1,10 @@
-import Activity from "./Activity";
-import User from "./User";
-
-type Course = {
-    id: string;
-    name: string;
-    annotation: string;
-    guarantor: User;
-    activities?: Activity[];
+export type Course = {
+  id: string;
+  name: string;
+  annotation: string;
+  guarantor: string;
 };
-export default Course;
+
+export type Guarantor = {
+  id: string;
+};

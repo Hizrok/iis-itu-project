@@ -1,5 +1,5 @@
 const get_all_courses =
-  "select c.id, c.name, guarantor, u.name as guarantor_name, surname from courses as c left join users as u on u.id=guarantor;";
+  "select c.id, c.name, guarantor, annotation, u.name as guarantor_name, surname from courses as c left join users as u on u.id=guarantor;";
 
 const get_all_courses_of_guarantor =
   "select c.id, c.name, guarantor, u.name as guarantor_name, surname from courses as c left join users as u on u.id=guarantor where guarantor=$1;";
