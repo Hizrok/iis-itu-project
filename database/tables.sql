@@ -17,8 +17,6 @@ drop type if exists ROLE cascade;
 drop type if exists COURSE_ACTIVITY cascade;
 drop type if exists RECURRENCE cascade;
 drop type if exists DAY cascade;
-drop type if exists STATE cascade;
-drop type if exists STATUS cascade;
 
 create type ROLE as enum ('student', 'rozvrhář', 'vyučující', 'garant', 'admin');
 create type COURSE_ACTIVITY as enum ('přednáška', 'cvičení', 'laboratoř', 'democvičení', 'seminář');

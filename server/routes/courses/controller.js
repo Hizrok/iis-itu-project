@@ -31,13 +31,22 @@ const get_course = async (req, res) => {
   if (!course_query.rowCount)
     return res.status(404).json(`course ${id} was not found`);
 
+  const [act_query, act_err] = await query_database(
+    res,
+    queries.get_course_activities,
+    [id]
+  );
+  if (act_err) return;
+
   const course = {
     id: course_query.rows[0].id,
     name: course_query.rows[0].name,
     guarantor: course_query.rows[0].guarantor,
     annotation: course_query.rows[0].annotation,
-    activities: [],
-    instances: [],
+    activities: act_query.rows.map((a) => ({
+      ...a,
+      instances: [],
+    })),
   };
 
   res.status(200).json(course);

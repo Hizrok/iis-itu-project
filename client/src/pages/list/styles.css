@@ -1,6 +1,7 @@
 .list-page-content {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 20px;
 }
 
 .list {
@@ -102,4 +103,12 @@
 
 .active {
   background-color: green;
+}
+
+.toggleble-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 0;
+  cursor: pointer;
 }

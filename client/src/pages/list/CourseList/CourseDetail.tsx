@@ -10,6 +10,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import ActivityList from "./ActivityList";
 
 type CourseDetailProps = {
   id: string;
@@ -48,7 +49,7 @@ const CourseDetail = ({
         setAnnotation(res.data.annotation);
         setGuarantor(res.data.guarantor);
       })
-      .catch((err) => console.error(err))
+      .catch((err) => console.error(err.message))
       .finally(() => {
         setLoading(false);
       });
@@ -140,6 +141,7 @@ const CourseDetail = ({
                 </MenuItem>
               ))}
             </Select>
+            <ActivityList course={id} />
           </div>
         )
       ) : (
