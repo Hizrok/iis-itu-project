@@ -18,6 +18,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwic
 
 ###
 
+GET http://localhost:3000/users/lecturers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
 GET http://localhost:3000/users/student
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
 

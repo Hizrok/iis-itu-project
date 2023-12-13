@@ -59,6 +59,7 @@ const ActivityList = ({ course }: ActivityListProps) => {
             recurrence,
             capacity,
             duration,
+            lecturers: [],
           });
           return newActivities;
         });

@@ -38,6 +38,17 @@ const get_guarantors = async (req, res) => {
   res.status(200).json(search_query.rows);
 };
 
+const get_lecturers = async (req, res) => {
+  const [search_query, err] = await query_database(
+    res,
+    queries.get_lecturers,
+    []
+  );
+  if (err) return;
+
+  res.status(200).json(search_query.rows);
+};
+
 // TODO: courses and instances of a user
 const get_user = async (req, res) => {
   const id = req.params.user_id;
@@ -139,6 +150,7 @@ const delete_user = async (req, res) => {
 module.exports = {
   get_users,
   get_guarantors,
+  get_lecturers,
   get_user,
   add_user,
   edit_user,

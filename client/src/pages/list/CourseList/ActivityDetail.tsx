@@ -1,6 +1,9 @@
 import { Button, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { Activity } from "../../../components/common/Types/Course";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import InstanceList from "./InstanceList";
+import axios from "axios";
+import { useAuthHeader } from "react-auth-kit";
 
 type ActivityDetailProps = {
   activity: Activity;
@@ -15,10 +18,33 @@ const ActivityDetail = ({
   editActivity,
   deleteActivity,
 }: ActivityDetailProps) => {
+  const authHeader = useAuthHeader();
+
   const [type, setType] = useState(activity.type);
   const [recurrence, setRecurrence] = useState(activity.recurrence);
   const [capacity, setCapacity] = useState(activity.capacity.toString());
   const [duration, setDuration] = useState(activity.duration);
+  const [lecturers, setLecturers] = useState<string[]>(activity.lecturers);
+
+  const [selectedLecturer, setSelectedLecturer] = useState("");
+  const [allLecturers, setAllLecturers] = useState<string[]>([]);
+
+  const getLecturers = async () => {
+    await axios
+      .get(`${import.meta.env.VITE_SERVER_HOST}users/lecturers`, {
+        headers: {
+          Authorization: authHeader(),
+        },
+      })
+      .then((res) => {
+        setAllLecturers(
+          res.data
+            .map((l: any) => l.id)
+            .filter((l: string) => !lecturers.includes(l))
+        );
+      })
+      .catch((err) => console.error(err.message));
+  };
 
   const handleEdit = (e: any) => {
     e.stopPropagation();
@@ -29,6 +55,62 @@ const ActivityDetail = ({
     e.stopPropagation();
     deleteActivity(activity.id);
   };
+
+  const handleAddLecturer = async () => {
+    await axios
+      .post(
+        `${import.meta.env.VITE_SERVER_HOST}activities/${activity.id}`,
+        {
+          lecturer: selectedLecturer,
+        },
+        {
+          headers: {
+            Authorization: authHeader(),
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res.data.msg);
+        setLecturers((oldLecturers) => {
+          const newLecturers = [...oldLecturers];
+          newLecturers.push(selectedLecturer);
+          return newLecturers;
+        });
+        setAllLecturers(
+          allLecturers.filter((lecturer) => lecturer !== selectedLecturer)
+        );
+        setSelectedLecturer("");
+      })
+      .catch((err) => console.error(err.message));
+  };
+
+  const handleDeleteLecturer = async (lecturer: string) => {
+    await axios
+      .delete(
+        `${import.meta.env.VITE_SERVER_HOST}activities/${
+          activity.id
+        }/${lecturer}`,
+        {
+          headers: {
+            Authorization: authHeader(),
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res.data.msg);
+        setAllLecturers((oldLecturers) => {
+          const newLecturers = [...oldLecturers];
+          newLecturers.push(lecturer);
+          return newLecturers;
+        });
+        setLecturers(lecturers.filter((l) => l !== lecturer));
+      })
+      .catch((err) => console.error(err.message));
+  };
+
+  useEffect(() => {
+    getLecturers();
+  }, []);
 
   return (
     <div>
@@ -82,6 +164,38 @@ const ActivityDetail = ({
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
           />
+          <InputLabel>Lecturers</InputLabel>
+          <Select
+            className="role-select"
+            value={selectedLecturer}
+            onChange={(e) => setSelectedLecturer(e.target.value)}
+          >
+            {allLecturers.map((lecturer: string) => (
+              <MenuItem key={lecturer} value={lecturer}>
+                {lecturer}
+              </MenuItem>
+            ))}
+          </Select>
+          <Button variant="contained" onClick={handleAddLecturer}>
+            Add lecturer
+          </Button>
+          <div>
+            {lecturers.map((lecturer: string) => (
+              <div
+                key={lecturer}
+                style={{ display: "flex", justifyContent: "space-between" }}
+              >
+                <p>{lecturer}</p>
+                <Button
+                  variant="contained"
+                  onClick={() => handleDeleteLecturer(lecturer)}
+                >
+                  delete lecturer
+                </Button>
+              </div>
+            ))}
+          </div>
+          <InstanceList activity={activity.id} lecturers={lecturers} />
         </div>
       )}
     </div>

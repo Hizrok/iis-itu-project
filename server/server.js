@@ -12,6 +12,7 @@ const user_router = require("./routes/users/routes");
 const rooms_router = require("./routes/rooms/routes");
 const course_router = require("./routes/courses/routes");
 const activities_router = require("./routes/activities/routes");
+const instances_router = require("./routes/instances/routes");
 const registration_router = require("./routes/registrations/routes");
 
 const app = express();
@@ -65,6 +66,7 @@ app.use("/users", user_router);
 app.use("/rooms", rooms_router);
 app.use("/courses", course_router);
 app.use("/activities", activities_router);
+app.use("/instances", instances_router);
 app.use("/registrations", registration_router);
 
 app.listen(port, () => {

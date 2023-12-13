@@ -8,7 +8,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3000/activities?course=IMA1
+GET http://localhost:3000/activities
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
 
 ###
@@ -32,6 +32,16 @@ Content-Type: application/json
 
 ###
 
+POST http://localhost:3000/activities/8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+Content-Type: application/json
+
+{
+	"lecturer": "admin"
+}
+
+###
+
 PUT http://localhost:3000/activities/2
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
 Content-Type: application/json
@@ -46,4 +56,9 @@ Content-Type: application/json
 ###
 
 DELETE  http://localhost:3000/activities/7
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
+DELETE  http://localhost:3000/activities/8/garant
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
