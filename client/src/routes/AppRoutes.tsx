@@ -15,14 +15,14 @@ import ClassRegPage from "../pages/registration/ClassRegPage";
 
 import ListPageLayout from "../pages/list/ListPageLayout";
 import ListIndex from "../pages/list/ListIndex";
-import CourseListPage from "../pages/list/CourseListPage";
-import UserListPage from "../pages/list/UserListPage";
-import RoomListPage from "../pages/list/RoomListPage";
-import ActivityListPage from "../pages/list/ActivityListPage";
+import CourseListPage from "../pages/list/CourseList/CourseListPage";
+import UserListPage from "../pages/list/UserList/UserListPage";
+import RoomListPage from "../pages/list/RoomList/RoomListPage";
+// import ActivityListPage from "../pages/list/ActivityListPage";
+// import InstanceListPage from "../pages/list/InstanceListPage";
 import RegistrationListPage from "../pages/list/RegistrationListPage";
 
 import NotFound from "../pages/error/NotFoundPage";
-import InstanceListPage from "../pages/list/InstanceListPage";
 
 const appRoutes: RouteType[] = [
   {
@@ -42,7 +42,7 @@ const appRoutes: RouteType[] = [
     topbarText: "Účet",
   },
   {
-    path: "/course",
+    path: "/courses",
     element: <MainCoursesListPage />,
     authenticated: false,
     roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
@@ -53,7 +53,7 @@ const appRoutes: RouteType[] = [
     },
   },
   {
-    path: "/course_details/:courseID",
+    path: "/courses/:courseID",
     element: <CourseDetailsPage />,
     authenticated: false,
     roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
@@ -75,7 +75,7 @@ const appRoutes: RouteType[] = [
     path: "/registration",
     element: <RegistrationPageLayout />,
     authenticated: true,
-    roles: ["admin", "student", "vyučující", "rozvrhář", "garant"],
+    roles: ["student", "vyučující", "rozvrhář", "garant"],
     state: "registration",
     topbarText: "Registrace",
     sidebarProps: {
@@ -132,7 +132,7 @@ const appRoutes: RouteType[] = [
         state: "list.index",
       },
       {
-        path: "/list/registration_list",
+        path: "/list/registrations",
         element: <RegistrationListPage />,
         authenticated: true,
         roles: ["admin"],
@@ -143,7 +143,7 @@ const appRoutes: RouteType[] = [
         },
       },
       {
-        path: "/list/user_list",
+        path: "/list/users",
         element: <UserListPage />,
         authenticated: true,
         roles: ["admin"],
@@ -154,7 +154,7 @@ const appRoutes: RouteType[] = [
         },
       },
       {
-        path: "/list/course_list",
+        path: "/list/courses",
         element: <CourseListPage />,
         authenticated: true,
         roles: ["admin", "garant"],
@@ -165,7 +165,7 @@ const appRoutes: RouteType[] = [
         },
       },
       {
-        path: "/list/room_list",
+        path: "/list/rooms",
         element: <RoomListPage />,
         authenticated: true,
         roles: ["admin"],
@@ -175,28 +175,28 @@ const appRoutes: RouteType[] = [
           displayText: "Místnotí",
         },
       },
-      {
-        path: "/list/activity_list",
-        element: <ActivityListPage />,
-        authenticated: true,
-        roles: ["admin", "garant"],
-        state: "list.activity_list",
-        topbarText: "Seznam aktivit",
-        sidebarProps: {
-          displayText: "Aktivit",
-        },
-      },
-      {
-        path: "/list/instance_list",
-        element: <InstanceListPage />,
-        authenticated: true,
-        roles: ["admin"],
-        state: "list.instance_list",
-        topbarText: "Seznam instancí",
-        sidebarProps: {
-          displayText: "Instancí",
-        },
-      },
+      // {
+      //   path: "/list/activity_list",
+      //   element: <ActivityListPage />,
+      //   authenticated: true,
+      //   roles: ["admin", "garant"],
+      //   state: "list.activity_list",
+      //   topbarText: "Seznam aktivit",
+      //   sidebarProps: {
+      //     displayText: "Aktivit",
+      //   },
+      // },
+      // {
+      //   path: "/list/instance_list",
+      //   element: <InstanceListPage />,
+      //   authenticated: true,
+      //   roles: ["admin"],
+      //   state: "list.instance_list",
+      //   topbarText: "Seznam instancí",
+      //   sidebarProps: {
+      //     displayText: "Instancí",
+      //   },
+      // },
     ],
   },
   {

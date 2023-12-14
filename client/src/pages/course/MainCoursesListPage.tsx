@@ -1,93 +1,62 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { setLoadingContentState } from "../../redux/features/LoadingContentStateSlice";
-import CourseList from "../../components/lists/courseListComponent";
-import { useAuthHeader } from "react-auth-kit";
-import Filter from "../../components/common/Filters/filter";
-
-// type User = {
-//   id: string;
-//   role: string;
-//   name: string;
-//   surname: string;
-// }
-
-type Course = {
-  id: string;
-  name: string;
-  guarantor: string;
-};
+import axios from "axios";
+import { Course } from "../../components/common/Types/Course";
+import { useNavigate } from "react-router-dom";
 
 const MainCoursesListPage = () => {
-  const authHeader = useAuthHeader();
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [courses, setCourses] = useState<Course[]>([]);
-  const [filteredCourses, setFilteredCourses] = useState<Course[]>(courses);
 
-  // let courses = "loading..."
+  const getCourses = async () => {
+    await axios
+      .get(`${import.meta.env.VITE_SERVER_HOST}courses`)
+      .then((res) => {
+        setCourses(res.data);
+      })
+      .catch((err) => console.error(err));
+  };
 
   useEffect(() => {
-    fetchCourses();
+    getCourses();
   }, []);
 
-  const sortCourses = (
-    courses: Course[],
-    sortBy: string,
-    descending: boolean
-  ) => {
-    return courses.slice().sort((a: any, b: any) => {
-      const order = descending ? -1 : 1;
-      return a[sortBy].localeCompare(b[sortBy]) * order;
-    });
-  };
-
-  const filterCourses = (filterType: string, isDescending: boolean) => {
-    setFilteredCourses(sortCourses(courses, filterType, isDescending));
-  };
-
-  async function fetchCourses() {
-    dispatch(setLoadingContentState(true));
-    try{
-      const response = await fetch(import.meta.env.VITE_SERVER_HOST+"courses", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: authHeader(),
-        },
-      });
-      const json_courses = await response.json();
-    
-      setFilteredCourses(json_courses);
-      setCourses(json_courses);
-      dispatch(setLoadingContentState(false));
-    }
-    catch(err){
-      console.log(err);
-      dispatch(setLoadingContentState(false));
-    }
-  }
-
-  if (courses.length !== 0) {
-    return (
-      <div className="course-page">
-        <div className="list-pages-list-container">
-          <h2>Seznam Předmětů</h2>
-        </div>
-        <Filter onFilterChange={filterCourses} />
-        <CourseList courses={filteredCourses} />
+  return (
+    <div>
+      <h2>Seznam předmětů</h2>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "30px",
+          maxWidth: "1300px",
+          margin: "0 auto",
+        }}
+      >
+        {courses.map((course: Course) => (
+          <div
+            key={course.id}
+            style={{
+              width: "300px",
+              height: "300px",
+              padding: "10px",
+              border: "1px solid black",
+              borderRadius: "5px",
+              overflow: "hidden",
+            }}
+            onClick={() => navigate(`/courses/${course.id}`)}
+          >
+            <span style={{ marginRight: "10px" }}>
+              <b>{course.id}</b>
+            </span>
+            <span>{course.guarantor}</span>
+            <h2>{course.name}</h2>
+            <i>{course.annotation}</i>
+          </div>
+        ))}
       </div>
-    );
-  } else {
-    return (
-      <div className="course-page">
-        <div className="list-pages-list-container">
-          <h2>Seznam Předmětů</h2>
-        </div>
-        Žádné předměty nebyli načteny
-      </div>
-    );
-  }
+    </div>
+  );
 };
 
 export default MainCoursesListPage;
