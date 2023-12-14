@@ -85,12 +85,11 @@ function Topbar() {
       })
       .catch((err) => {
         console.error(err.message); 
-        if (err.status == 403) {
+        if (err.response.status == 403) {
           toast.error('Špatné přihlašovací údaje');
         }
-
-        else if (err.status > 400) {
-          toast.error('Probl0m s přihlášením');
+        else if (err.response.status > 400) {
+          toast.error('Problém s přihlášením');
         }
         
         dispatch(setLoadingState(false));
