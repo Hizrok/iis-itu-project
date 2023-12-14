@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuthHeader } from "react-auth-kit";
 import CreateActivityDialog from "./CreateActivityDialog";
+import dayjs from "dayjs";
 
 type ActivityListProps = {
   course: string;
@@ -38,6 +39,7 @@ const ActivityList = ({ course }: ActivityListProps) => {
     capacity: number,
     duration: string
   ) => {
+    duration = dayjs(duration).format('HH:mm:ss');
     await axios
       .post(
         `${import.meta.env.VITE_SERVER_HOST}activities`,
@@ -73,6 +75,7 @@ const ActivityList = ({ course }: ActivityListProps) => {
     capacity: number,
     duration: string
   ) => {
+    duration = dayjs(duration).format('HH:mm:ss');
     await axios
       .put(
         `${import.meta.env.VITE_SERVER_HOST}activities/${selected}`,

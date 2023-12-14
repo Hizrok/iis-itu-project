@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import InstanceList from "./InstanceList";
 import axios from "axios";
 import { useAuthHeader } from "react-auth-kit";
+import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 type ActivityDetailProps = {
   activity: Activity;
@@ -23,7 +26,8 @@ const ActivityDetail = ({
   const [type, setType] = useState(activity.type);
   const [recurrence, setRecurrence] = useState(activity.recurrence);
   const [capacity, setCapacity] = useState(activity.capacity.toString());
-  const [duration, setDuration] = useState(activity.duration);
+  //const [duration, setDuration] = useState(activity.duration);
+  const [duration, setDuration] = useState<Dayjs | null>(dayjs(activity.duration, "HH:mm:ss"));
   const [lecturers, setLecturers] = useState<string[]>(activity.lecturers);
 
   const [selectedLecturer, setSelectedLecturer] = useState("");
@@ -150,20 +154,21 @@ const ActivityDetail = ({
           </Select>
           <TextField
             margin="dense"
-            label="Kapacita"
+            label="Kapacity"
             fullWidth
             variant="outlined"
             value={capacity}
             onChange={(e) => setCapacity(e.target.value)}
           />
-          <TextField
-            margin="dense"
-            label="Duration"
-            fullWidth
-            variant="outlined"
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <TimePicker 
+              label="Duration" 
+              value={duration}
+              onChange={(newValue) => setDuration(newValue)}
+              ampm={false}
+              slotProps={{ textField: { fullWidth: true } }}
+              />
+          </LocalizationProvider>
           <InputLabel>Lecturers</InputLabel>
           <Select
             className="role-select"
