@@ -9,6 +9,7 @@ import { Button, CircularProgress } from "@mui/material";
 import Room from "../../../components/common/Types/Room";
 import RoomDetail from "./RoomDetail";
 import CreateRoomDialog from "./CreateRoomDetail";
+import { toast } from "react-toastify";
 
 const RoomListPage = () => {
   const authHeader = useAuthHeader();
@@ -56,10 +57,14 @@ const RoomListPage = () => {
         setRooms((oldRooms) => {
           const newRooms = [...oldRooms];
           newRooms.push({ id: newId, building, floor, number, capacity });
+          toast.success('Místnost vytvořena');
           return newRooms;
         });
       })
-      .catch((err) => console.error(err.message));
+      .catch((err) => {
+        console.error(err.message);
+        toast.error('Problém s tvořením místnosti');
+      });
   };
 
   const editRoom = async (
@@ -91,11 +96,15 @@ const RoomListPage = () => {
           newRooms[index].floor = floor;
           newRooms[index].number = number;
           newRooms[index].capacity = capacity;
+          toast.success('Místnost aktualizována');
           return newRooms;
         });
         setSelected(res.data.id);
       })
-      .catch((err) => console.error(err.message));
+      .catch((err) => {
+        console.error(err.message);
+        toast.error('Problém s aktualizováním místnosti');
+      });
   };
 
   const deleteRoom = async () => {
@@ -112,8 +121,12 @@ const RoomListPage = () => {
             setSelected("");
             setIndex(0);
             setRooms(rooms.filter((user: Room) => user.id !== seleted));
+            toast.success('Mistnost smazána');
           })
-          .catch((err) => console.error(err.message));
+          .catch((err) => {
+            console.error(err.message);
+            toast.error('Problém s mazáním místnosti');
+          });
       })
       .catch(() => {
         

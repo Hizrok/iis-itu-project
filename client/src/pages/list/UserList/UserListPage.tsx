@@ -8,6 +8,7 @@ import axios from "axios";
 
 import "../styles.css";
 import CreateUserDialog from "./CreateUserDialog";
+import { toast } from "react-toastify";
 
 const UserListPage = () => {
   const authHeader = useAuthHeader();
@@ -56,8 +57,12 @@ const UserListPage = () => {
           newUsers.push({ id: newId, role, name, surname, email });
           return newUsers;
         });
+        toast.success('Uživatel vytvořen');
       })
-      .catch((err) => console.error(err.message));
+      .catch((err) => {
+        console.error(err.message); 
+        toast.error('Problém s tvorbou uživatele');
+      });
   };
 
   const editUser = async (
@@ -89,10 +94,14 @@ const UserListPage = () => {
           newUsers[index].name = name;
           newUsers[index].surname = surname;
           newUsers[index].email = email;
+          toast.success('Uživatel aktualizován');
           return newUsers;
         });
       })
-      .catch((err) => console.error(err.message));
+      .catch((err) => {
+        console.error(err.message);
+        toast.error('Problém s aktualizováním uživatele');
+      });
   };
 
   const deleteUser = async () => {
@@ -109,8 +118,12 @@ const UserListPage = () => {
             setSelected("");
             setIndex(0);
             setUsers(users.filter((user: User) => user.id !== seleted));
+            toast.success('Uživatel smazán');
           })
-          .catch((err) => console.error(err.message));
+          .catch((err) => {
+            console.error(err.message);
+            toast.error('Problém s mazáním uživatele');
+          });
       })
       .catch(() => {
         

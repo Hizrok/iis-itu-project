@@ -9,6 +9,7 @@ import "../styles.css";
 import CourseDetail from "./CourseDetail";
 import CreateCourseDialog from "./CreateCourseDialog";
 import { Course, Guarantor } from "../../../components/common/Types/Course";
+import { toast } from "react-toastify";
 
 const CourseListPage = () => {
   const authHeader = useAuthHeader();
@@ -73,10 +74,14 @@ const CourseListPage = () => {
         setCourses((oldCourses) => {
           const newCourses = [...oldCourses];
           newCourses.push({ id, name, annotation, guarantor });
+          toast.success('Předmět vytvořen');
           return newCourses;
         });
       })
-      .catch((err) => console.error(err.message));
+      .catch((err) => {
+        console.error(err.message);
+        toast.error('Problém s tvořením předmětu');
+      });
   };
 
   const editCourse = async (
@@ -111,8 +116,12 @@ const CourseListPage = () => {
           return newCourses;
         });
         setSelected(id);
+        toast.success('Předmět aktualizován');
       })
-      .catch((err) => console.error(err.message));
+      .catch((err) => {
+        console.error(err.message);
+        toast.error('Problém s aktualizováním předmětu');
+      });
   };
 
   const deleteCourse = async () => {
@@ -129,8 +138,12 @@ const CourseListPage = () => {
             setSelected("");
             setIndex(0);
             setCourses(courses.filter((course: Course) => course.id !== seleted));
+            toast.success('Předmět vymazán');
           })
-          .catch((err) => console.error(err.message));
+          .catch((err) => {
+            console.error(err.message);
+            toast.error('Problém s mazáním předmětu');
+          });
       })
       .catch(() => {
         

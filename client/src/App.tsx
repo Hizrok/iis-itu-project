@@ -4,6 +4,8 @@ import generateRoute from "./routes"
 import { useAuthUser, useIsAuthenticated } from "react-auth-kit"
 import appRoutes from "./routes/AppRoutes"
 import { ConfirmProvider } from "material-ui-confirm"
+import { ToastContainer } from "react-toastify"
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 
@@ -12,6 +14,7 @@ function App() {
 
   return (
     <BrowserRouter>
+    <ToastContainer position="bottom-right"/>
       <ConfirmProvider>
         <Routes>
           <Route path="/" element={<MainLayout/>}>
