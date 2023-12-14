@@ -1,14 +1,7 @@
 import {
   AppBar,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Fab,
   Stack,
-  TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -27,9 +20,12 @@ import {
   useSignIn,
   useSignOut,
 } from "react-auth-kit";
-import React from "react";
 import { useDispatch } from "react-redux";
 import { setLoadingState } from "../../redux/features/LoadingStateSlice";
+import { useConfirm } from "material-ui-confirm";
+import { toast } from "react-toastify";
+import axios from "axios";
+import LoginDialog from "./LoginDialog";
 
 function Topbar() {
   // Top bar nav
@@ -42,70 +38,63 @@ function Topbar() {
   const signIn = useSignIn();
   const auth = useAuthUser();
   const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = React.useState("");
+  const confirm = useConfirm();
 
-  // Handle logout popup
-  const [logoutDialog, setLogoutDialog] = React.useState(false);
-  const [loginDialog, setLoginDialog] = React.useState(false);
+  // Handle login popup
+  const [showDialog, setShowDialog] = useState(false);
 
-  const [id, setId] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
 
   const dispatch = useDispatch();
 
-  const handleLogoutDialogClose = () => {
-    setLoginDialog(false);
-    setLogoutDialog(false);
-    signOut();
-    navigate("/");
-  };
+  const logoutDialogCheck = () => {
+    confirm({ description: "Chcete se odhlásit?", confirmationText: "Ano", cancellationText: "Ne", title: "Odhlášení", confirmationButtonProps: { color: "error" }  })
+      .then(() => {
+        signOut();
+        navigate("/");
+        toast.success('Odhlášen');
+      })
+      .catch(() => {
+        
+      });
+  }
 
-  const handleLogin = () => {
-    async function loginUser() {
-      const login_user = {
-        id: id,
-        password: password,
-      };
-
-      try {
-        dispatch(setLoadingState(true));
-        const request = await fetch(import.meta.env.VITE_SERVER_HOST+"login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(login_user),
-        });
-
-        if (request.status >= 400) {
-          setErrorMessage("An incorrect login or password");
-          setPassword("");
-          dispatch(setLoadingState(false));
-          return;
-        }
-
-        const request_json = await request.json();
+  const login = async (
+    id: string,
+    password: string,
+  ) => {
+    dispatch(setLoadingState(true));
+    await axios
+      .post(
+        `${import.meta.env.VITE_SERVER_HOST}login`,
+        { id, password }
+      )
+      .then((res) => {
+        const loginRes = res.data.id;
         if (
           signIn({
-            token: request_json.token,
+            token: loginRes.token,
             expiresIn: 60,
             tokenType: "Bearer",
-            authState: { id: request_json.id, role: request_json.role },
+            authState: { id: loginRes.id, role: loginRes.role },
           })
         ) {
-          setId("");
-          setPassword("");
-          setErrorMessage("");
-          setLoginDialog(false);
+          setShowDialog(false);
           dispatch(setLoadingState(false));
+          toast.success('Přihlášení proběhlo uspěšně');
         }
-      } catch (err) {
-        console.log(err);
-        setErrorMessage("An error has occured");
+      })
+      .catch((err) => {
+        console.error(err.message); 
+        if (err.status == 403) {
+          toast.error('Špatné přihlašovací údaje');
+        }
+
+        else if (err.status > 400) {
+          toast.error('Probl0m s přihlášením');
+        }
+        
         dispatch(setLoadingState(false));
-      }
-    }
-    loginUser();
+      });
   };
 
   useEffect(() => {
@@ -157,7 +146,7 @@ function Topbar() {
               aria-label="add"
               variant="extended"
               onClick={() => {
-                setLogoutDialog(true);
+                logoutDialogCheck();
               }}
               sx={{ maxHeight: 35 }}
             >
@@ -165,27 +154,6 @@ function Topbar() {
               Odhlásit
             </Fab>
           </Stack>
-          <Dialog
-            open={logoutDialog}
-            onClose={() => {
-              setLogoutDialog(false);
-            }}
-          >
-            <DialogTitle>Odhlásit</DialogTitle>
-            <DialogContent>
-              <DialogContentText>Checete se odhlásit?</DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={() => {
-                  setLogoutDialog(false);
-                }}
-              >
-                Ne
-              </Button>
-              <Button onClick={handleLogoutDialogClose}>Ano</Button>
-            </DialogActions>
-          </Dialog>
         </Toolbar>
       </AppBar>
     );
@@ -215,53 +183,18 @@ function Topbar() {
             variant="extended"
             sx={{ maxHeight: 35 }}
             onClick={() => {
-              setLoginDialog(true);
+              setShowDialog(true);
             }}
           >
             <LoginIcon sx={{ mr: 1 }} />
             Přihlásit
           </Fab>
         </Stack>
-        <Dialog
-          open={loginDialog}
-          onClose={() => {
-            setLoginDialog(false);
-          }}
-        >
-          <DialogTitle>Přihlášení</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="login"
-              label="Login"
-              type="login"
-              fullWidth
-              variant="standard"
-              onChange={(e) => setId(e.target.value)}
-            />
-            <TextField
-              margin="dense"
-              id="password"
-              label="Heslo"
-              type="password"
-              fullWidth
-              variant="standard"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </DialogContent>
-          <DialogContentText>{errorMessage}</DialogContentText>
-          <DialogActions>
-            <Button
-              onClick={() => {
-                setLoginDialog(false);
-              }}
-            >
-              Zrušit
-            </Button>
-            <Button onClick={handleLogin}>Přihlásit</Button>
-          </DialogActions>
-        </Dialog>
+        <LoginDialog 
+          showDialog={showDialog}
+          toggleDialog={setShowDialog}
+          loginUser={login}
+          />
       </Toolbar>
     </AppBar>
   );

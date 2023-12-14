@@ -14,7 +14,7 @@ import {
 import { useAuthHeader, useAuthUser } from "react-auth-kit";
 // import Course from "../../components/common/Types/Course";
 // import Activity from "../../components/common/Types/Activity";
-import User from "../../components/common/Types/User";
+import { User } from "../../components/common/Types/User";
 
 type Instance = {
   id: number;

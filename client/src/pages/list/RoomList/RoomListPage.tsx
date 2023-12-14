@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuthHeader } from "react-auth-kit";
+import { useConfirm } from "material-ui-confirm";
 import axios from "axios";
 
 import "../styles.css";
@@ -8,9 +9,11 @@ import { Button, CircularProgress } from "@mui/material";
 import Room from "../../../components/common/Types/Room";
 import RoomDetail from "./RoomDetail";
 import CreateRoomDialog from "./CreateRoomDetail";
+import { toast } from "react-toastify";
 
 const RoomListPage = () => {
   const authHeader = useAuthHeader();
+  const confirm = useConfirm();
 
   const [loading, setLoading] = useState(false);
 
@@ -54,10 +57,14 @@ const RoomListPage = () => {
         setRooms((oldRooms) => {
           const newRooms = [...oldRooms];
           newRooms.push({ id: newId, building, floor, number, capacity });
+          toast.success('Místnost vytvořena');
           return newRooms;
         });
       })
-      .catch((err) => console.error(err.message));
+      .catch((err) => {
+        console.error(err.message);
+        toast.error('Problém s tvořením místnosti');
+      });
   };
 
   const editRoom = async (
@@ -89,27 +96,42 @@ const RoomListPage = () => {
           newRooms[index].floor = floor;
           newRooms[index].number = number;
           newRooms[index].capacity = capacity;
+          toast.success('Místnost aktualizována');
           return newRooms;
         });
         setSelected(res.data.id);
       })
-      .catch((err) => console.error(err.message));
+      .catch((err) => {
+        console.error(err.message);
+        toast.error('Problém s aktualizováním místnosti');
+      });
   };
 
   const deleteRoom = async () => {
-    await axios
-      .delete(`${import.meta.env.VITE_SERVER_HOST}rooms/${seleted}`, {
-        headers: {
-          Authorization: authHeader(),
-        },
+    confirm({ description: "Chcete smazat místnost?", confirmationText: "Ano", cancellationText: "Ne", title: "Smazání místnoti", confirmationButtonProps: { color: "error" }  })
+      .then(async () => {
+        await axios
+          .delete(`${import.meta.env.VITE_SERVER_HOST}rooms/${seleted}`, {
+            headers: {
+              Authorization: authHeader(),
+            },
+          })
+          .then((res) => {
+            console.log(res.data.msg);
+            setSelected("");
+            setIndex(0);
+            setRooms(rooms.filter((user: Room) => user.id !== seleted));
+            toast.success('Mistnost smazána');
+          })
+          .catch((err) => {
+            console.error(err.message);
+            toast.error('Problém s mazáním místnosti');
+          });
       })
-      .then((res) => {
-        console.log(res.data.msg);
-        setSelected("");
-        setIndex(0);
-        setRooms(rooms.filter((user: Room) => user.id !== seleted));
-      })
-      .catch((err) => console.error(err.message));
+      .catch(() => {
+        
+      });
+    
   };
 
   const toggleDialog = (value: boolean) => {

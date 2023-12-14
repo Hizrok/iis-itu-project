@@ -16,13 +16,13 @@ import ClassRegPage from "../pages/registration/ClassRegPage";
 import ListPageLayout from "../pages/list/ListPageLayout";
 import ListIndex from "../pages/list/ListIndex";
 import CourseListPage from "../pages/list/CourseList/CourseListPage";
-import UserListPage from "../pages/list/UserList/UserListPage";
 import RoomListPage from "../pages/list/RoomList/RoomListPage";
 // import ActivityListPage from "../pages/list/ActivityListPage";
 // import InstanceListPage from "../pages/list/InstanceListPage";
 import RegistrationListPage from "../pages/list/RegistrationListPage";
 
 import NotFound from "../pages/error/NotFoundPage";
+import UserListPage from "../pages/list/UserList/UserListPage";
 
 const appRoutes: RouteType[] = [
   {
