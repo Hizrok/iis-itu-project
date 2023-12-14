@@ -1,8 +1,8 @@
 type Room = {
-    id: string,
-    building: string,
-    floor: string,
-    number: string,
-    capacity: string,
+  id: string;
+  building: string;
+  floor: number;
+  number: number;
+  capacity: number;
 };
 export default Room;

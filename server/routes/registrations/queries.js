@@ -4,9 +4,10 @@ const get_registration =
   "select id, state, status from registrations where id=$1;";
 
 const get_active_registration =
-  "select id, state, status from registrations where status='ACTIVE';";
+  "select id, state, status from registrations where status=true;";
 
-const add_registration = "insert into registrations default values;";
+const add_registration =
+  "insert into registrations default values returning id;";
 
 const delete_registration = "delete from registrations where id=$1;";
 
