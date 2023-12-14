@@ -3,6 +3,7 @@ import MainLayout from "./components/layout/MainLayout"
 import generateRoute from "./routes"
 import { useAuthUser, useIsAuthenticated } from "react-auth-kit"
 import appRoutes from "./routes/AppRoutes"
+import { ConfirmProvider } from "material-ui-confirm"
 
 function App() {
 
@@ -11,11 +12,13 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainLayout/>}>
-          {generateRoute(appRoutes, isAuthenticated(), isAuthenticated()?auth()!.role:"")}
-        </Route>
-      </Routes>
+      <ConfirmProvider>
+        <Routes>
+          <Route path="/" element={<MainLayout/>}>
+            {generateRoute(appRoutes, isAuthenticated(), isAuthenticated()?auth()!.role:"")}
+          </Route>
+        </Routes>
+      </ConfirmProvider>
     </BrowserRouter>
   )
 }

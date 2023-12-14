@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuthHeader } from "react-auth-kit";
+import { useConfirm } from "material-ui-confirm";
 import axios from "axios";
 
 import { Button, CircularProgress } from "@mui/material";
@@ -11,6 +12,7 @@ import { Course, Guarantor } from "../../../components/common/Types/Course";
 
 const CourseListPage = () => {
   const authHeader = useAuthHeader();
+  const confirm = useConfirm();
 
   const [loading, setLoading] = useState(true);
 
@@ -114,19 +116,26 @@ const CourseListPage = () => {
   };
 
   const deleteCourse = async () => {
-    await axios
-      .delete(`${import.meta.env.VITE_SERVER_HOST}courses/${seleted}`, {
-        headers: {
-          Authorization: authHeader(),
-        },
+    confirm({ description: "Chcete smazat předmět?", confirmationText: "Ano", cancellationText: "Ne", title: "Smazání předmětu", confirmationButtonProps: { color: "error" }  })
+      .then(async () => {
+        await axios
+          .delete(`${import.meta.env.VITE_SERVER_HOST}courses/${seleted}`, {
+            headers: {
+              Authorization: authHeader(),
+            },
+          })
+          .then((res) => {
+            console.log(res.data.msg);
+            setSelected("");
+            setIndex(0);
+            setCourses(courses.filter((course: Course) => course.id !== seleted));
+          })
+          .catch((err) => console.error(err.message));
       })
-      .then((res) => {
-        console.log(res.data.msg);
-        setSelected("");
-        setIndex(0);
-        setCourses(courses.filter((course: Course) => course.id !== seleted));
-      })
-      .catch((err) => console.error(err.message));
+      .catch(() => {
+        
+      });
+    
   };
 
   const toggleDialog = (value: boolean) => {

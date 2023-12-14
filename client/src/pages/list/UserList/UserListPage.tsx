@@ -3,6 +3,7 @@ import { User } from "../../../components/common/Types/User";
 import { useAuthHeader } from "react-auth-kit";
 import UserDetail from "./UserDetail";
 import { Button, CircularProgress } from "@mui/material";
+import { useConfirm } from "material-ui-confirm";
 import axios from "axios";
 
 import "../styles.css";
@@ -10,6 +11,7 @@ import CreateUserDialog from "./CreateUserDialog";
 
 const UserListPage = () => {
   const authHeader = useAuthHeader();
+  const confirm = useConfirm();
 
   const [loading, setLoading] = useState(true);
 
@@ -94,19 +96,26 @@ const UserListPage = () => {
   };
 
   const deleteUser = async () => {
-    await axios
-      .delete(`${import.meta.env.VITE_SERVER_HOST}users/${seleted}`, {
-        headers: {
-          Authorization: authHeader(),
-        },
+    confirm({ description: "Chcete vymazat uživatele?", confirmationText: "Ano", cancellationText: "Ne", title: "Smazání uživatele", confirmationButtonProps: { color: "error" } })
+      .then(async () => {
+        await axios
+          .delete(`${import.meta.env.VITE_SERVER_HOST}users/${seleted}`, {
+            headers: {
+              Authorization: authHeader(),
+            },
+          })
+          .then((res) => {
+            console.log(res.data.msg);
+            setSelected("");
+            setIndex(0);
+            setUsers(users.filter((user: User) => user.id !== seleted));
+          })
+          .catch((err) => console.error(err.message));
       })
-      .then((res) => {
-        console.log(res.data.msg);
-        setSelected("");
-        setIndex(0);
-        setUsers(users.filter((user: User) => user.id !== seleted));
-      })
-      .catch((err) => console.error(err.message));
+      .catch(() => {
+        
+      });
+    
   };
 
   const toggleDialog = (value: boolean) => {

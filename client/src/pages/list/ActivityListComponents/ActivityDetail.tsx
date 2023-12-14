@@ -8,10 +8,12 @@ import {
 } from "@mui/material";
 import DeleteButton from "../../../components/common/Buttons/DeleteButton";
 import ActivityDetailProps from "./ActivityDetailProps";
+import { useConfirm } from "material-ui-confirm";
 
 const ActivityDetail: React.FC<ActivityDetailProps> = (props) => {
   const { selectedActivity, onEditActivity, onDeleteActivity } = props;
   const [isEditing, setIsEditing] = useState(false);
+  const confirm = useConfirm();
 
   const [editedType, setEditedType] = useState(selectedActivity.type);
   const [editedRecurrence, setEditedRecurrence] = useState(selectedActivity.recurrence);
@@ -36,7 +38,13 @@ const ActivityDetail: React.FC<ActivityDetailProps> = (props) => {
   };
 
   const handleDeleteClick = () => {
-    onDeleteActivity(selectedActivity);
+    confirm({ description: "Chcete smazat aktivitu?", confirmationText: "Ano", cancellationText: "Ne", title: "Smazat aktivitu", confirmationButtonProps: { color: "error" } })
+      .then(() => {
+        onDeleteActivity(selectedActivity);
+      })
+      .catch(() => {
+        
+      });
   };
 
   return (

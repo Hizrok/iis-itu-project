@@ -30,6 +30,7 @@ import {
 import React from "react";
 import { useDispatch } from "react-redux";
 import { setLoadingState } from "../../redux/features/LoadingStateSlice";
+import { useConfirm } from "material-ui-confirm";
 
 function Topbar() {
   // Top bar nav
@@ -42,10 +43,10 @@ function Topbar() {
   const signIn = useSignIn();
   const auth = useAuthUser();
   const navigate = useNavigate();
+  const confirm = useConfirm();
   const [errorMessage, setErrorMessage] = React.useState("");
 
-  // Handle logout popup
-  const [logoutDialog, setLogoutDialog] = React.useState(false);
+  // Handle login popup
   const [loginDialog, setLoginDialog] = React.useState(false);
 
   const [id, setId] = useState<string>("");
@@ -53,12 +54,16 @@ function Topbar() {
 
   const dispatch = useDispatch();
 
-  const handleLogoutDialogClose = () => {
-    setLoginDialog(false);
-    setLogoutDialog(false);
-    signOut();
-    navigate("/");
-  };
+  const logoutDialogCheck = () => {
+    confirm({ description: "Chcete se odhlásit?", confirmationText: "Ano", cancellationText: "Ne", title: "Odhlášení", confirmationButtonProps: { color: "error" }  })
+      .then(() => {
+        signOut();
+        navigate("/");
+      })
+      .catch(() => {
+        
+      });
+  }
 
   const handleLogin = () => {
     async function loginUser() {
@@ -157,7 +162,7 @@ function Topbar() {
               aria-label="add"
               variant="extended"
               onClick={() => {
-                setLogoutDialog(true);
+                logoutDialogCheck();
               }}
               sx={{ maxHeight: 35 }}
             >
@@ -165,27 +170,6 @@ function Topbar() {
               Odhlásit
             </Fab>
           </Stack>
-          <Dialog
-            open={logoutDialog}
-            onClose={() => {
-              setLogoutDialog(false);
-            }}
-          >
-            <DialogTitle>Odhlásit</DialogTitle>
-            <DialogContent>
-              <DialogContentText>Checete se odhlásit?</DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={() => {
-                  setLogoutDialog(false);
-                }}
-              >
-                Ne
-              </Button>
-              <Button onClick={handleLogoutDialogClose}>Ano</Button>
-            </DialogActions>
-          </Dialog>
         </Toolbar>
       </AppBar>
     );

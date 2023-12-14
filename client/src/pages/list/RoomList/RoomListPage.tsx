@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuthHeader } from "react-auth-kit";
+import { useConfirm } from "material-ui-confirm";
 import axios from "axios";
 
 import "../styles.css";
@@ -11,6 +12,7 @@ import CreateRoomDialog from "./CreateRoomDetail";
 
 const RoomListPage = () => {
   const authHeader = useAuthHeader();
+  const confirm = useConfirm();
 
   const [loading, setLoading] = useState(false);
 
@@ -97,19 +99,26 @@ const RoomListPage = () => {
   };
 
   const deleteRoom = async () => {
-    await axios
-      .delete(`${import.meta.env.VITE_SERVER_HOST}rooms/${seleted}`, {
-        headers: {
-          Authorization: authHeader(),
-        },
+    confirm({ description: "Chcete smazat místnost?", confirmationText: "Ano", cancellationText: "Ne", title: "Smazání místnoti", confirmationButtonProps: { color: "error" }  })
+      .then(async () => {
+        await axios
+          .delete(`${import.meta.env.VITE_SERVER_HOST}rooms/${seleted}`, {
+            headers: {
+              Authorization: authHeader(),
+            },
+          })
+          .then((res) => {
+            console.log(res.data.msg);
+            setSelected("");
+            setIndex(0);
+            setRooms(rooms.filter((user: Room) => user.id !== seleted));
+          })
+          .catch((err) => console.error(err.message));
       })
-      .then((res) => {
-        console.log(res.data.msg);
-        setSelected("");
-        setIndex(0);
-        setRooms(rooms.filter((user: Room) => user.id !== seleted));
-      })
-      .catch((err) => console.error(err.message));
+      .catch(() => {
+        
+      });
+    
   };
 
   const toggleDialog = (value: boolean) => {
