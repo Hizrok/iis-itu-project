@@ -10,12 +10,14 @@ import {
   TextField,
 } from "@mui/material";
 import { useState } from "react";
+import { useAuthHeader } from "react-auth-kit";
 
 type CreateCourseDialogProps = {
   showDialog: boolean;
   guarantors: string[];
   toggleDialog: Function;
   createCourse: Function;
+  setCourses: Function;
 };
 
 const CreateCourseDialog = ({
@@ -23,8 +25,10 @@ const CreateCourseDialog = ({
   guarantors,
   toggleDialog,
   createCourse,
+  setCourses,
 }: CreateCourseDialogProps) => {
   const [disabled, setDisabled] = useState(false);
+  const authHeader = useAuthHeader();
 
   const [abbr, setAbbr] = useState("");
   const [name, setName] = useState("");
@@ -33,7 +37,7 @@ const CreateCourseDialog = ({
 
   const handleCreateCourse = () => {
     setDisabled(true);
-    createCourse(abbr, name, annotation, guarantor);
+    createCourse(abbr, name, annotation, guarantor, setCourses, authHeader);
     setDisabled(false);
     toggleDialog(false);
 

@@ -11,12 +11,17 @@ import {
   MenuItem,
 } from "@mui/material";
 import ActivityList from "./ActivityList";
+import { useConfirm } from "material-ui-confirm";
 
 type CourseDetailProps = {
   id: string;
   guarantors: string[];
   editCourse: Function;
   deleteCourse: Function;
+  resetSelected: Function;
+  setCourses: Function;
+  setSelected: Function;
+  index: number;
 };
 
 const CourseDetail = ({
@@ -24,8 +29,13 @@ const CourseDetail = ({
   guarantors,
   editCourse,
   deleteCourse,
+  resetSelected,
+  setCourses,
+  setSelected,
+  index,
 }: CourseDetailProps) => {
   const authHeader = useAuthHeader();
+  const confirm = useConfirm();
 
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -57,13 +67,13 @@ const CourseDetail = ({
 
   const handleEdit = () => {
     setDisabled(true);
-    editCourse(abbr, name, annotation, guarantor);
+    editCourse(abbr, name, annotation, guarantor, index, setCourses, setSelected, authHeader);
     setDisabled(false);
   };
 
   const handleDelete = () => {
     setDisabled(true);
-    deleteCourse();
+    deleteCourse(id, resetSelected, confirm, authHeader);
     setDisabled(false);
   };
 

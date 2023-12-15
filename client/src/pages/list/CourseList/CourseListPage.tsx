@@ -1,19 +1,17 @@
 import { useState, useEffect } from "react";
 import { useAuthHeader } from "react-auth-kit";
-import { useConfirm } from "material-ui-confirm";
-import axios from "axios";
 
 import { Button, CircularProgress } from "@mui/material";
 import "../styles.css";
 
 import CourseDetail from "./CourseDetail";
 import CreateCourseDialog from "./CreateCourseDialog";
-import { Course, Guarantor } from "../../../components/common/Types/Course";
-import { toast } from "react-toastify";
+import { Course } from "../../../components/common/Types/Course";
+import { createCourse, deleteCourse, editCourse, getCourses } from "../../../components/axios/CourseAxios";
+import { getGuarantors } from "../../../components/axios/UserAxios";
 
 const CourseListPage = () => {
   const authHeader = useAuthHeader();
-  const confirm = useConfirm();
 
   const [loading, setLoading] = useState(true);
 
@@ -25,131 +23,11 @@ const CourseListPage = () => {
 
   const [showDialog, setShowDialog] = useState(false);
 
-  const getCourses = async () => {
-    await axios
-      .get(`${import.meta.env.VITE_SERVER_HOST}courses`, {
-        headers: {
-          Authorization: authHeader(),
-        },
-      })
-      .then((res) => {
-        setCourses(res.data);
-      })
-      .catch((err) => console.error(err))
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
-  const getGuarantors = async () => {
-    setLoading(true);
-    await axios
-      .get(`${import.meta.env.VITE_SERVER_HOST}users/guarantors`, {
-        headers: {
-          Authorization: authHeader(),
-        },
-      })
-      .then((res) => {
-        setGuarantors(res.data.map((g: Guarantor) => g.id));
-      })
-      .catch((err) => console.error(err))
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
-  const createCourse = async (
-    id: string,
-    name: string,
-    annotation: string,
-    guarantor: string
-  ) => {
-    await axios
-      .post(
-        `${import.meta.env.VITE_SERVER_HOST}courses`,
-        { id, name, annotation, guarantor },
-        { headers: { Authorization: authHeader() } }
-      )
-      .then(() => {
-        setCourses((oldCourses) => {
-          const newCourses = [...oldCourses];
-          newCourses.push({ id, name, annotation, guarantor });
-          toast.success('Předmět vytvořen');
-          return newCourses;
-        });
-      })
-      .catch((err) => {
-        console.error(err.message);
-        toast.error('Problém s tvořením předmětu');
-      });
-  };
-
-  const editCourse = async (
-    id: string,
-    name: string,
-    annotation: string,
-    guarantor: string
-  ) => {
-    await axios
-      .put(
-        `${import.meta.env.VITE_SERVER_HOST}courses/${seleted}`,
-        {
-          id,
-          name,
-          annotation,
-          guarantor,
-        },
-        {
-          headers: {
-            Authorization: authHeader(),
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res.data.msg);
-        setCourses((oldCourses) => {
-          const newCourses = [...oldCourses];
-          newCourses[index].id = id;
-          newCourses[index].name = name;
-          newCourses[index].annotation = annotation;
-          newCourses[index].guarantor = guarantor;
-          return newCourses;
-        });
-        setSelected(id);
-        toast.success('Předmět aktualizován');
-      })
-      .catch((err) => {
-        console.error(err.message);
-        toast.error('Problém s aktualizováním předmětu');
-      });
-  };
-
-  const deleteCourse = async () => {
-    confirm({ description: "Chcete smazat předmět?", confirmationText: "Ano", cancellationText: "Ne", title: "Smazání předmětu", confirmationButtonProps: { color: "error" }  })
-      .then(async () => {
-        await axios
-          .delete(`${import.meta.env.VITE_SERVER_HOST}courses/${seleted}`, {
-            headers: {
-              Authorization: authHeader(),
-            },
-          })
-          .then((res) => {
-            console.log(res.data.msg);
-            setSelected("");
-            setIndex(0);
-            setCourses(courses.filter((course: Course) => course.id !== seleted));
-            toast.success('Předmět vymazán');
-          })
-          .catch((err) => {
-            console.error(err.message);
-            toast.error('Problém s mazáním předmětu');
-          });
-      })
-      .catch(() => {
-        
-      });
-    
-  };
+  const resetSelected = () => {
+    setSelected("");
+    setIndex(0);
+    setCourses(courses.filter((course: Course) => course.id !== seleted));
+  }
 
   const toggleDialog = (value: boolean) => {
     setShowDialog(value);
@@ -161,8 +39,8 @@ const CourseListPage = () => {
   };
 
   useEffect(() => {
-    getCourses();
-    getGuarantors();
+    getCourses(setLoading, setCourses, authHeader);
+    getGuarantors(setLoading, setGuarantors, authHeader);
   }, []);
 
   return (
@@ -204,6 +82,10 @@ const CourseListPage = () => {
           guarantors={guarantors}
           editCourse={editCourse}
           deleteCourse={deleteCourse}
+          resetSelected={resetSelected}
+          setCourses={setCourses}
+          setSelected={setSelected}
+          index={index}
         />
       </div>
       <CreateCourseDialog
@@ -211,6 +93,7 @@ const CourseListPage = () => {
         guarantors={guarantors}
         toggleDialog={toggleDialog}
         createCourse={createCourse}
+        setCourses={setCourses}
       />
     </div>
   );
