@@ -6,6 +6,8 @@ import axios from "axios";
 import { useAuthHeader } from "react-auth-kit";
 import CreateActivityDialog from "./CreateActivityDialog";
 import dayjs from "dayjs";
+import { toast } from "react-toastify";
+import { useConfirm } from "material-ui-confirm";
 
 type ActivityListProps = {
   course: string;
@@ -13,6 +15,7 @@ type ActivityListProps = {
 
 const ActivityList = ({ course }: ActivityListProps) => {
   const authHeader = useAuthHeader();
+  const confirm = useConfirm();
 
   const [activities, setActivities] = useState<Activity[]>([]);
   const [selected, setSelected] = useState(0);
@@ -30,7 +33,10 @@ const ActivityList = ({ course }: ActivityListProps) => {
       .then((res) => {
         setActivities(res.data);
       })
-      .catch((err) => console.error(err.message));
+      .catch((err) => {
+        console.error(err.message);
+        toast.error('Problém s načítáním aktivit');
+      });
   };
 
   const createActivity = async (
@@ -63,10 +69,14 @@ const ActivityList = ({ course }: ActivityListProps) => {
             duration,
             lecturers: [],
           });
+          toast.success('Aktivita vytvořena');
           return newActivities;
         });
       })
-      .catch((err) => console.error(err.message));
+      .catch((err) => {
+        console.error(err.message);
+        toast.error('Problém s tvorbou aktivity');
+      });
   };
 
   const editActivity = async (
@@ -95,26 +105,41 @@ const ActivityList = ({ course }: ActivityListProps) => {
           newActivities[index].recurrence = recurrence;
           newActivities[index].capacity = capacity;
           newActivities[index].duration = duration;
+          toast.success('Aktivita upravena');
           return newActivities;
         });
       })
-      .catch((err) => console.error(err.message));
+      .catch((err) => {
+        console.error(err.message);
+        toast.error('Problém s aktualizací aktivity');
+      });
   };
 
   const deleteActivity = async (id: number) => {
-    await axios
-      .delete(`${import.meta.env.VITE_SERVER_HOST}activities/${id}`, {
-        headers: {
-          Authorization: authHeader(),
-        },
+    confirm({  description: "Chcete smazat aktivitu?", confirmationText: "Ano", cancellationText: "Ne", title: "Smazání aktivity", confirmationButtonProps: { color: "error" } })
+      .then(async () => {
+        await axios
+          .delete(`${import.meta.env.VITE_SERVER_HOST}activities/${id}`, {
+            headers: {
+              Authorization: authHeader(),
+            },
+          })
+          .then((res) => {
+            console.log(res.data.msg);
+            setActivities(activities.filter((a: Activity) => a.id !== id));
+            setSelected(0);
+            setIndex(0);
+            toast.success('Aktivita smazána');
+          })
+          .catch((err) => {
+            console.error(err.message);
+            toast.error('Problém s mazáním aktivity');
+          });
       })
-      .then((res) => {
-        console.log(res.data.msg);
-        setActivities(activities.filter((a: Activity) => a.id !== id));
-        setSelected(0);
-        setIndex(0);
-      })
-      .catch((err) => console.error(err.message));
+      .catch(() => {
+        
+      });
+    
   };
 
   const handleSelect = (id: number, i: number) => {
