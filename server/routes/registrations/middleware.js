@@ -10,7 +10,7 @@ const get_active_registration = async (req, res, next) => {
     );
     if (err) return;
 
-    req.params.reg_id = !find_query.rowCount ? null : find_query.rows[0].id;
+    req.params.active = !find_query.rowCount ? null : find_query.rows[0];
     next();
   } catch (error) {
     console.log(error);

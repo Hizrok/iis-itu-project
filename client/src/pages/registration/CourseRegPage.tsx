@@ -1,141 +1,139 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { setLoadingContentState } from "../../redux/features/LoadingContentStateSlice";
 import { useAuthHeader, useAuthUser } from "react-auth-kit";
 // import Course from "../../components/common/Types/Course";
 import { Box, Checkbox } from "@mui/material";
+import axios from "axios";
 
 type CourseRegistration = {
   id: string;
   name: string;
+  guarantor: string;
   registered: boolean;
 };
 
 const CourseRegPage = () => {
-  const dispatch = useDispatch();
   const authHeader = useAuthHeader();
   const auth = useAuthUser();
 
-  const [status, setStatus] = useState("");
+  const [state, setState] = useState(0);
   const [courses, setCourses] = useState<CourseRegistration[]>([]);
 
-  useEffect(() => {
-    async function fetchCourses() {
-      try {
-        dispatch(setLoadingContentState(true));
+  const getActiveRegistration = async () => {
+    let fetchedState = 0;
+    await axios
+      .get(`${import.meta.env.VITE_SERVER_HOST}registrations/active`)
+      .then((res) => {
+        fetchedState = res.data.state;
+        setState(res.data.state);
+      })
+      .catch((err) => console.error(err.message));
+    return fetchedState;
+  };
 
-        const status_response = await fetch(
-          `${import.meta.env.VITE_SERVER_HOST}registrations/active`,
-          {
-            method: "GET",
-            headers: {
-              authorization: authHeader(),
-            },
-          }
-        );
-        const status_json = await status_response.json();
-        console.log(status_json);
-
-        setStatus(status_json);
-
-        if (status_json !== "IDLE") {
-          const courses_response = await fetch(
-            `${import.meta.env.VITE_SERVER_HOST}registrations/courses/${
-              auth()?.id
-            }/reg_data`,
-            {
-              method: "GET",
-              headers: {
-                authorization: authHeader(),
-              },
-            }
-          );
-          const courses_json = await courses_response.json();
-
-          setCourses(courses_json);
+  const getCoursesWithRegData = async () => {
+    await axios
+      .get(
+        `${import.meta.env.VITE_SERVER_HOST}registrations/courses/${
+          auth()?.id
+        }`,
+        {
+          headers: {
+            Authorization: authHeader(),
+          },
         }
+      )
+      .then((res) => {
+        setCourses(res.data);
+      })
+      .catch((err) => console.error(err.message));
+  };
 
-        dispatch(setLoadingContentState(false));
-      } catch (error) {
-        dispatch(setLoadingContentState(false));
-        console.error("Error fetching courses:", error);
+  useEffect(() => {
+    const fetchData = async () => {
+      const fetchedState = await getActiveRegistration();
+      if (fetchedState !== 0) {
+        getCoursesWithRegData();
       }
-    }
+    };
 
-    fetchCourses();
+    fetchData();
   }, []);
 
   const handleChange = (index: number) => {
-    async function changeRegistration(registered: boolean) {
-      try {
-        dispatch(setLoadingContentState(true));
-
-        if (!registered) {
-          await fetch(
-            `${import.meta.env.VITE_SERVER_HOST}registrations/courses`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                authorization: authHeader(),
-              },
-              body: JSON.stringify({
-                course: courses[index].id,
-                student: auth()?.id,
-              }),
-            }
-          );
-        } else {
-          await fetch(
-            `${import.meta.env.VITE_SERVER_HOST}registrations/courses/${
-              courses[index].id
-            }/${auth()?.id}`,
-            {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-                authorization: authHeader(),
-              },
-            }
-          );
-        }
-
-        dispatch(setLoadingContentState(false));
-      } catch (error) {
-        dispatch(setLoadingContentState(false));
-        console.error("Error while registering:", error);
-      }
+    if (!courses[index].registered) {
+      axios
+        .post(
+          `${import.meta.env.VITE_SERVER_HOST}registrations/courses`,
+          {
+            course: courses[index].id,
+            student: auth()?.id,
+          },
+          {
+            headers: {
+              Authorization: authHeader(),
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res.data.msg);
+          setCourses((oldCourses) => {
+            const newCourses = [...oldCourses];
+            newCourses[index].registered = !newCourses[index].registered;
+            return newCourses;
+          });
+        })
+        .catch((err) => console.error(err.message));
+    } else {
+      axios
+        .delete(
+          `${import.meta.env.VITE_SERVER_HOST}registrations/courses/${
+            courses[index].id
+          }/${auth()?.id}`,
+          {
+            headers: {
+              Authorization: authHeader(),
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res.data.msg);
+          setCourses((oldCourses) => {
+            const newCourses = [...oldCourses];
+            newCourses[index].registered = !newCourses[index].registered;
+            return newCourses;
+          });
+        })
+        .catch((err) => console.error(err.message));
     }
-
-    changeRegistration(courses[index].registered);
-
-    setCourses((oldCourses) => {
-      const newCourses = [...oldCourses];
-      newCourses[index].registered = !oldCourses[index].registered;
-      return newCourses;
-    });
   };
+
+  if (state === 0) {
+    return <div>Modul registrací předmětů nebyl spuštěn</div>;
+  }
 
   return (
     <Box>
-      {status !== "IDLE" ? (
-        courses.map((course: CourseRegistration, i) => (
-          <Box
-            key={i}
-            sx={{ display: "grid", gridTemplateColumns: "70px 500px 50px" }}
-          >
-            <p>{course.id}</p>
-            <p>{course.name}</p>
-            <Checkbox
-              disabled={status !== "COURSES IN PROGRESS"}
-              checked={course.registered}
-              onChange={() => handleChange(i)}
-            />
-          </Box>
-        ))
-      ) : (
-        <p>modul registrací předmětů ještě nebyl spuštěn</p>
-      )}
+      {courses.map((c: CourseRegistration, i: number) => (
+        <div
+          key={c.id}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "50px 400px 100px 50px",
+            alignItems: "center",
+          }}
+        >
+          <span>{c.id}</span>
+          <span>{c.name}</span>
+          <span>{c.guarantor}</span>
+          <Checkbox
+            disabled={state !== 1}
+            checked={c.registered || false}
+            onChange={() => handleChange(i)}
+          />
+        </div>
+      ))}
     </Box>
   );
 };
