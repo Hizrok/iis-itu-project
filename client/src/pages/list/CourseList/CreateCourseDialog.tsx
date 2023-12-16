@@ -6,8 +6,6 @@ import {
   DialogContent,
   DialogTitle,
   InputLabel,
-  MenuItem,
-  Select,
   TextField,
 } from "@mui/material";
 import { useState } from "react";

@@ -1,12 +1,11 @@
 import {
+  Autocomplete,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   InputLabel,
-  MenuItem,
-  Select,
   TextField,
 } from "@mui/material";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
@@ -44,31 +43,48 @@ const CreateActivityDialog = ({
     setDuration(dayjs("00:00:00", "HH:mm:ss"));
   };
 
+  const TypeOptions = [
+    'přednáška',
+    'cvičení',
+    'laboratoř',
+    'democvičení',
+    'seminář'
+  ]
+
+  const RecurrenceOptions = [
+    'každý',
+    'sudý',
+    'lichý'
+  ]
+
   return (
     <Dialog open={showDialog} onClose={() => toggleDialog(false)}>
       <DialogTitle>Vytvořit předmět</DialogTitle>
       <DialogContent>
         <InputLabel>Typ</InputLabel>
-        <Select
-          className="role-select"
-          fullWidth
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-        >
-          <MenuItem value={"přednáška"}>přednáška</MenuItem>
-          <MenuItem value={"cvičení"}>cvičení</MenuItem>
-        </Select>
+        <Autocomplete
+            value={type}
+            onChange={(event: any, newValue: string | null) => {
+              console.log(event);
+              setType(newValue? newValue : type);
+            }}
+            id="controllable-states-type"
+            options={TypeOptions}
+            fullWidth
+            renderInput={(params) => <TextField {...params} />}
+            />
         <InputLabel>Recurence</InputLabel>
-        <Select
-          className="role-select"
-          fullWidth
-          value={recurrence}
-          onChange={(e) => setRecurrence(e.target.value)}
-        >
-          <MenuItem value={"každý"}>každý</MenuItem>
-          <MenuItem value={"sudý"}>sudý</MenuItem>
-          <MenuItem value={"lichý"}>lichý</MenuItem>
-        </Select>
+        <Autocomplete
+            value={recurrence}
+            onChange={(event: any, newValue: string | null) => {
+              console.log(event);
+              setRecurrence(newValue? newValue : recurrence);
+            }}
+            id="controllable-states-type"
+            options={RecurrenceOptions}
+            fullWidth
+            renderInput={(params) => <TextField {...params} />}
+            />
         <TextField
           margin="dense"
           label="Kapacita"
