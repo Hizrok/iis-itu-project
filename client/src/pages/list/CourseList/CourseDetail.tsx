@@ -7,16 +7,20 @@ import {
   InputLabel,
   Button,
   TextField,
-  Select,
-  MenuItem,
+  Autocomplete,
 } from "@mui/material";
 import ActivityList from "./ActivityList";
+import { useConfirm } from "material-ui-confirm";
 
 type CourseDetailProps = {
   id: string;
   guarantors: string[];
   editCourse: Function;
   deleteCourse: Function;
+  resetSelected: Function;
+  setCourses: Function;
+  setSelected: Function;
+  index: number;
 };
 
 const CourseDetail = ({
@@ -24,8 +28,13 @@ const CourseDetail = ({
   guarantors,
   editCourse,
   deleteCourse,
+  resetSelected,
+  setCourses,
+  setSelected,
+  index,
 }: CourseDetailProps) => {
   const authHeader = useAuthHeader();
+  const confirm = useConfirm();
 
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -57,13 +66,13 @@ const CourseDetail = ({
 
   const handleEdit = () => {
     setDisabled(true);
-    editCourse(abbr, name, annotation, guarantor);
+    editCourse(abbr, name, annotation, guarantor, index, setCourses, setSelected, authHeader);
     setDisabled(false);
   };
 
   const handleDelete = () => {
     setDisabled(true);
-    deleteCourse();
+    deleteCourse(id, resetSelected, confirm, authHeader);
     setDisabled(false);
   };
 
@@ -128,19 +137,17 @@ const CourseDetail = ({
               onChange={(e) => setAnnotation(e.target.value)}
             />
             <InputLabel>Garant</InputLabel>
-            <Select
-              className="role-select"
-              fullWidth
-              disabled={disabled}
+            <Autocomplete
               value={guarantor}
-              onChange={(e) => setGuarantor(e.target.value)}
-            >
-              {guarantors.map((g: string) => (
-                <MenuItem key={g} value={g}>
-                  {g}
-                </MenuItem>
-              ))}
-            </Select>
+              onChange={(event: any, newValue: string | null) => {
+                console.log(event);
+                setGuarantor(newValue? newValue : guarantor);
+              }}
+              id="controllable-states-type"
+              options={guarantors}
+              fullWidth
+              renderInput={(params) => <TextField {...params} />}
+              />
             <ActivityList course={id} />
           </div>
         )

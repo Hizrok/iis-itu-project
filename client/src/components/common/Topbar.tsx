@@ -60,13 +60,12 @@ function Topbar() {
     await axios
       .post(`${import.meta.env.VITE_SERVER_HOST}login`, { id, password })
       .then((res) => {
-        const loginRes = res.data;
         if (
           signIn({
-            token: loginRes.token,
+            token: res.data.token,
             expiresIn: 60,
             tokenType: "Bearer",
-            authState: { id: loginRes.id, role: loginRes.role },
+            authState: { id: res.data.id, role: res.data.role },
           })
         ) {
           setShowDialog(false);
