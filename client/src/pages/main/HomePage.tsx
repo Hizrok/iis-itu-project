@@ -4,6 +4,10 @@ import { setLoadingContentState } from "../../redux/features/LoadingContentState
 import CourseList from "../../components/lists/courseListComponent";
 import { useAuthHeader, useAuthUser, useIsAuthenticated } from "react-auth-kit";
 import Filter from "../../components/common/Filters/filter";
+import "../../styles/style.css"; 
+import ScheduleIcon from "../../assets/scheduleIcon.png";
+import ListIcon from "../../assets/listIcon.png";
+import Tile from "../../components/common/Tiles/Tile";
 
 type Course = {
     id: string;
@@ -88,12 +92,12 @@ const HomePage = () => {
         fetchCourses(import.meta.env.VITE_SERVER_HOST+"courses?guarantor="+auth()!.id);
     }
 
-    type RetrurnPageProps = {
+    type ReturnPageProps = {
         headerName: string;
         errorMessage: string;
     };
     
-    const ReturnPage = (props: RetrurnPageProps) => {
+    const ReturnPage = (props: ReturnPageProps) => {
         if (courses.length !== 0) {
             return (
             <div className="course-page">
@@ -138,10 +142,16 @@ const HomePage = () => {
     if (isAuthenticated()) {
         if (auth()!.role === "student") {
             return (
-                <ReturnPage
-                    headerName="Seznam Registrovaných Předmětů"
-                    errorMessage="Žádné předměty nejsou registrovány"
-                />
+                <div>
+                    <ReturnPage
+                        headerName="Seznam Registrovaných Předmětů"
+                        errorMessage="Žádné předměty nejsou registrovány"
+                    />
+                    <div className="tileWrapper">
+                        <Tile title="Rozvrh" icon={ScheduleIcon} url="/schedule"/>
+                        <Tile title="Seznam předmětů" icon={ListIcon} url="/courses" />
+                    </div>
+                </div>
             );
         } else if (auth()!.role === "vyučující") {
             return (
@@ -169,4 +179,4 @@ const HomePage = () => {
     }
 };
     
-    export default HomePage;
+export default HomePage;
