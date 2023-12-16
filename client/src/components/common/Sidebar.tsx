@@ -6,6 +6,7 @@ import AppRoutes from "../../routes/AppRoutes"
 import SidebarItem from "./SidebarItem"
 import SidebarItemCollapse from "./SidebarItemCollapse"
 import { useAuthUser, useIsAuthenticated } from "react-auth-kit";
+import Logo from "../../assets/logo.png";
 
 const Sidebar = () => {
     const isAuthenticated = useIsAuthenticated();
@@ -31,15 +32,13 @@ const Sidebar = () => {
                         <Typography 
                             variant='h6' 
                             textAlign={'center'} 
-                            sx={{paddingLeft:8, 
-                                paddingRight:8, 
-                                paddingTop:6, 
-                                paddingBottom:6, 
+                            sx={{
+                                marginLeft: 1,
                                 color:"#FFFFFF", 
                                 background:ColourConfig.sidebar.highlightBg,
                                 "&: hover": {backgroundColor: ColourConfig.sidebar.hoverBg},
                                 boxShadow:5}}>
-                                LOGO
+                            <img style={{width: 180, height: 120}} src={Logo} alt="Logo" />
                         </Typography>
                     </Stack>
                 </Toolbar>
