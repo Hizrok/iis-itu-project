@@ -9,6 +9,9 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
 
 type CreateActivityDialogProps = {
@@ -27,7 +30,7 @@ const CreateActivityDialog = ({
   const [type, setType] = useState("přednáška");
   const [recurrence, setRecurrence] = useState("každý");
   const [capacity, setCapacity] = useState("");
-  const [duration, setDuration] = useState("");
+  const [duration, setDuration] = useState<Dayjs | null>(dayjs("00:00:00", "HH:mm:ss"));
 
   const handleCreateActivity = () => {
     setDisabled(true);
@@ -38,7 +41,7 @@ const CreateActivityDialog = ({
     setType("");
     setRecurrence("");
     setCapacity("");
-    setDuration("");
+    setDuration(dayjs("00:00:00", "HH:mm:ss"));
   };
 
   return (
@@ -74,14 +77,15 @@ const CreateActivityDialog = ({
           value={capacity}
           onChange={(e) => setCapacity(e.target.value)}
         />
-        <TextField
-          margin="dense"
-          label="Duration"
-          fullWidth
-          variant="outlined"
-          value={duration}
-          onChange={(e) => setDuration(e.target.value)}
-        />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <TimePicker 
+              label="Duration" 
+              value={duration}
+              onChange={(newValue) => setDuration(newValue)}
+              ampm={false}
+              slotProps={{ textField: { fullWidth: true } }}
+              />
+          </LocalizationProvider>
       </DialogContent>
       <DialogActions>
         <Button

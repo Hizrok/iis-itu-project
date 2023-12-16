@@ -69,13 +69,12 @@ function Topbar() {
         { id, password }
       )
       .then((res) => {
-        const loginRes = res.data.id;
         if (
           signIn({
-            token: loginRes.token,
+            token: res.data.token,
             expiresIn: 60,
             tokenType: "Bearer",
-            authState: { id: loginRes.id, role: loginRes.role },
+            authState: { id: res.data.id, role: res.data.role },
           })
         ) {
           setShowDialog(false);
@@ -85,12 +84,11 @@ function Topbar() {
       })
       .catch((err) => {
         console.error(err.message); 
-        if (err.status == 403) {
+        if (err.response.status == 403) {
           toast.error('Špatné přihlašovací údaje');
         }
-
-        else if (err.status > 400) {
-          toast.error('Probl0m s přihlášením');
+        else if (err.response.status > 400) {
+          toast.error('Problém s přihlášením');
         }
         
         dispatch(setLoadingState(false));

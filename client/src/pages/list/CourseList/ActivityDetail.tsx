@@ -1,9 +1,12 @@
-import { Button, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Autocomplete, Button, InputLabel, TextField } from "@mui/material";
 import { Activity } from "../../../components/common/Types/Course";
 import { useEffect, useState } from "react";
 import InstanceList from "./InstanceList";
 import axios from "axios";
 import { useAuthHeader } from "react-auth-kit";
+import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 type ActivityDetailProps = {
   activity: Activity;
@@ -23,7 +26,8 @@ const ActivityDetail = ({
   const [type, setType] = useState(activity.type);
   const [recurrence, setRecurrence] = useState(activity.recurrence);
   const [capacity, setCapacity] = useState(activity.capacity.toString());
-  const [duration, setDuration] = useState(activity.duration);
+  //const [duration, setDuration] = useState(activity.duration);
+  const [duration, setDuration] = useState<Dayjs | null>(dayjs(activity.duration, "HH:mm:ss"));
   const [lecturers, setLecturers] = useState<string[]>(activity.lecturers);
 
   const [selectedLecturer, setSelectedLecturer] = useState("");
@@ -112,6 +116,20 @@ const ActivityDetail = ({
     getLecturers();
   }, []);
 
+  const TypeOptions = [
+    'přednáška',
+    'cvičení',
+    'laboratoř',
+    'democvičení',
+    'seminář'
+  ]
+
+  const RecurrenceOptions = [
+    'každý',
+    'sudý',
+    'lichý'
+  ]
+
   return (
     <div>
       <div className="toggleble-list-item">
@@ -128,54 +146,58 @@ const ActivityDetail = ({
       {selected && (
         <div>
           <InputLabel>Typ</InputLabel>
-          <Select
-            className="role-select"
-            fullWidth
+          <Autocomplete
             value={type}
-            onChange={(e) => setType(e.target.value)}
-          >
-            <MenuItem value={"přednáška"}>přednáška</MenuItem>
-            <MenuItem value={"cvičení"}>cvičení</MenuItem>
-          </Select>
-          <InputLabel>Recurence</InputLabel>
-          <Select
-            className="role-select"
+            onChange={(event: any, newValue: string | null) => {
+              console.log(event);
+              setType(newValue? newValue : type);
+            }}
+            id="controllable-states-type"
+            options={TypeOptions}
             fullWidth
+            renderInput={(params) => <TextField {...params} />}
+            />
+          <InputLabel>Recurence</InputLabel>
+          <Autocomplete
             value={recurrence}
-            onChange={(e) => setRecurrence(e.target.value)}
-          >
-            <MenuItem value={"každý"}>každý</MenuItem>
-            <MenuItem value={"sudý"}>sudý</MenuItem>
-            <MenuItem value={"lichý"}>lichý</MenuItem>
-          </Select>
+            onChange={(event: any, newValue: string | null) => {
+              console.log(event);
+              setRecurrence(newValue? newValue : recurrence);
+            }}
+            id="controllable-states-type"
+            options={RecurrenceOptions}
+            fullWidth
+            renderInput={(params) => <TextField {...params} />}
+            />
           <TextField
-            margin="dense"
-            label="Kapacita"
+            margin="normal"
+            label="Kapacity"
             fullWidth
             variant="outlined"
             value={capacity}
             onChange={(e) => setCapacity(e.target.value)}
           />
-          <TextField
-            margin="dense"
-            label="Duration"
-            fullWidth
-            variant="outlined"
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <TimePicker 
+              label="Duration" 
+              value={duration}
+              onChange={(newValue) => setDuration(newValue)}
+              ampm={false}
+              slotProps={{ textField: { fullWidth: true } }}
+              />
+          </LocalizationProvider>
           <InputLabel>Lecturers</InputLabel>
-          <Select
-            className="role-select"
+          <Autocomplete
             value={selectedLecturer}
-            onChange={(e) => setSelectedLecturer(e.target.value)}
-          >
-            {allLecturers.map((lecturer: string) => (
-              <MenuItem key={lecturer} value={lecturer}>
-                {lecturer}
-              </MenuItem>
-            ))}
-          </Select>
+            onChange={(event: any, newValue: string | null) => {
+              console.log(event);
+              setSelectedLecturer(newValue? newValue : '');
+            }}
+            id="controllable-states-type"
+            options={allLecturers}
+            fullWidth
+            renderInput={(params) => <TextField {...params} />}
+            />
           <Button variant="contained" onClick={handleAddLecturer}>
             Add lecturer
           </Button>

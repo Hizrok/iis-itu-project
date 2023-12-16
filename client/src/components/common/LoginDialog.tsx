@@ -25,7 +25,8 @@ import {
     const [password, setPassword] = useState<string>("");
   
     const handleLogin = () => {
-        loginUser(id,password);
+      loginUser(id,password);
+      setPassword("");
     };
   
     return (
