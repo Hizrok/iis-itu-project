@@ -3,16 +3,13 @@ import { User } from "../../../components/common/Types/User";
 import { useAuthHeader } from "react-auth-kit";
 import UserDetail from "./UserDetail";
 import { Button, CircularProgress } from "@mui/material";
-import { useConfirm } from "material-ui-confirm";
 import axios from "axios";
 
 import "../styles.css";
 import CreateUserDialog from "./CreateUserDialog";
-import { toast } from "react-toastify";
 
 const UserListPage = () => {
   const authHeader = useAuthHeader();
-  const confirm = useConfirm();
 
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +20,7 @@ const UserListPage = () => {
   const [showDialog, setShowDialog] = useState(false);
 
   const getUsers = async () => {
-    await axios
+    return await axios
       .get(`${import.meta.env.VITE_SERVER_HOST}users`, {
         headers: {
           Authorization: authHeader(),
@@ -44,7 +41,7 @@ const UserListPage = () => {
     surname: string,
     email: string
   ) => {
-    await axios
+    return await axios
       .post(
         `${import.meta.env.VITE_SERVER_HOST}users`,
         { role, name, surname, email },
@@ -57,12 +54,8 @@ const UserListPage = () => {
           newUsers.push({ id: newId, role, name, surname, email });
           return newUsers;
         });
-        toast.success('Uživatel vytvořen');
       })
-      .catch((err) => {
-        console.error(err.message); 
-        toast.error('Problém s tvorbou uživatele');
-      });
+      .catch(error => { console.error(error); throw error; });
   };
 
   const editUser = async (
@@ -71,7 +64,7 @@ const UserListPage = () => {
     surname: string,
     email: string
   ) => {
-    await axios
+    return await axios
       .put(
         `${import.meta.env.VITE_SERVER_HOST}users/${seleted}`,
         {
@@ -94,41 +87,26 @@ const UserListPage = () => {
           newUsers[index].name = name;
           newUsers[index].surname = surname;
           newUsers[index].email = email;
-          toast.success('Uživatel aktualizován');
           return newUsers;
         });
       })
-      .catch((err) => {
-        console.error(err.message);
-        toast.error('Problém s aktualizováním uživatele');
-      });
+      .catch(error => { console.error(error); throw error; });
   };
 
   const deleteUser = async () => {
-    confirm({ description: "Chcete vymazat uživatele?", confirmationText: "Ano", cancellationText: "Ne", title: "Smazání uživatele", confirmationButtonProps: { color: "error" } })
-      .then(async () => {
-        await axios
-          .delete(`${import.meta.env.VITE_SERVER_HOST}users/${seleted}`, {
-            headers: {
-              Authorization: authHeader(),
-            },
-          })
-          .then((res) => {
-            console.log(res.data.msg);
-            setSelected("");
-            setIndex(0);
-            setUsers(users.filter((user: User) => user.id !== seleted));
-            toast.success('Uživatel smazán');
-          })
-          .catch((err) => {
-            console.error(err.message);
-            toast.error('Problém s mazáním uživatele');
-          });
-      })
-      .catch(() => {
-        
-      });
-    
+      return await axios
+        .delete(`${import.meta.env.VITE_SERVER_HOST}users/${seleted}`, {
+          headers: {
+            Authorization: authHeader(),
+          },
+        })
+        .then((res) => {
+          console.log(res.data.msg);
+          setSelected("");
+          setIndex(0);
+          setUsers(users.filter((user: User) => user.id !== seleted));
+        })
+        .catch(error => { console.error(error); throw error; });
   };
 
   const toggleDialog = (value: boolean) => {

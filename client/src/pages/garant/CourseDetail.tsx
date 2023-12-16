@@ -26,7 +26,6 @@ type CourseDetailProps = {
 
 const CourseDetail = ({
   id,
-  guarantors,
   editCourse,
   deleteCourse,
   resetSelected,
@@ -159,13 +158,14 @@ const CourseDetail = ({
             />
             <InputLabel>Garant</InputLabel>
             <Autocomplete
+              disabled
               value={guarantor}
               onChange={(event: any, newValue: string | null) => {
                 console.log(event);
                 setGuarantor(newValue? newValue : guarantor);
               }}
               id="controllable-states-type"
-              options={guarantors}
+              options={[guarantor]}
               fullWidth
               renderInput={(params) => <TextField {...params} />}
               />

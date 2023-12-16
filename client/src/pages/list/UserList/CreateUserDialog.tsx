@@ -10,6 +10,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 type CreateUserDialogProps = {
   showDialog: boolean;
@@ -29,9 +30,16 @@ const CreateUserDialog = ({
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
 
-  const handleCreateUser = () => {
+  const handleCreateUser = async () => {
     setDisabled(true);
-    createUser(role, name, surname, email);
+    await toast.promise(
+      createUser(role, name, surname, email),
+      {
+        pending: 'Uživatel se tvoří',
+        success: 'Uživatel vytvořen',
+        error: 'Problém s tvorbou uživatele'
+      }
+    );
     setDisabled(false);
     toggleDialog(false);
 

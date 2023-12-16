@@ -1,5 +1,5 @@
 import { Button, InputLabel } from "@mui/material";
-import { Activity } from "../../../components/common/Types/Course";
+import { Activity } from "../../components/common/Types/Course";
 import ActivityDetail from "./ActivityDetail";
 import { useEffect, useState } from "react";
 import axios from "axios";

@@ -10,6 +10,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 type CreateInstanceDialogProps = {
   rooms: string[];
@@ -33,9 +34,16 @@ const CreateInstanceDialog = ({
   const [day, setDay] = useState("pondělí");
   const [startTime, setStartTime] = useState("08:00:00");
 
-  const handleCreateInstance = () => {
+  const handleCreateInstance = async () => {
     setDisabled(true);
-    createInstance(room, lecturer, day, startTime);
+    await toast.promise(
+      createInstance(room, lecturer, day, startTime),
+      {
+        pending: 'Instance se tvoří',
+        success: 'Instance vytvořen',
+        error: 'Problém s tvorbou instance'
+      }
+    );
     setDisabled(false);
     toggleDialog(false);
 

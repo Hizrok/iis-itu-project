@@ -1,6 +1,8 @@
 import { Button, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { Instance } from "../../../components/common/Types/Course";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { useConfirm } from "material-ui-confirm";
 
 type InstanceDetailProps = {
   instance: Instance;
@@ -19,6 +21,7 @@ const InstanceDetail = ({
   editInstance,
   deleteInstance,
 }: InstanceDetailProps) => {
+  const confirm = useConfirm();
   const [room, setRoom] = useState(instance.room ? instance.room : "");
   const [lecturer, setLecturer] = useState(
     instance.lecturer ? instance.lecturer : ""
@@ -26,14 +29,34 @@ const InstanceDetail = ({
   const [day, setDay] = useState(instance.day);
   const [startTime, setStartTime] = useState(instance.start_time);
 
-  const handleEdit = (e: any) => {
+  const handleEdit = async (e: any) => {
     e.stopPropagation();
-    editInstance(room, lecturer, day, startTime);
+    await toast.promise(
+      editInstance(room, lecturer, day, startTime),
+      {
+        pending: 'Instance se aktualizuje',
+        success: 'Instance aktualizována',
+        error: 'Problém s aktualizací instance'
+      }
+    );
   };
 
-  const handleDelete = (e: any) => {
-    e.stopPropagation();
-    deleteInstance(instance.id);
+  const handleDelete = async (e: any) => {
+    confirm({ description: "Chcete smazat instanci?", confirmationText: "Ano", cancellationText: "Ne", title: "Smazání instance", confirmationButtonProps: { color: "error" }  })
+      .then(async () => {
+        e.stopPropagation();
+        await toast.promise(
+          deleteInstance(instance.id),
+          {
+            pending: 'Instance se maže',
+            success: 'Instance smazána',
+            error: 'Problém s mazáním instance'
+          }
+        );
+      })
+      .catch(() => {
+      });
+    
   };
 
   return (

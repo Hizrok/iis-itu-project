@@ -23,7 +23,7 @@ const InstanceList = ({ course, activity, lecturers }: InstanceListProps) => {
   const [showDialog, setShowDialog] = useState(false);
 
   const getInstances = async () => {
-    await axios
+    return await axios
       .get(
         `${import.meta.env.VITE_SERVER_HOST}instances?activity=${activity.id}`,
         {
@@ -35,7 +35,7 @@ const InstanceList = ({ course, activity, lecturers }: InstanceListProps) => {
       .then((res) => {
         setInstances(res.data);
       })
-      .catch((err) => console.error(err.message));
+      .catch(error => { console.error(error); throw error; });
   };
 
   const getRooms = async () => {
@@ -48,7 +48,7 @@ const InstanceList = ({ course, activity, lecturers }: InstanceListProps) => {
       .then((res) => {
         setRooms(res.data.map((room: any) => room.id));
       })
-      .catch((err) => console.error(err.message));
+      .catch(error => { console.error(error); throw error; });
   };
 
   const editInstance = async (
@@ -57,7 +57,7 @@ const InstanceList = ({ course, activity, lecturers }: InstanceListProps) => {
     day: string,
     start_time: string
   ) => {
-    await axios
+    return await axios
       .put(
         `${import.meta.env.VITE_SERVER_HOST}instances/${selected}`,
         { room, lecturer, day, start_time },
@@ -79,11 +79,11 @@ const InstanceList = ({ course, activity, lecturers }: InstanceListProps) => {
           return newInstances;
         });
       })
-      .catch((err) => console.error(err.message));
+      .catch(error => { console.error(error); throw error; });
   };
 
   const deleteInstance = async (id: number) => {
-    await axios
+    return await axios
       .delete(`${import.meta.env.VITE_SERVER_HOST}instances/${id}`, {
         headers: {
           Authorization: authHeader(),
@@ -95,7 +95,7 @@ const InstanceList = ({ course, activity, lecturers }: InstanceListProps) => {
         setSelected(0);
         setIndex(0);
       })
-      .catch((err) => console.error(err.message));
+      .catch(error => { console.error(error); throw error; });
   };
 
   const createInstance = async (
@@ -104,7 +104,7 @@ const InstanceList = ({ course, activity, lecturers }: InstanceListProps) => {
     day: string,
     start_time: string
   ) => {
-    await axios
+    return await axios
       .post(
         `${import.meta.env.VITE_SERVER_HOST}instances`,
         {
@@ -140,7 +140,7 @@ const InstanceList = ({ course, activity, lecturers }: InstanceListProps) => {
           return newInstances;
         });
       })
-      .catch((err) => console.error(err.message));
+      .catch(error => { console.error(error); throw error; });
   };
 
   const handleSelect = (id: number, i: number) => {
