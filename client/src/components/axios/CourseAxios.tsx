@@ -1,5 +1,4 @@
 import axios from "axios";
-import { toast } from "react-toastify";
 import { Course } from "../common/Types/Course";
 
 export const getCourses = async (
@@ -30,7 +29,7 @@ export const createCourse = async (
     setCourses: Function,
     authHeader: Function,
   ) => {
-    await axios
+    return await axios
       .post(
         `${import.meta.env.VITE_SERVER_HOST}courses`,
         { id, name, annotation, guarantor },
@@ -40,43 +39,28 @@ export const createCourse = async (
         setCourses((oldCourses: Course[]) => {
           const newCourses = [...oldCourses];
           newCourses.push({ id, name, annotation, guarantor });
-          toast.success('Předmět vytvořen');
           return newCourses;
         });
       })
-      .catch((err) => {
-        console.error(err.message);
-        toast.error('Problém s tvořením předmětu');
-      });
+      .catch(error => { console.error(error); throw error; });
   };
 
 export const deleteCourse = async (
   seleted: string,
   resetSelected: Function,
-  confirm: Function,
   authHeader: Function,
 ) => {
-    confirm({ description: "Chcete smazat předmět?", confirmationText: "Ano", cancellationText: "Ne", title: "Smazání předmětu", confirmationButtonProps: { color: "error" }  })
-      .then(async () => {
-        await axios
-          .delete(`${import.meta.env.VITE_SERVER_HOST}courses/${seleted}`, {
-            headers: {
-              Authorization: authHeader(),
-            },
-          })
-          .then((res) => {
-            console.log(res.data.msg);
-            resetSelected();
-            toast.success('Předmět vymazán');
-          })
-          .catch((err) => {
-            console.error(err.message);
-            toast.error('Problém s mazáním předmětu');
-          });
-      })
-      .catch(() => {
-        
-      });
+  return await axios
+    .delete(`${import.meta.env.VITE_SERVER_HOST}courses/${seleted}`, {
+      headers: {
+        Authorization: authHeader(),
+      },
+    })
+    .then((res) => {
+      console.log(res.data.msg);
+      resetSelected();
+    })
+    .catch(error => { console.error(error); throw error; });
   };
 
 export const editCourse = async (
@@ -89,7 +73,7 @@ export const editCourse = async (
     setSelected: Function,
     authHeader: Function,
   ) => {
-    await axios
+    return await axios
       .put(
         `${import.meta.env.VITE_SERVER_HOST}courses/${id}`,
         {
@@ -115,11 +99,7 @@ export const editCourse = async (
           return newCourses;
         });
         setSelected(id);
-        toast.success('Předmět aktualizován');
       })
-      .catch((err) => {
-        console.error(err.message);
-        toast.error('Problém s aktualizováním předmětu');
-      });
+      .catch(error => { console.error(error); throw error; });
   };
 

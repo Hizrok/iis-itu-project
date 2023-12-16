@@ -7,6 +7,8 @@ import { useAuthHeader } from "react-auth-kit";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { useConfirm } from "material-ui-confirm";
+import { toast } from "react-toastify";
 
 type ActivityDetailProps = {
   course: string;
@@ -24,6 +26,7 @@ const ActivityDetail = ({
   deleteActivity,
 }: ActivityDetailProps) => {
   const authHeader = useAuthHeader();
+  const confirm = useConfirm();
 
   const [type, setType] = useState(activity.type);
   const [recurrence, setRecurrence] = useState(activity.recurrence);
@@ -49,17 +52,37 @@ const ActivityDetail = ({
             .filter((l: string) => !lecturers.includes(l))
         );
       })
-      .catch((err) => console.error(err.message));
+      .catch(error => { console.error(error); throw error; });
   };
 
-  const handleEdit = (e: any) => {
+  const handleEdit = async (e: any) => {
     e.stopPropagation();
-    editActivity(type, recurrence, parseInt(capacity), duration);
+    await toast.promise(
+      editActivity(type, recurrence, parseInt(capacity), duration),
+      {
+        pending: 'Aktivita se aktualizuje',
+        success: 'Aktivita aktualizována',
+        error: 'Problém s aktualizací aktivity'
+      }
+    );
+    
   };
 
-  const handleDelete = (e: any) => {
-    e.stopPropagation();
-    deleteActivity(activity.id);
+  const handleDelete = async (e: any) => {
+    confirm({  description: "Chcete smazat aktivitu?", confirmationText: "Ano", cancellationText: "Ne", title: "Smazání aktivity", confirmationButtonProps: { color: "error" } })
+      .then(async () => {
+        e.stopPropagation();
+        await toast.promise(
+          deleteActivity(activity.id),
+          {
+            pending: 'Aktivita se maže',
+            success: 'Aktivita smazána',
+            error: 'Problém s mazáním aktivity'
+          }
+        );
+      })
+      .catch(() => {
+      });
   };
 
   const handleAddLecturer = async () => {
@@ -87,7 +110,7 @@ const ActivityDetail = ({
         );
         setSelectedLecturer("");
       })
-      .catch((err) => console.error(err.message));
+      .catch(error => { console.error(error); throw error; });
   };
 
   const handleDeleteLecturer = async (lecturer: string) => {
@@ -111,7 +134,7 @@ const ActivityDetail = ({
         });
         setLecturers(lecturers.filter((l) => l !== lecturer));
       })
-      .catch((err) => console.error(err.message));
+      .catch(error => { console.error(error); throw error; });
   };
 
   useEffect(() => {

@@ -10,6 +10,8 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { toast } from "react-toastify";
+import { useConfirm } from "material-ui-confirm";
 
 type UserDetailProps = {
   id: string;
@@ -18,6 +20,7 @@ type UserDetailProps = {
 };
 
 const UserDetail = ({ id, editUser, deleteUser }: UserDetailProps) => {
+  const confirm = useConfirm();
   const authHeader = useAuthHeader();
 
   const [loading, setLoading] = useState(false);
@@ -48,16 +51,37 @@ const UserDetail = ({ id, editUser, deleteUser }: UserDetailProps) => {
       });
   };
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
     setDisabled(true);
-    editUser(role, name, surname, email);
+    await toast.promise(
+      editUser(role, name, surname, email),
+      {
+        pending: 'Uživatel se aktualizuje',
+        success: 'Uživatel aktualizován',
+        error: 'Problém s aktualizací aktivity'
+      }
+    );
     setDisabled(false);
   };
 
-  const handleDelete = () => {
-    setDisabled(true);
-    deleteUser();
-    setDisabled(false);
+  const handleDelete = async () => {
+    confirm({ description: "Chcete vymazat uživatele?", confirmationText: "Ano", cancellationText: "Ne", title: "Smazání uživatele", confirmationButtonProps: { color: "error" } })
+      .then(async () => {
+        setDisabled(true);
+        await toast.promise(
+          deleteUser(),
+          {
+            pending: 'Uživatel se maže',
+            success: 'Uživatel smazán',
+            error: 'Problém s mazáním uživatele'
+          }
+        );
+        setDisabled(false);
+      })
+      .catch(() => {
+        
+      });
+    
   };
 
   useEffect(() => {

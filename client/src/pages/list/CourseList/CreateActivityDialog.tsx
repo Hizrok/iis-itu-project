@@ -12,6 +12,7 @@ import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 type CreateActivityDialogProps = {
   showDialog: boolean;
@@ -31,9 +32,16 @@ const CreateActivityDialog = ({
   const [capacity, setCapacity] = useState("");
   const [duration, setDuration] = useState<Dayjs | null>(dayjs("00:00:00", "HH:mm:ss"));
 
-  const handleCreateActivity = () => {
+  const handleCreateActivity = async () => {
     setDisabled(true);
-    createActivity(type, recurrence, parseInt(capacity), duration);
+    await toast.promise(
+      createActivity(type, recurrence, parseInt(capacity), duration),
+      {
+        pending: 'Aktivita se tvoří',
+        success: 'Aktivita vytvořen',
+        error: 'Problém s tvorbou aktivity'
+      }
+    );
     setDisabled(false);
     toggleDialog(false);
 

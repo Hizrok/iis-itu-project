@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import ActivityList from "./ActivityList";
 import { useConfirm } from "material-ui-confirm";
+import { toast } from "react-toastify";
 
 type CourseDetailProps = {
   id: string;
@@ -64,16 +65,36 @@ const CourseDetail = ({
       });
   };
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
     setDisabled(true);
-    editCourse(abbr, name, annotation, guarantor, index, setCourses, setSelected, authHeader);
+    await toast.promise(
+      editCourse(abbr, name, annotation, guarantor, index, setCourses, setSelected, authHeader),
+      {
+        pending: 'Předmět se aktualizuje',
+        success: 'Předmět aktualizulován',
+        error: 'Problém s tvorbou předmětu'
+      }
+    );
+    
     setDisabled(false);
   };
 
-  const handleDelete = () => {
-    setDisabled(true);
-    deleteCourse(id, resetSelected, confirm, authHeader);
-    setDisabled(false);
+  const handleDelete = async () => {
+    confirm({ description: "Chcete smazat předmět?", confirmationText: "Ano", cancellationText: "Ne", title: "Smazání předmětu", confirmationButtonProps: { color: "error" }  })
+      .then(async () => {
+        setDisabled(true);
+        await toast.promise(
+          deleteCourse(id, resetSelected, authHeader),
+          {
+            pending: 'Předmět se maže',
+            success: 'Předmět smazán',
+            error: 'Problém s mazáním předmětu'
+          }
+        );
+        setDisabled(false);
+      })
+      .catch(() => {
+      });
   };
 
   useEffect(() => {

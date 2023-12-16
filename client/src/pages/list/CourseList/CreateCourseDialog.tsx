@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useAuthHeader } from "react-auth-kit";
+import { toast } from "react-toastify";
 
 type CreateCourseDialogProps = {
   showDialog: boolean;
@@ -34,9 +35,17 @@ const CreateCourseDialog = ({
   const [annotation, setAnnotation] = useState("");
   const [guarantor, setGuarantor] = useState("");
 
-  const handleCreateCourse = () => {
+  const handleCreateCourse = async () => {
     setDisabled(true);
-    createCourse(abbr, name, annotation, guarantor, setCourses, authHeader);
+    await toast.promise(
+      createCourse(abbr, name, annotation, guarantor, setCourses, authHeader),
+      {
+        pending: 'Předmět se tvoří',
+        success: 'Předmět vytvořen',
+        error: 'Problém s tvorbou předmětu'
+      }
+    );
+    
     setDisabled(false);
     toggleDialog(false);
 

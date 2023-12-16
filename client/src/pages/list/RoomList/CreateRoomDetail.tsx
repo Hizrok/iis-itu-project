@@ -7,6 +7,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 type CreateRoomDialogProps = {
   showDialog: boolean;
@@ -26,9 +27,16 @@ const CreateRoomDialog = ({
   const [number, setNumber] = useState(0);
   const [capacity, setCapacity] = useState(0);
 
-  const handleCreateUser = () => {
+  const handleCreateUser = async () => {
     setDisabled(true);
-    createRoom(building, floor, number, capacity);
+    await toast.promise(
+      createRoom(building, floor, number, capacity),
+      {
+        pending: 'Místnost se tvoří',
+        success: 'Místnost vytvořen',
+        error: 'Problém s tvorbou místnosti'
+      }
+    );
     setDisabled(false);
     toggleDialog(false);
 

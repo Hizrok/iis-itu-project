@@ -4,6 +4,8 @@ import { useAuthHeader } from "react-auth-kit";
 import "../styles.css";
 import { Button, CircularProgress, TextField } from "@mui/material";
 import axios from "axios";
+import { toast } from "react-toastify";
+import { useConfirm } from "material-ui-confirm";
 
 type RoomDetailProps = {
   id: string;
@@ -13,6 +15,7 @@ type RoomDetailProps = {
 
 const RoomDetail = ({ id, editRoom, deleteRoom }: RoomDetailProps) => {
   const authHeader = useAuthHeader();
+  const confirm = useConfirm();
 
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -42,16 +45,37 @@ const RoomDetail = ({ id, editRoom, deleteRoom }: RoomDetailProps) => {
       });
   };
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
     setDisabled(true);
-    editRoom(building, floor, number, capacity);
+    await toast.promise(
+      editRoom(building, floor, number, capacity),
+      {
+        pending: 'Místnost se aktualizuje',
+        success: 'Místnost aktualizována',
+        error: 'Problém s aktualizací uživatele'
+      }
+    );
     setDisabled(false);
   };
 
-  const handleDelete = () => {
-    setDisabled(true);
-    deleteRoom();
-    setDisabled(false);
+  const handleDelete = async () => {
+    confirm({ description: "Chcete smazat místnost?", confirmationText: "Ano", cancellationText: "Ne", title: "Smazání místnoti", confirmationButtonProps: { color: "error" }  })
+    .then(async () => {
+      setDisabled(true);
+      await toast.promise(
+        deleteRoom(),
+        {
+          pending: 'Místnost se maže',
+          success: 'Místnost smazána',
+          error: 'Problém s mazáním místnosti'
+        }
+      );
+      setDisabled(false);
+    })
+    .catch(() => {
+      
+    });
+    
   };
 
   useEffect(() => {
