@@ -164,6 +164,7 @@ const ActivityList = ({ course }: ActivityListProps) => {
       {activities.map((a: Activity, i: number) => (
         <div key={i} onClick={() => handleSelect(a.id, i)}>
           <ActivityDetail
+            course={course}
             activity={a}
             selected={a.id === selected}
             editActivity={editActivity}

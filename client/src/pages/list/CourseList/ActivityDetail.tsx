@@ -9,6 +9,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 type ActivityDetailProps = {
+  course: string;
   activity: Activity;
   selected: boolean;
   editActivity: Function;
@@ -16,6 +17,7 @@ type ActivityDetailProps = {
 };
 
 const ActivityDetail = ({
+  course,
   activity,
   selected,
   editActivity,
@@ -217,7 +219,11 @@ const ActivityDetail = ({
               </div>
             ))}
           </div>
-          <InstanceList activity={activity.id} lecturers={lecturers} />
+          <InstanceList
+            course={course}
+            activity={activity}
+            lecturers={lecturers}
+          />
         </div>
       )}
     </div>
