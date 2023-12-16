@@ -1,10 +1,4 @@
-import {
-  AppBar,
-  Fab,
-  Stack,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { AppBar, Fab, Stack, Toolbar, Typography } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LoginIcon from "@mui/icons-material/Login";
@@ -43,33 +37,30 @@ function Topbar() {
   // Handle login popup
   const [showDialog, setShowDialog] = useState(false);
 
-
   const dispatch = useDispatch();
 
   const logoutDialogCheck = () => {
-    confirm({ description: "Chcete se odhlásit?", confirmationText: "Ano", cancellationText: "Ne", title: "Odhlášení", confirmationButtonProps: { color: "error" }  })
+    confirm({
+      description: "Chcete se odhlásit?",
+      confirmationText: "Ano",
+      cancellationText: "Ne",
+      title: "Odhlášení",
+      confirmationButtonProps: { color: "error" },
+    })
       .then(() => {
         signOut();
         navigate("/");
-        toast.success('Odhlášen');
+        toast.success("Odhlášen");
       })
-      .catch(() => {
-        
-      });
-  }
+      .catch(() => {});
+  };
 
-  const login = async (
-    id: string,
-    password: string,
-  ) => {
+  const login = async (id: string, password: string) => {
     dispatch(setLoadingState(true));
     await axios
-      .post(
-        `${import.meta.env.VITE_SERVER_HOST}login`,
-        { id, password }
-      )
+      .post(`${import.meta.env.VITE_SERVER_HOST}login`, { id, password })
       .then((res) => {
-        const loginRes = res.data.id;
+        const loginRes = res.data;
         if (
           signIn({
             token: loginRes.token,
@@ -80,19 +71,17 @@ function Topbar() {
         ) {
           setShowDialog(false);
           dispatch(setLoadingState(false));
-          toast.success('Přihlášení proběhlo uspěšně');
+          toast.success("Přihlášení proběhlo uspěšně");
         }
       })
       .catch((err) => {
-        console.error(err.message); 
+        console.error(err.message);
         if (err.status == 403) {
-          toast.error('Špatné přihlašovací údaje');
+          toast.error("Špatné přihlašovací údaje");
+        } else if (err.status > 400) {
+          toast.error("Probl0m s přihlášením");
         }
 
-        else if (err.status > 400) {
-          toast.error('Probl0m s přihlášením');
-        }
-        
         dispatch(setLoadingState(false));
       });
   };
@@ -122,7 +111,7 @@ function Topbar() {
           color: ColourConfig.topbar.colour,
         }}
       >
-        <Toolbar sx={{boxShadow:3}}>
+        <Toolbar sx={{ boxShadow: 3 }}>
           <ArrowForwardIosIcon />
           <Typography variant="h6">{topbarTitle}</Typography>
           <Stack
@@ -190,11 +179,11 @@ function Topbar() {
             Přihlásit
           </Fab>
         </Stack>
-        <LoginDialog 
+        <LoginDialog
           showDialog={showDialog}
           toggleDialog={setShowDialog}
           loginUser={login}
-          />
+        />
       </Toolbar>
     </AppBar>
   );

@@ -6,6 +6,7 @@ import axios from "axios";
 import { useAuthHeader } from "react-auth-kit";
 
 type ActivityDetailProps = {
+  course: string;
   activity: Activity;
   selected: boolean;
   editActivity: Function;
@@ -13,6 +14,7 @@ type ActivityDetailProps = {
 };
 
 const ActivityDetail = ({
+  course,
   activity,
   selected,
   editActivity,
@@ -195,7 +197,11 @@ const ActivityDetail = ({
               </div>
             ))}
           </div>
-          <InstanceList activity={activity.id} lecturers={lecturers} />
+          <InstanceList
+            course={course}
+            activity={activity}
+            lecturers={lecturers}
+          />
         </div>
       )}
     </div>
