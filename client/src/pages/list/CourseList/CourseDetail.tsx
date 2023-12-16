@@ -7,8 +7,7 @@ import {
   InputLabel,
   Button,
   TextField,
-  Select,
-  MenuItem,
+  Autocomplete,
 } from "@mui/material";
 import ActivityList from "./ActivityList";
 import { useConfirm } from "material-ui-confirm";
@@ -138,19 +137,17 @@ const CourseDetail = ({
               onChange={(e) => setAnnotation(e.target.value)}
             />
             <InputLabel>Garant</InputLabel>
-            <Select
-              className="role-select"
-              fullWidth
-              disabled={disabled}
+            <Autocomplete
               value={guarantor}
-              onChange={(e) => setGuarantor(e.target.value)}
-            >
-              {guarantors.map((g: string) => (
-                <MenuItem key={g} value={g}>
-                  {g}
-                </MenuItem>
-              ))}
-            </Select>
+              onChange={(event: any, newValue: string | null) => {
+                console.log(event);
+                setGuarantor(newValue? newValue : guarantor);
+              }}
+              id="controllable-states-type"
+              options={guarantors}
+              fullWidth
+              renderInput={(params) => <TextField {...params} />}
+              />
             <ActivityList course={id} />
           </div>
         )

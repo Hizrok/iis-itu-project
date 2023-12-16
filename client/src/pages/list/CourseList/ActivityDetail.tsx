@@ -1,4 +1,4 @@
-import { Button, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Autocomplete, Button, InputLabel, TextField } from "@mui/material";
 import { Activity } from "../../../components/common/Types/Course";
 import { useEffect, useState } from "react";
 import InstanceList from "./InstanceList";
@@ -116,6 +116,20 @@ const ActivityDetail = ({
     getLecturers();
   }, []);
 
+  const TypeOptions = [
+    'přednáška',
+    'cvičení',
+    'laboratoř',
+    'democvičení',
+    'seminář'
+  ]
+
+  const RecurrenceOptions = [
+    'každý',
+    'sudý',
+    'lichý'
+  ]
+
   return (
     <div>
       <div className="toggleble-list-item">
@@ -132,28 +146,31 @@ const ActivityDetail = ({
       {selected && (
         <div>
           <InputLabel>Typ</InputLabel>
-          <Select
-            className="role-select"
-            fullWidth
+          <Autocomplete
             value={type}
-            onChange={(e) => setType(e.target.value)}
-          >
-            <MenuItem value={"přednáška"}>přednáška</MenuItem>
-            <MenuItem value={"cvičení"}>cvičení</MenuItem>
-          </Select>
-          <InputLabel>Recurence</InputLabel>
-          <Select
-            className="role-select"
+            onChange={(event: any, newValue: string | null) => {
+              console.log(event);
+              setType(newValue? newValue : type);
+            }}
+            id="controllable-states-type"
+            options={TypeOptions}
             fullWidth
+            renderInput={(params) => <TextField {...params} />}
+            />
+          <InputLabel>Recurence</InputLabel>
+          <Autocomplete
             value={recurrence}
-            onChange={(e) => setRecurrence(e.target.value)}
-          >
-            <MenuItem value={"každý"}>každý</MenuItem>
-            <MenuItem value={"sudý"}>sudý</MenuItem>
-            <MenuItem value={"lichý"}>lichý</MenuItem>
-          </Select>
+            onChange={(event: any, newValue: string | null) => {
+              console.log(event);
+              setRecurrence(newValue? newValue : recurrence);
+            }}
+            id="controllable-states-type"
+            options={RecurrenceOptions}
+            fullWidth
+            renderInput={(params) => <TextField {...params} />}
+            />
           <TextField
-            margin="dense"
+            margin="normal"
             label="Kapacity"
             fullWidth
             variant="outlined"
@@ -170,17 +187,17 @@ const ActivityDetail = ({
               />
           </LocalizationProvider>
           <InputLabel>Lecturers</InputLabel>
-          <Select
-            className="role-select"
+          <Autocomplete
             value={selectedLecturer}
-            onChange={(e) => setSelectedLecturer(e.target.value)}
-          >
-            {allLecturers.map((lecturer: string) => (
-              <MenuItem key={lecturer} value={lecturer}>
-                {lecturer}
-              </MenuItem>
-            ))}
-          </Select>
+            onChange={(event: any, newValue: string | null) => {
+              console.log(event);
+              setSelectedLecturer(newValue? newValue : '');
+            }}
+            id="controllable-states-type"
+            options={allLecturers}
+            fullWidth
+            renderInput={(params) => <TextField {...params} />}
+            />
           <Button variant="contained" onClick={handleAddLecturer}>
             Add lecturer
           </Button>
