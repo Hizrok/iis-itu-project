@@ -41,12 +41,12 @@ const delete_registration = async (req, res) => {
 };
 
 const get_active_registration = async (req, res) => {
-  res.status(200).json(req.params.reg_id);
+  res.status(200).json(req.params.active);
 };
 
 const set_status = async (req, res) => {
   const id = req.params.id;
-  const old_id = req.params.reg_id;
+  const old_id = req.params.active.id;
 
   const [set_query, err] = await query_database(res, queries.set_status, [
     true,
@@ -121,253 +121,71 @@ const reset = async (req, res) => {
   res.status(202).json({ msg: `registration ${id} was reset` });
 };
 
-const evaluate_activities = async (id) => {
-  try {
-    await pool.query(
-      "update course_activity_instance_registrations set registered=true where registration=$1 and order_number=1;",
-      [id]
-    );
-    await pool.query(queries.set_state, ["FINISHED", id]);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const get_registered_courses = async (req, res) => {
-  try {
-    const { reg_id, user_id } = req.params;
-
-    const search_query = await pool.query(queries.get_registered_courses, [
-      reg_id,
-      user_id,
-    ]);
-
-    if (!search_query.rowCount) return res.sendStatus(404);
-
-    res.status(200).json(search_query.rows);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
-  }
-};
-
 const get_courses_with_reg_data = async (req, res) => {
-  try {
-    const { reg_id, user_id } = req.params;
+  const { active, user_id } = req.params;
+  const reg_id = active.id;
 
-    const search_query = await pool.query(queries.get_courses_with_reg_data, [
-      reg_id,
-      user_id,
-    ]);
+  const [course_query, course_err] = await query_database(
+    res,
+    queries.get_courses_for_reg_data,
+    []
+  );
+  if (course_err) return;
 
-    if (!search_query.rowCount) return res.sendStatus(404);
+  const [reg_query, reg_err] = await query_database(
+    res,
+    queries.get_registered_courses,
+    [reg_id, user_id]
+  );
+  if (reg_err) return;
 
-    res.status(200).json(search_query.rows);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
-  }
-};
+  const registered_courses = reg_query.rows.map((i) => i.course);
 
-const get_registered_instances = async (req, res) => {
-  try {
-    const { reg_id, user_id } = req.params;
+  const courses = course_query.rows.map((course) => ({
+    ...course,
+    registered: registered_courses.includes(course.id),
+  }));
 
-    const search_query = await pool.query(queries.get_registered_instances, [
-      reg_id,
-      user_id,
-    ]);
-
-    if (!search_query.rowCount) return res.sendStatus(404);
-
-    res.status(200).json(
-      search_query.rows.map((instance) => {
-        return {
-          id: instance.id,
-          course: instance.course,
-          type: instance.type,
-          recurrence: instance.recurrence,
-          day: instance.day,
-          start_time: instance.start_time,
-          duration: instance.duration,
-          room: instance.room,
-          lecturer:
-            instance.name && instance.surname
-              ? `${instance.name} ${instance.surname}`
-              : instance.lecturer,
-        };
-      })
-    );
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
-  }
-};
-
-const get_instances_with_reg_data = async (req, res) => {
-  try {
-    const { reg_id, user_id } = req.params;
-
-    // get all registered courses
-    const registered_courses_query = await pool.query(
-      queries.get_registered_courses,
-      [reg_id, user_id]
-    );
-
-    // get their instances
-    let all_instances = [];
-
-    for (let index = 0; index < registered_courses_query.rows.length; index++) {
-      const instances_of_course_query = await pool.query(
-        queries.get_instances_of_course,
-        [registered_courses_query.rows[index].id]
-      );
-      all_instances = [...all_instances, ...instances_of_course_query.rows];
-    }
-
-    // get instances with an order value
-    const selected_instances_query = await pool.query(
-      queries.get_instances_with_reg_data,
-      [reg_id, user_id]
-    );
-
-    const selected_instances = selected_instances_query.rows.map((i) => ({
-      id: i.id,
-      order: i.order,
-    }));
-
-    // merge data together
-
-    const instances = all_instances.map((i) => {
-      const s_i = selected_instances.find((ins) => ins.id === i.id);
-
-      const order = s_i ? s_i.order : 0;
-
-      return {
-        id: i.id,
-        type: i.type,
-        recurrence: i.recurrence,
-        capacity: i.capacity,
-        duration: i.duration,
-        room: i.room,
-        lecturer: i.lecturer,
-        start_time: i.start_time,
-        day: i.day,
-        order,
-      };
-    });
-
-    res.status(200).json(instances);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
-  }
-};
-
-const get_activities = async (req, res) => {
-  try {
-    const { reg_id, student, state } = req.params;
-
-    const query =
-      state === "FINISHED"
-        ? queries.get_registered_instances
-        : queries.get_selected_instances;
-
-    const search_query = await pool.query(query, [reg_id, student]);
-
-    if (!search_query.rowCount) return res.sendStatus(404);
-
-    res.status(200).json(search_query.rows);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
-  }
+  res.status(200).json(courses);
 };
 
 const register_course = async (req, res) => {
-  try {
-    const { reg_id, state } = req.params;
-    const { course, student } = req.body;
+  const reg_id = req.params.active.id;
+  const { course, student } = req.body;
 
-    if (state !== "COURSES IN PROGRESS") return res.sendStatus(400);
+  const [_, err] = await query_database(res, queries.register_course, [
+    reg_id,
+    course,
+    student,
+  ]);
+  if (err) return;
 
-    const add_query = await pool.query(queries.register_course, [
-      reg_id,
-      course,
-      student,
-    ]);
-    if (!add_query.rowCount) return res.sendStatus(404);
-
-    res.sendStatus(201);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
-  }
+  res.status(201).json({ msg: `${student} registered ${course}` });
 };
 
-const register_instance = async (req, res) => {
-  try {
-    const { reg_id, state } = req.params;
-    const { instance, student, order } = req.body;
+const unregister_course = async (req, res) => {
+  const reg_id = req.params.active.id;
+  const { course, user_id } = req.params;
 
-    console.log(instance, student, order);
+  const [_, err] = await query_database(res, queries.unregister_course, [
+    reg_id,
+    course,
+    user_id,
+  ]);
+  if (err) return;
 
-    if (state !== "ACTIVITIES IN PROGRESS") return res.sendStatus(400);
-
-    const add_query = await pool.query(queries.register_instance, [
-      reg_id,
-      instance,
-      student,
-      order,
-    ]);
-    if (!add_query.rowCount) return res.sendStatus(404);
-
-    res.sendStatus(201);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
-  }
-};
-
-const unregister = async (req, res) => {
-  try {
-    const { reg_id, type, object_id, student, state } = req.params;
-
-    const proper_state =
-      type === "courses" ? "COURSES IN PROGRESS" : "ACTIVITIES IN PROGRESS";
-
-    if (state !== proper_state) return res.sendStatus(400);
-
-    const query =
-      type === "courses"
-        ? queries.unregister_course
-        : queries.unregister_activity;
-
-    const delete_query = await pool.query(query, [reg_id, object_id, student]);
-
-    if (!delete_query.rowCount) return res.sendStatus(404);
-
-    res.sendStatus(202);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
-  }
+  res.status(202).json({ msg: `${user_id} unregistered ${course}` });
 };
 
 module.exports = {
   get_registrations,
   get_active_registration,
-  get_registered_courses,
-  get_courses_with_reg_data,
-  get_registered_instances,
-  get_instances_with_reg_data,
   add_registration,
-  delete_registration,
   set_status,
   next_phase,
   reset,
+  delete_registration,
+  get_courses_with_reg_data,
   register_course,
-  unregister,
-  register_instance,
-  get_activities,
+  unregister_course,
 };

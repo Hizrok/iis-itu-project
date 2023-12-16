@@ -2,15 +2,17 @@ import { Button, InputLabel } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAuthHeader } from "react-auth-kit";
-import { Instance } from "../../../components/common/Types/Course";
+import { Instance, Activity } from "../../../components/common/Types/Course";
 import InstanceDetail from "./InstanceDetail";
+import CreateInstanceDialog from "./CreateInstanceDialog";
 
 type InstanceListProps = {
-  activity: number;
+  course: string;
+  activity: Activity;
   lecturers: string[];
 };
 
-const InstanceList = ({ activity, lecturers }: InstanceListProps) => {
+const InstanceList = ({ course, activity, lecturers }: InstanceListProps) => {
   const authHeader = useAuthHeader();
 
   const [rooms, setRooms] = useState<string[]>([]);
@@ -18,10 +20,12 @@ const InstanceList = ({ activity, lecturers }: InstanceListProps) => {
   const [selected, setSelected] = useState(0);
   const [index, setIndex] = useState(0);
 
+  const [showDialog, setShowDialog] = useState(false);
+
   const getInstances = async () => {
     await axios
       .get(
-        `${import.meta.env.VITE_SERVER_HOST}instances?activity=${activity}`,
+        `${import.meta.env.VITE_SERVER_HOST}instances?activity=${activity.id}`,
         {
           headers: {
             Authorization: authHeader(),
@@ -94,9 +98,58 @@ const InstanceList = ({ activity, lecturers }: InstanceListProps) => {
       .catch((err) => console.error(err.message));
   };
 
+  const createInstance = async (
+    room: string,
+    lecturer: string,
+    day: string,
+    start_time: string
+  ) => {
+    await axios
+      .post(
+        `${import.meta.env.VITE_SERVER_HOST}instances`,
+        {
+          activity: activity.id,
+          room,
+          lecturer,
+          day,
+          start_time,
+        },
+        {
+          headers: {
+            Authorization: authHeader(),
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        const id = res.data.id;
+        setInstances((oldInstances) => {
+          const newInstances = [...oldInstances];
+          newInstances.push({
+            id,
+            course,
+            type: activity.type,
+            room,
+            lecturer,
+            recurrence: activity.recurrence,
+            day,
+            start_time,
+            duration: activity.duration,
+            capacity: activity.capacity,
+          });
+          return newInstances;
+        });
+      })
+      .catch((err) => console.error(err.message));
+  };
+
   const handleSelect = (id: number, i: number) => {
     setSelected(id);
     setIndex(i);
+  };
+
+  const toggleDialog = (value: boolean) => {
+    setShowDialog(value);
   };
 
   useEffect(() => {
@@ -107,7 +160,9 @@ const InstanceList = ({ activity, lecturers }: InstanceListProps) => {
   return (
     <div>
       <InputLabel sx={{ marginTop: "10px" }}>Instances</InputLabel>
-      <Button variant="contained">Add instance</Button>
+      <Button variant="contained" onClick={() => toggleDialog(true)}>
+        Add instance
+      </Button>
       {instances.map((instance: Instance, i: number) => (
         <div key={i} onClick={() => handleSelect(instance.id, i)}>
           <InstanceDetail
@@ -120,6 +175,13 @@ const InstanceList = ({ activity, lecturers }: InstanceListProps) => {
           />
         </div>
       ))}
+      <CreateInstanceDialog
+        rooms={rooms}
+        lecturers={lecturers}
+        showDialog={showDialog}
+        toggleDialog={toggleDialog}
+        createInstance={createInstance}
+      />
     </div>
   );
 };
