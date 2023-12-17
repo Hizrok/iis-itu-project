@@ -1,3 +1,5 @@
+// @author Tomáš Vlach
+
 import { Collapse, List, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import ColourConfig from "../../configs/ColourConfig";
@@ -35,7 +37,8 @@ const SidebarItemCollapse = ({ item }: Props) => {
             backgroundColor: ColourConfig.sidebar.highlightBg,
             paddingY: "12px",
             paddingX: "0px",
-            marginBottom: "2px"
+            marginBottom: "2px",
+            boxShadow:5
           }}
         >
           <ListItemIcon sx={{marginLeft:"10px", color:"white"}}>

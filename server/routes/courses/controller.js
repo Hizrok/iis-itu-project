@@ -1,83 +1,131 @@
 const pool = require("../../db");
+const { query_database } = require("../../middleware");
 const queries = require("./queries");
 
 const get_courses = async (req, res) => {
-  try {
-    const search_query = await pool.query(queries.get_all_courses);
-    const courses = await Promise.all(
-      search_query.rows.map(async (course) => {
-        const activities_query = await pool.query(queries.get_activities, [
-          course.id,
-        ]);
-        const activities = await Promise.all(
-          activities_query.rows.map(async (activity) => {
-            const lecturers_query = await pool.query(queries.get_lecturers, [
-              course.id,
-              activity.id,
-            ]);
-            const instances_query = await pool.query(queries.get_instances, [
-              activity.id,
-            ]);
+  const [search_query, err] = await query_database(
+    res,
+    queries.get_all_courses
+  );
+  if (err) return;
 
-            return {
-              ...activity,
-              lecturers: lecturers_query.rows,
-              instaces: instances_query.rows,
-            };
-          })
-        );
-
-        return {
-          id: course.id,
-          name: course.name,
-          annotation: course.annotation,
-          guarantor: {
-            id: course.guarantor,
-            name: course.guarantor_name,
-            surname: course.surname,
-            email: course.email,
-          },
-          activities,
-        };
-      })
-    );
-    res.status(200).json(courses);
-  } catch (error) {
-    console.error(error);
-    res.sendStatus(500);
-  }
+  const courses = search_query.rows.map((course) => {
+    return {
+      id: course.id,
+      name: course.name,
+      guarantor: course.guarantor,
+      annotation: course.annotation,
+    };
+  });
+  res.status(200).json(courses);
 };
 
 const get_course = async (req, res) => {
+  const id = req.params.id;
+
+  const [course_query, err] = await query_database(res, queries.get_course, [
+    id,
+  ]);
+  if (err) return;
+
+  if (!course_query.rowCount)
+    return res.status(404).json(`course ${id} was not found`);
+
+  const [inst_query, inst_err] = await query_database(
+    res,
+    queries.get_course_instances,
+    [id]
+  );
+  if (inst_err) return;
+
+  const course = {
+    id: course_query.rows[0].id,
+    name: course_query.rows[0].name,
+    guarantor: course_query.rows[0].guarantor,
+    annotation: course_query.rows[0].annotation,
+    instances: inst_query.rows,
+  };
+
+  res.status(200).json(course);
+};
+
+const add_course = async (req, res) => {
+  const { id, name, annotation, guarantor } = req.body;
+
+  if (!id || !name || !guarantor)
+    return res.status(400).json({ error: "invalid request parameters" });
+
+  const [_, err] = await query_database(res, queries.add_course, [
+    id,
+    name,
+    annotation,
+    guarantor,
+  ]);
+  if (err) return;
+
+  res.status(201).json({ msg: `course ${id} was added` });
+};
+
+const edit_course = async (req, res) => {
+  const old_id = req.params.id;
+  const { id, name, annotation, guarantor } = req.body;
+
+  if (guarantor && req.params.user.role !== "admin")
+    return res.status(403).json({
+      error: "you don't have permission to change the course guarantor",
+    });
+
+  const values = [id, name, annotation, guarantor].filter((value) => value);
+
+  const [edit_query, err] = await query_database(
+    res,
+    queries.get_course_edit_query(id, name, annotation, guarantor),
+    [old_id, ...values]
+  );
+  if (err) return;
+
+  if (!edit_query.rowCount)
+    return res.status(404).json({ error: `course ${old_id} was not found` });
+
+  res.status(202).json({ msg: `course ${old_id} was edited` });
+};
+
+const delete_course = async (req, res) => {
+  const id = req.params.id;
+
+  const [delete_query, err] = await query_database(res, queries.delete_course, [
+    id,
+  ]);
+  if (err) return;
+
+  if (!delete_query.rowCount)
+    return res.status(404).json({ error: `course ${id} was not found` });
+
+  res.status(202).json({ msg: `course ${id} was deleted` });
+};
+
+const get_all_instances = async (req, res) => {
   try {
-    const id = req.params.id;
-    const course_query = await pool.query(queries.get_course, [id]);
-    if (!course_query.rowCount) return res.sendStatus(404);
+    const lecturer = req.query.lecturer;
 
-    const activities_query = await pool.query(queries.get_activities, [id]);
-
-    const course = {
-      id: course_query.rows[0].id,
-      name: course_query.rows[0].name,
-      annotation: course_query.rows[0].annotation,
-      guarantor: {
-        id: course_query.rows[0].guarantor,
-        name: course_query.rows[0].guarantor_name,
-        surname: course_query.rows[0].surname,
-        email: course_query.rows[0].email,
-      },
-      activities: await Promise.all(
-        activities_query.rows.map(async (activity) => {
-          const lecturers_query = await pool.query(queries.get_lecturers, [
-            id,
-            activity.id,
-          ]);
-          return { ...activity, lecturers: lecturers_query.rows };
-        })
-      ),
-    };
-
-    res.status(200).json(course);
+    const search_query = lecturer
+      ? await pool.query(queries.get_all_instances_of_lecturer, [lecturer])
+      : await pool.query(queries.get_all_instances);
+    const instaces = search_query.rows.map((i) => {
+      return {
+        id: i.id,
+        course: i.course,
+        type: i.type,
+        recurrence: i.recurrence,
+        capacity: i.capacity,
+        day: i.day,
+        start_time: i.start_time,
+        duration: i.duration,
+        room: i.room,
+        lecturer: i.name && i.surname ? `${i.name} ${i.surname}` : i.lecturer,
+      };
+    });
+    res.status(200).json(instaces);
   } catch (error) {
     console.error(error);
     res.sendStatus(500);
@@ -130,11 +178,14 @@ const get_lecturers = async (req, res) => {
     const { course, id } = req.params;
     const search_query = await pool.query(queries.get_lecturers, [course, id]);
 
-    console.log(search_query);
+    const lecturers = search_query.rows.map((l) => ({
+      id: l.id,
+      role: l.role,
+      name: l.name && l.surname ? `${l.name} ${l.surname}` : null,
+      email: l.email,
+    }));
 
-    if (!search_query.rowCount) return res.sendStatus(404);
-
-    res.status(200).json(search_query.rows);
+    res.status(200).json(lecturers);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
@@ -165,30 +216,6 @@ const get_instance = async (req, res) => {
     res.status(200).json(find_query.rows[0]);
   } catch (error) {
     console.log(error);
-    res.sendStatus(500);
-  }
-};
-
-const add_course = async (req, res) => {
-  try {
-    const { id, name, annotation, guarantor } = req.body;
-
-    if (!id || !name || !guarantor) return res.sendStatus(400);
-
-    const add_query = await pool.query(queries.add_course, [
-      id,
-      name,
-      annotation,
-      guarantor,
-    ]);
-
-    res.status(201).json(add_query.rows[0]);
-  } catch (error) {
-    // course already exists
-    if (error.code === "23505") return res.sendStatus(400);
-    // guarantor does not exist
-    if (error.code === "23503") return res.sendStatus(404);
-    console.error(error);
     res.sendStatus(500);
   }
 };
@@ -253,34 +280,6 @@ const add_instance = async (req, res) => {
   }
 };
 
-const edit_course = async (req, res) => {
-  try {
-    const old_id = req.params.id;
-    const { id, name, annotation, guarantor } = req.body;
-
-    if (guarantor && req.params.user.role !== "admin")
-      return res.sendStatus(403);
-
-    const values = [id, name, annotation, guarantor].filter((value) => value);
-
-    const edit_query = await pool.query(
-      queries.get_course_edit_query(id, name, annotation, guarantor),
-      [old_id, ...values]
-    );
-
-    if (!edit_query.rowCount) return res.sendStatus(404);
-
-    res.status(202).json(edit_query.rows[0]);
-  } catch (error) {
-    // course id already exists
-    if (error.code === "23505") return res.sendStatus(400);
-    // guarantor does not exist
-    if (error.code === "23503") return res.sendStatus(404);
-    console.log(error);
-    res.sendStatus(500);
-  }
-};
-
 const edit_activity = async (req, res) => {
   try {
     const { course, id } = req.params;
@@ -322,20 +321,6 @@ const edit_instance = async (req, res) => {
     res.status(202).json(edit_query.rows[0]);
   } catch (error) {
     if (error.code === "22P02") return res.sendStatus(400);
-    console.log(error);
-    res.sendStatus(500);
-  }
-};
-
-const delete_course = async (req, res) => {
-  try {
-    const id = req.params.id;
-
-    const delete_query = await pool.query(queries.delete_course, [id]);
-    if (!delete_query.rowCount) return res.sendStatus(404);
-
-    res.sendStatus(202);
-  } catch (error) {
     console.log(error);
     res.sendStatus(500);
   }
@@ -390,6 +375,7 @@ const delete_instance = async (req, res) => {
 };
 
 module.exports = {
+  get_all_instances,
   get_courses,
   get_course,
   get_activities,

@@ -1,5 +1,5 @@
-import React from "react";
+// @author Petr Teichgrab
 
-  export default interface FilterProps {
+export default interface FilterProps {
     onFilterChange: (attribute: string, isDescending: boolean) => void;
   }

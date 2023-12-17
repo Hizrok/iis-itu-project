@@ -1,0 +1,56 @@
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+	"id": "admin",
+	"password": "admin"
+}
+
+###
+
+GET http://localhost:3000/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
+GET http://localhost:3000/users/guarantors
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
+GET http://localhost:3000/users/lecturers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
+GET http://localhost:3000/users/student
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
+POST http://localhost:3000/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+Content-Type: application/json
+
+{
+	"role": "admin",
+	"name": "Jan",
+	"password": "admin",
+	"surname": "Kapsa",
+	"email": "jan@kapsa.cz"
+}
+
+###
+
+PUT http://localhost:3000/users/kapsa00
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNjQzNDI4fQ.FqguuP7kahjA_n4yInhf14bWzohFunkcTdO2W0Ec-rE
+Content-Type: application/json
+
+{
+	"email": "lmao@xd.cz"
+}
+
+###
+
+DELETE http://localhost:3000/users/kapsa01
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A

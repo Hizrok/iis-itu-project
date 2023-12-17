@@ -1,0 +1,96 @@
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+	"id": "admin",
+	"password": "admin"
+}
+
+###
+
+GET http://localhost:3000/registrations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
+GET http://localhost:3000/registrations/active
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
+GET http://localhost:3000/registrations/courses/student
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
+GET http://localhost:3000/registrations/instances/student
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
+POST http://localhost:3000/registrations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
+POST http://localhost:3000/registrations/courses
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+Content-Type: application/json
+
+{
+	"course": "ITU",
+	"student": "student"
+}
+
+###
+
+POST http://localhost:3000/registrations/instances
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+Content-Type: application/json
+
+{
+	"instance": 7,
+	"student": "student",
+	"order": 1
+}
+
+###
+
+PUT http://localhost:3000/registrations/4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
+PUT http://localhost:3000/registrations/next/4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
+PUT http://localhost:3000/registrations/reset/4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
+PUT http://localhost:3000/registrations/instances/student
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+Content-Type: application/json
+
+{
+	"instance": 7,
+	"order": 2
+}
+
+###
+
+DELETE http://localhost:3000/registrations/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
+DELETE http://localhost:3000/registrations/courses/ITU/student
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
+DELETE http://localhost:3000/registrations/instances/7/student
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A

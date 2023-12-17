@@ -1,0 +1,250 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Projekt IIS</title>
+    <style type="text/css">
+      table {
+        border-collapse: collapse;
+      }
+      td,
+      th {
+        border: 1px solid black;
+        padding: 0.3em 0.5em;
+        text-align: left;
+      }
+      dt {
+        font-weight: bold;
+        margin-top: 0.5em;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Zkontrolujte prosím nastavení kódování v hlavičce dokumentu 
+     podle použitého editoru -->
+
+    <h1>Plánování rozvrhů</h1>
+    <!-- Nahradte názvem svého zadání -->
+
+    <dl>
+      <dt>Autoři</dt>
+      <dd>
+        Jan Kapsa
+        <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+        <a href="mailto:xkapsa00@stud.fit.vutbr.cz"
+          >xkapsa00@stud.fit.vutbr.cz</a
+        >
+        - server a databáze
+      </dd>
+      <dd>
+        Tomáš Vlach
+        <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+        <a href="mailto:xvlach24@stud.fit.vutbr.cz"
+          >xvlach24@stud.fit.vutbr.cz</a
+        >
+        - klient
+      </dd>
+      <dd>
+        Petr Teichgráb
+        <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+        <a href="mailto:xteich01@stud.fit.vutbr.cz"
+          >xteich01@stud.fit.vutbr.cz</a
+        >
+        - klient
+      </dd>
+      <dt>URL aplikace</dt>
+      <dd>
+        <a href="https://registration-website-7zsy.onrender.com/"
+          >https://registration-website-7zsy.onrender.com/</a
+        >
+      </dd>
+      <dd>
+        Kvůli limitacím serveru bude první přihlášení chvíli trvat, ale pak již
+        chod stránky nebude omezován
+      </dd>
+    </dl>
+
+    <p>trello: https://trello.com/b/iEGERLzq/iis-itu-project</p>
+    <p>github: https://github.com/Hizrok/iis-itu-project</p>
+
+    <h2>Uživatelé systému pro testování</h2>
+    <table>
+      <tr>
+        <th>Login</th>
+        <th>Heslo</th>
+        <th>Role</th>
+      </tr>
+      <tr>
+        <td>admin</td>
+        <td>admin</td>
+        <td>Administrátor</td>
+      </tr>
+      <tr>
+        <td>garant</td>
+        <td>garant</td>
+        <td>Garant</td>
+      </tr>
+      <tr>
+        <td>vyucujici</td>
+        <td>vyucujici</td>
+        <td>Vyučující</td>
+      </tr>
+      <tr>
+        <td>student</td>
+        <td>student</td>
+        <td>Student</td>
+      </tr>
+    </table>
+    <p>Jakýkoliv nový účet v systému bude mít výchozí heslo: "heslo"</p>
+
+    <a
+      href="https://drive.google.com/file/d/18JkKg-_ADLunEKBVGUukrTGIQZ8sYjp7/view?usp=sharing"
+      >Video</a
+    >
+
+    <h2>Implementace</h2>
+    <p>
+      Stručná dokumentace k implementaci, která popisuje, které části projektu
+      (např. PHP skripty) implementují jednotlivé případy použití.
+    </p>
+
+    <p>
+      Pro implementaci projektu jsme se rozhodli použít React jako frontend a
+      Node js Express jako backend a Postgres databázi. Struktura adresáře je
+      řešena následovně:
+    </p>
+
+    <ul>
+      <li>/client - implementace klienta</li>
+      <li>/server - implementace serveru</li>
+      <li>/database - implementace databáze (skript pro vytvoření tabulek)</li>
+    </ul>
+
+    <h3>Server</h3>
+
+    <p>
+      Server je implementace REST API. Místo generování stránek přímo na serveru
+      jsou klientovi posílána jen data ve formátu json, na která se ptá. Server
+      má jeden hlavní soubor, kde je řešeno celkové nastavení serveru a
+      jednotlivé cesty jsou rozděleny do adresářů.
+    </p>
+
+    <ul>
+      <li>/registrations - cesty pro práci s registracemi</li>
+      <li>/courses - cesty pro práci s předměty</li>
+      <li>/rooms - cesty pro práci s místnostmi</li>
+      <li>/users - cesty pro práci s uživateli</li>
+    </ul>
+
+    <h3>Klient</h3>
+
+    <p>
+      Klient zobrazuje uživateli jednotlivé stránky a data, které získává ze
+      serveru. Probíhají na něm jednoduché operace jako řazení, filtrování ale
+      také validace. Pro generování stránek jsme používali knihovnu MUI
+      kombinovaně s čístým CSS a HTML.
+    </p>
+
+    <h3>Databáze</h3>
+
+    <img src="sql_scheme.png" alt="SQL scheme of our database" />
+
+    <p>
+      Obrázek reprezentuje strukturu tabulek v databáti, zelená barva označuje
+      ty tabulky, které jsme stihli implementovat.
+    </p>
+
+    <h2>Instalace</h2>
+
+    Rozbalení
+    <ul>
+      <li>
+        Rozbalit archiv v novém adresáři pomocí aplikace schopné rozbalovat .zip
+      </li>
+    </ul>
+
+    Client:
+    <ul>
+      <li>Otevřete adresář 'client/'</li>
+      <li>Vytvoříte souber s názvem '.env'</li>
+      <li>
+        Do tohoto souboru vložte položky "<code
+          >VITE_SERVER_HOST = "{server adress}"</code
+        >""
+      </li>
+      <li>Otevřete si příkazovou řádku v daném adrešáři</li>
+      <li>
+        Použijte příkaz "<code>npm install</code>" pro instalaci potřebných node
+        modulů
+      </li>
+      <li>
+        Pro spuštění webové stránky v módu development použijte příkaz "<code
+          >npm run dev</code
+        >"
+      </li>
+      <li>
+        Pro postavení statické webové stránky použijte příkaz "<code
+          >npm run build</code
+        >"
+      </li>
+    </ul>
+
+    Server:
+    <ul>
+      <li>Otevřete adresář 'server/'</li>
+      <li>Vytvoříte souber s názvem '.env'</li>
+      <li>
+        Do tohoto souboru vložte položky "
+        <code
+          >ACCESS_TOKEN_SECRET={jwt secret}<br />
+          CORS_ALLOW = "*"<br />
+          PG_USER={postgresql user}<br />
+          PG_PASSWORD={postgresql user password}<br />
+          PG_HOST={postgresql hosting}<br />
+          PG_DATABASE={database name}<br />
+          PG_PORT={database port}<br />
+          PORT=3000<br /></code
+        >"
+      </li>
+      <li>
+        Pro spuštění serveru v módu development použijte příkaz "<code
+          >npm run dev</code
+        >"
+      </li>
+      <li>Pro spuštění serveru použijte příkaz "<code>npm start</code>"</li>
+      <li>
+        Pro postavení serveru pro deployment použijte příkaz "<code>yarn</code>"
+      </li>
+    </ul>
+
+    Databáze:
+    <ul>
+      <li>Nainstalujte server a zapněte postgresql server (min v. 15)</li>
+      <li>Vytvořte uživatele pro přístup k databázi</li>
+      <li>Vytvořte databázi</li>
+      <li>Přesuňte se v příkazové řádce do adřesáře 'database/'</li>
+      <li>
+        Použijte příkaz "<code
+          >psql -H {server hostname} -U {created user} -D {created database} -F
+          table.sql</code
+        >"
+      </li>
+      <li>
+        Pokud vše prošlo bez problému měl by terminál vypsat všechny vytvořené
+        tabulky
+      </li>
+      <li>
+        Údáje databáze, uživatele a hosta vložte do .env souboru v adřesáři
+        'server/'
+      </li>
+    </ul>
+
+    <h2>Známé problémy</h2>
+    <p>
+      Bohužel jsme nestihli implementaci jednotlivých požadavků (časových
+      požadavků vyučujících, požadavků místností, ...) a jsme si vědomi
+      některých chyb (duplikátní zobrazování některých informací, ...), které
+      nejsou žádané.
+    </p>
+  </body>
+</html>

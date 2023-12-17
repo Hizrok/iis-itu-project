@@ -1,3 +1,5 @@
+// @author Tomáš Vlach
+
 import { Outlet } from "react-router-dom";
 import { Backdrop, Box, Stack, Toolbar } from "@mui/material";
 import Topbar from "../common/Topbar";
@@ -6,9 +8,8 @@ import SizeConfig from "../../configs/SizeConfig";
 import ColourConfig from "../../configs/ColourConfig";
 import Footer from "../common/Footer";
 import CircularProgress from '@mui/material/CircularProgress';
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { setLoadingState } from "../../redux/features/LoadingStateSlice";
 const MainLayout = () => {
     
     const { loadingState } = useSelector((state: RootState) => state.loadingState);
@@ -28,14 +29,14 @@ const MainLayout = () => {
                 <Sidebar/>
             </Box>
             <Stack spacing={1} sx={{ flexGrow:1, width: `calc(100% -${SizeConfig.sidebar.width})`, paddingLeft:"auto" , minHeight: "100vh"}} >
-                <Box component="main" sx={{flexGrow:1, p:3, width: `calc(100% -${SizeConfig.sidebar.width})`, paddingLeft:"auto" , minHeight: "100vh", backgroundColor: ColourConfig.mainBg}} >
+                <Box component="main" sx={{flexGrow:1, p:3, width: `calc(100% -${SizeConfig.sidebar.width})`, paddingLeft:"auto" , minHeight: "100vh", backgroundColor: ColourConfig.mainBg, boxShadow:1}} >
                     <Backdrop open={loadingContentState}>
                         <CircularProgress color="inherit"/>
                     </Backdrop>
                     <Toolbar/>
                     <Outlet/>
                 </Box>
-                <Box component="footer" sx={{flexGrow:1, p:3, width: `calc(100% -${SizeConfig.sidebar.width})`, paddingLeft:"auto" , minHeight: "10vh", backgroundColor: ColourConfig.footerBg}}>
+                <Box component="footer" sx={{flexGrow:1, p:3, width: `calc(100% -${SizeConfig.sidebar.width})`, paddingLeft:"auto" , minHeight: "10vh", backgroundColor: ColourConfig.footerBg, boxShadow:2}}>
                     <Footer />
                 </Box>
             </Stack>

@@ -1,5 +1,11 @@
 const get_all_users = "select id, role, name, surname, email from users;";
 
+const get_guarantors =
+  "select id from users where role='admin' or role='garant';";
+
+const get_lecturers =
+  "select id from users where role='admin' or role='garant' or role='vyučující';";
+
 const get_user_data =
   "select id, role, name, surname, email from users where id=$1";
 
@@ -28,6 +34,8 @@ const delete_user = "delete from users where id=$1;";
 
 module.exports = {
   get_all_users,
+  get_guarantors,
+  get_lecturers,
   get_user_data,
   add_user,
   get_similar_ids,
