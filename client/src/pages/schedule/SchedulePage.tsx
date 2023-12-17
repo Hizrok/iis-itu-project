@@ -3,7 +3,14 @@ import { setLoadingContentState } from "../../redux/features/LoadingContentState
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import "../../styles/style.css";
-
+import  Fullcalendar  from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import csLocale from '@fullcalendar/core/locales/cs';
+import styled from "@emotion/styled";
+import { Calendar } from '@fullcalendar/core';
+import listPlugin from '@fullcalendar/list';
 
 
 
@@ -32,7 +39,45 @@ type Activity = {
     lecturer: string;
 }
 
-
+const activitiesDummy: Activity[] = [
+    {
+      id: '1',
+      course: 'ITU',
+      type: 'přednáška',
+      recurrence: 'každý',
+      capacity: '100',
+      day: 'pondělí',
+      start_time: '12:00:00',
+      duration: '02:00:00',
+      room: 'A101',
+      lecturer: 'garant',
+    },
+    {
+        id: '2',
+        course: 'Matematika',
+        type: 'cvičení',
+        recurrence: 'každý týden',
+        capacity: '30',
+        day: 'úterý',
+        start_time: '14:30:00',
+        duration: '01:30:00',
+        room: 'B202',
+        lecturer: 'Dr. Novák',
+      },
+      {
+        id: '3',
+        course: 'Fyzika',
+        type: 'seminář',
+        recurrence: 'každý druhý týden',
+        capacity: '20',
+        day: 'středa',
+        start_time: '10:00:00',
+        duration: '02:30:00',
+        room: 'C103',
+        lecturer: 'Prof. Kovář',
+      }
+  ];
+  
 
 const SchedulePage = () => {
 
@@ -43,6 +88,7 @@ const SchedulePage = () => {
 
     const [activities, setActivities] = useState<Activity[]>([]);
     const [selectedActivity, setSelectedActivity] = useState<Activity>();
+
 
     useEffect(() => {
         getActivities();
@@ -104,50 +150,92 @@ const SchedulePage = () => {
         setSelectedActivity(activity);
     };
 
+    const StyleWrapper = styled.div`
+    .fc-button.fc-prev-button, .fc-button.fc-next-button, .fc-button.fc-button-primary{
+        background: rgba(106,90,205,1);
+        background-image: none;
+    }
+    .fc th {
+        background: rgba(106,90,205,1);
+    }
+    
+    .fc td:nth-child(1) {  
+      }
+    `
+
+    const dayMap: Record<string, number> = {
+        pondělí: 1,
+        úterý: 2,
+        středa: 3,
+        čtvrtek: 4,
+        pátek: 5,
+      };
+
+    const subjects = activitiesDummy.map(activity => {
+        return {
+        title: activity.course,
+        groupId: 'blueEvents', // Přizpůsobte podle potřeby
+        daysOfWeek: [dayMap[activity.day]],
+        startTime: activity.start_time,
+        endTime: calculateEndTime(activity.start_time, activity.duration), // Přizpůsobte podle potřeby
+        };
+    });
+
+    function calculateEndTime(startTime: any, duration: any) {
+        // Rozdělení začátečního času na hodiny, minuty a sekundy
+        const [startHours, startMinutes, startSeconds] = startTime.split(':').map(Number);
+      
+        // Rozdělení délky na hodiny, minuty a sekundy
+        const [durationHours, durationMinutes, durationSeconds] = duration.split(':').map(Number);
+      
+        // Výpočet konce události
+        let endHours = startHours + durationHours;
+        let endMinutes = startMinutes + durationMinutes;
+        let endSeconds = startSeconds + durationSeconds;
+      
+        // Převedení přebytečných minut a sekund na hodiny a minuty
+        endMinutes += Math.floor(endSeconds / 60);
+        endSeconds %= 60;
+        endHours += Math.floor(endMinutes / 60);
+        endMinutes %= 60;
+      
+        // Formátování výsledného času
+        const formattedEndTime = `${padZero(endHours)}:${padZero(endMinutes)}:${padZero(endSeconds)}`;
+      
+        return formattedEndTime;
+      }
+      
+      // Pomocná funkce pro přidání nuly před jednociferné číslo
+      function padZero(num: any) {
+        return num < 10 ? `0${num}` : `${num}`;
+      }
+
     const ReturnPage = (props: ReturnPageProps) => {
-        if (activities.length !== 0) {
             return (
-                <div className="activity-page">
-                    <div className="list-pages-list-container">
-                        <h2>{props.headerName}</h2>
-                        <li className="list-header">
-                            <span className="header-item">Předmět</span>
-                            <span className="header-item">Typ</span>
-                            <span className="header-item">Den</span>
-                            <span className="header-item">Čas</span>
-                            <span className="header-item">Místnost</span>
-                        </li>
-                        {activities.map((activity: Activity) => (
-                            <li
-                                key={activity.id}
-                                className="list-item-properties"
-                                onClick={() => handleActivityClick(activity)}
-                            >
-                                <span className="list-item-property">{activity.course}</span>
-                                <span className="list-item-property">{activity.type}</span>
-                                <span className="list-item-property">{activity.day}</span>
-                                <span className="list-item-property">{activity.start_time}</span>
-                                <span className="list-item-property">{activity.room}</span>
-                            </li>
-                        ))}
+                <div>
+                    <div className="course-page">
+                        <div className="list-pages-list-container">
+                            <h2>{props.headerName}</h2>
+                        </div>
+                        {props.errorMessage}
                     </div>
-                    {selectedActivity && (
-                        <ActivityDetail
-                            selectedActivity={selectedActivity}
-                        ></ActivityDetail>
-                    )}
+                    <div className="schedule">
+                        <StyleWrapper>
+                            <Fullcalendar
+                            events={subjects}
+                            locale={csLocale}
+                            weekends={false} 
+                            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                            headerToolbar={{
+                                start: "prev, next",
+                                center: "title",
+                                end: "dayGridMonth, timeGridWeek, timeGridDay"
+                            }}  
+                            initialView={"timeGridWeek"}/>
+                        </StyleWrapper>
+                    </div>
                 </div>
             );
-        } else {
-            return (
-                <div className="course-page">
-                    <div className="list-pages-list-container">
-                        <h2>{props.headerName}</h2>
-                    </div>
-                    {props.errorMessage}
-                </div>
-            );
-        }
     };
 
     type activityDetailProps = {
