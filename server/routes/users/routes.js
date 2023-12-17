@@ -7,16 +7,30 @@ const controller = require("./controller");
 const router = Router();
 
 router.get("/", authenticate(["admin"]), controller.get_users);
-router.get("/:id", authenticate(["admin"], true), controller.get_user);
+router.get("/guarantors", authenticate(["admin", "rozvrhář"]), controller.get_guarantors);
+router.get("/lecturers", authenticate(["admin", "garant"]), controller.get_lecturers);
+
+router.get(
+  "/:user_id",
+  authenticate(["admin"], ["garant", "rozvrhář", "vyučující", "student"]),
+  controller.get_user
+);
 
 router.post("/", [authenticate(["admin"]), generate_id], controller.add_user);
 
 router.put(
-  "/:id",
-  [authenticate(["admin"], true), check_password],
+  "/:user_id",
+  [
+    authenticate(["admin"], ["garant", "rozvrhář", "vyučující", "student"]),
+    check_password,
+  ],
   controller.edit_user
 );
 
-router.delete("/:id", authenticate(["admin"], true), controller.delete_user);
+router.delete(
+  "/:user_id",
+  authenticate(["admin"], ["garant", "rozvrhář", "vyučující", "student"]),
+  controller.delete_user
+);
 
 module.exports = router;

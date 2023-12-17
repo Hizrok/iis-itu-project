@@ -1,59 +1,62 @@
+// @author Tomáš Vlach
+// @author Jan Kapsa
+// @author Petr Teichgrab
+
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { setLoadingContentState } from "../../redux/features/LoadingContentStateSlice";
-import CourseList from "../../components/lists/courseListComponent";
+import { Course } from "../../components/common/Types/Course";
+import { useNavigate } from "react-router-dom";
 import { useAuthHeader } from "react-auth-kit";
-
-type User = {
-  id: string;
-  role: string;
-  name: string;
-  surname: string;
-}
-
-type Course = {
-  id: string;
-  name: string;
-  annotation: string;
-  guarantor: User;
-};
+import { getCourses } from "../../components/axios/CourseAxios";
+import "../../styles/style.css";
 
 const MainCoursesListPage = () => {
-
+  const navigate = useNavigate();
   const authHeader = useAuthHeader();
-  const dispatch = useDispatch();
 
+  const [, setLoading] = useState(true);
   const [courses, setCourses] = useState<Course[]>([]);
-
-  // let courses = "loading..."
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    fetchCourses();
+    getCourses(setLoading, setCourses, authHeader);
   }, []);
 
-  async function fetchCourses() {
-    dispatch(setLoadingContentState(true));
-    const response = await fetch("http://localhost:3000/courses", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: authHeader(),
-        },
-      });
-      const json_courses = await response.json();
+  const filteredCourses = courses.filter(
+    (course) =>
+      course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.guarantor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.id.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-    setCourses(json_courses);
-    dispatch(setLoadingContentState(false));
-  }
-
-  if(courses.length!==0){
-    return (
-      <CourseList courses={courses}/>
-    );
-  }  
-  else{
-    return(<></>);
-  }
+  return (
+    <div>
+      <div className="coursePageContentWrapper">
+        <input
+          type="text"
+          placeholder="Vyhledat..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="searchBar"
+        />
+        <div className="courseCardWrapper">
+          {filteredCourses.map((course: Course) => (
+            <div
+              key={course.id}
+              className="courseCard"
+              onClick={() => navigate(`/courses/${course.id}`)}
+            >
+              <span className="courseCardID">
+                <b>{course.id}</b>
+              </span>
+              <span className="courseCardGuarantor">{course.guarantor}</span>
+              <h2>{course.name}</h2>
+              <i className="courseCardAnnotation">{course.annotation.slice(0, 100)}...</i>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default MainCoursesListPage;

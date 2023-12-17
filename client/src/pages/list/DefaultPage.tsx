@@ -1,3 +1,5 @@
+// @author Tomáš Vlach
+
 const DefaultPage = () => {
     return(
         <div>DefaultPage</div>
