@@ -1,3 +1,5 @@
+// @author Jan Kapsa
+
 const pool = require("../../db");
 const { query_database } = require("../../middleware");
 const queries = require("./queries");
@@ -114,15 +116,47 @@ const next_phase = async (req, res) => {
 };
 
 const evaluate_instances = async (res, id) => {
-  // get all instance registrations of registration id
-  // register those instances
-
-  const [_, err] = await query_database(
+  const [get_q, get_err] = await query_database(
     res,
-    "update course_activity_instance_registrations set registered=true where registration=$1;",
+    "select ca.id as a_id, cai.id as i_id, cair.student, cair.order_number as order from course_activity_instance_registrations as cair join course_activity_instances as cai on cair.course_activity_instance=cai.id join course_activities as ca on cai.course_activity=ca.id where registration=$1;",
     [id]
   );
-  if (err) return err;
+  if (get_err) return;
+
+  const result = {};
+  get_q.rows.forEach((data) => {
+    const { student, a_id, i_id, order } = data;
+
+    if (!result[student]) {
+      result[student] = {};
+    }
+
+    if (!result[student][a_id]) {
+      result[student][a_id] = {};
+    }
+
+    result[student][a_id][i_id] = order;
+  });
+
+  for (const student in result) {
+    for (const a_id in result[student]) {
+      const lowestOrderData = Object.entries(result[student][a_id]).reduce(
+        (min, [i_id, order]) => (order < min.order ? { i_id, order } : min),
+        { i_id: null, order: Infinity }
+      );
+
+      console.log(
+        `registering instance number ${lowestOrderData.i_id} to ${student}`
+      );
+      const [_, err] = await query_database(
+        res,
+        "update course_activity_instance_registrations set registered=true where registration=$1 and course_activity_instance=$2 and student=$3;",
+        [id, lowestOrderData.i_id, student]
+      );
+      if (err) return err;
+    }
+  }
+
   console.log("instances registered");
 };
 
@@ -131,6 +165,20 @@ const reset = async (req, res) => {
 
   const [_, err] = await query_database(res, queries.set_state, [0, id]);
   if (err) return;
+
+  const [c_q, c_q_err] = await query_database(
+    res,
+    "delete from course_registrations where registration=$1;",
+    [id]
+  );
+  if (c_q_err) return;
+
+  const [i_q, i_q_err] = await query_database(
+    res,
+    "delete from course_activity_instance_registrations where registration=$1;",
+    [id]
+  );
+  if (i_q_err) return;
 
   res.status(202).json({ msg: `registration ${id} was reset` });
 };
