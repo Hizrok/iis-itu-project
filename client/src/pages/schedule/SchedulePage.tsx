@@ -10,11 +10,12 @@ import interactionPlugin from "@fullcalendar/interaction";
 import csLocale from "@fullcalendar/core/locales/cs";
 import styled from "@emotion/styled";
 import axios from "axios";
+import { duration } from "@mui/material";
 
 //@author: Petr Teichgráb
 
-// "id": 1,
-//     "course": "ITU",
+// "id": ITU,
+//     "course": "Tvorba uživatelských rozhraní",
 //     "type": "přednáška",
 //     "recurrence": "každý",
 //     "capacity": 100,
@@ -22,7 +23,7 @@ import axios from "axios";
 //     "start_time": "12:00:00",
 //     "duration": "02:00:00",
 //     "room": "A101",
-//     "lecturer": "garant"
+//     "lecturer": "Pavel Petr"
 
 type Activity = {
   id: string;
@@ -36,6 +37,7 @@ type Activity = {
   room: string;
   lecturer: string;
 };
+
 
 const StyleWrapper = styled.div`
   .fc-button.fc-prev-button,
@@ -155,13 +157,21 @@ const SchedulePage = () => {
     return color;
   };
 
-  const subjects = activities.map((activity) => {
+  const subjects = activitiesDummy.map((activity) => {
     return {
       title: activity.course,
       backgroundColor: generateRandomColor(70, activity.id),
       daysOfWeek: [dayMap[activity.day]],
       startTime: activity.start_time,
       endTime: calculateEndTime(activity.start_time, activity.duration),
+      extendedProps: {
+        id: activity.id,
+        room: activity.room,
+        lecturer: activity.lecturer,
+        type: activity.type,
+        duration: activity.duration,
+        reccurence: activity.recurrence
+      }
     };
   });
 
@@ -224,6 +234,7 @@ const SchedulePage = () => {
                 center: "title",
                 end: "dayGridMonth, timeGridWeek, timeGridDay",
               }}
+              eventContent={renderEventContent}
               initialView={"timeGridWeek"}
             />
           </StyleWrapper>
@@ -231,6 +242,49 @@ const SchedulePage = () => {
       </div>
     );
   };
+
+
+  function renderEventContent(eventInfo : any) {
+    if(eventInfo.event.extendedProps.duration > "02:00:00"){
+        return (
+        <div className="lectureEvent">
+            <b>{eventInfo.timeText}</b><br/>
+            <b>{eventInfo.event.extendedProps.id}</b><br/>
+            <b>{eventInfo.event.title}</b><br/>
+            <b>{eventInfo.event.extendedProps.room}</b><br/>
+            <b>{eventInfo.event.extendedProps.lecturer}</b>
+        </div>
+        )
+    }
+    else if(eventInfo.event.extendedProps.duration == "02:00:00"){
+        return (
+        <div className="lectureEvent">
+            <b>{eventInfo.timeText}</b><br/>
+            <b>{eventInfo.event.extendedProps.id}</b><br/>
+            <b>{eventInfo.event.title}</b><br/>
+            <b>{eventInfo.event.extendedProps.lecturer}</b>
+        </div>
+        )
+    }
+    else if(eventInfo.event.extendedProps.duration >= "01:00:00" && 
+        eventInfo.event.extendedProps.duration < "02:00:00"){
+    return (
+        <div className="lectureEvent">
+            <b>{eventInfo.timeText}</b><br/>
+            <b>{eventInfo.event.extendedProps.id}</b><br/>
+            <b>{eventInfo.event.title}</b>
+        </div>
+        )
+    }
+    else if(eventInfo.event.extendedProps.duration < "01:00:00"){
+    return (
+        <div className="lectureEvent">
+            <b>{eventInfo.event.title}</b>
+        </div>
+        )
+    }
+        
+  }
 
   const AdminPage = () => {
     return (

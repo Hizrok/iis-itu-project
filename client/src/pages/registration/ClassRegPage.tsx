@@ -238,9 +238,7 @@ const ClassRegPage = () => {
         }}
       >
         <b>{eventInfo.timeText}</b>
-        <br />
         <b>{eventInfo.event.title}</b>
-        <br />
         <b>{eventInfo.event.extendedProps.type}</b>
         <Select
           style={{ maxWidth: "75px", maxHeight: "30px", color: "white" }}
