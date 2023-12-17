@@ -2,6 +2,7 @@ import { useAuthHeader, useAuthUser, useIsAuthenticated } from "react-auth-kit";
 import { setLoadingContentState } from "../../redux/features/LoadingContentStateSlice";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../../styles/style.css";
 import Fullcalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -70,6 +71,7 @@ type ReturnPageProps = {
 };
 
 const SchedulePage = () => {
+    const navigate = useNavigate();
   const auth = useAuthUser();
   const isAuthenticated = useIsAuthenticated();
   const authHeader = useAuthHeader();
@@ -233,6 +235,7 @@ const SchedulePage = () => {
                 center: "title",
                 end: "dayGridMonth, timeGridWeek, timeGridDay",
               }}
+              eventClick={handleClickContent}
               eventContent={renderEventContent}
               initialView={"timeGridWeek"}
             />
@@ -242,14 +245,18 @@ const SchedulePage = () => {
     );
   };
 
+  function handleClickContent(eventInfo : any) {
+    navigate(`/courses/${eventInfo.event.title}`);
+}
+
 
   function renderEventContent(eventInfo : any) {
     if(eventInfo.event.extendedProps.duration > "02:00:00"){
         return (
         <div className="lectureEvent">
             <b>{eventInfo.timeText}</b><br/>
-            <b>{eventInfo.event.extendedProps.id}</b><br/>
             <b>{eventInfo.event.title}</b><br/>
+            <b>{eventInfo.event.extendedProps.type}</b><br/>
             <b>{eventInfo.event.extendedProps.room}</b><br/>
             <b>{eventInfo.event.extendedProps.lecturer}</b>
         </div>
@@ -259,8 +266,8 @@ const SchedulePage = () => {
         return (
         <div className="lectureEvent">
             <b>{eventInfo.timeText}</b><br/>
-            <b>{eventInfo.event.extendedProps.id}</b><br/>
             <b>{eventInfo.event.title}</b><br/>
+            <b>{eventInfo.event.extendedProps.type}</b><br/>
             <b>{eventInfo.event.extendedProps.lecturer}</b>
         </div>
         )
@@ -270,8 +277,8 @@ const SchedulePage = () => {
     return (
         <div className="lectureEvent">
             <b>{eventInfo.timeText}</b><br/>
-            <b>{eventInfo.event.extendedProps.id}</b><br/>
             <b>{eventInfo.event.title}</b>
+            <b>{eventInfo.event.extendedProps.type}</b><br/>
         </div>
         )
     }
