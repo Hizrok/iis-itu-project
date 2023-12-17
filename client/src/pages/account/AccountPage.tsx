@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { useAuthHeader, useAuthUser } from "react-auth-kit";
+import { useAuthHeader, useAuthUser, useIsAuthenticated } from "react-auth-kit";
 import { useDispatch } from "react-redux";
 import { setLoadingContentState } from "../../redux/features/LoadingContentStateSlice";
 import { Fab, FormControl, Grid, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack, TextField, Typography } from "@mui/material";
@@ -23,9 +23,9 @@ const AccountPage = () => {
     const [email, setEmail] = useState<string>("");
   
 
-    //const [oldPasswd, setOldPasswd] = useState<string>("");
-    //const [newPasswd, setNewPasswd] = useState<string>("");
-    //const [newPasswdCheck, setNewPasswdCheck] = useState<string>("");
+    const [oldPasswd, setOldPasswd] = useState<string>("");
+    const [newPasswd, setNewPasswd] = useState<string>("");
+    const [newPasswdCheck, setNewPasswdCheck] = useState<string>("");
 
     const [showPassword, setShowPassword] = React.useState(false);
 
@@ -156,7 +156,7 @@ const AccountPage = () => {
                             </InputAdornment>
                             }
                             label="Staré Heslo"
-                            //onChange={(e) => setOldPasswd(e.target.value)}
+                            onChange={(e) => setOldPasswd(e.target.value)}
                         />
                     </FormControl>
                     <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
@@ -176,7 +176,7 @@ const AccountPage = () => {
                             </InputAdornment>
                             }
                             label="Nové Heslo"
-                            //onChange={(e) => setNewPasswd(e.target.value)}
+                            onChange={(e) => setNewPasswd(e.target.value)}
                         />
                     </FormControl>
                     <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
@@ -196,7 +196,7 @@ const AccountPage = () => {
                             </InputAdornment>
                             }
                             label="Nové Heslo Znovu"
-                            //onChange={(e) => setNewPasswdCheck(e.target.value)}
+                            onChange={(e) => setNewPasswdCheck(e.target.value)}
                         />
                     </FormControl>
                     <Fab variant="extended"

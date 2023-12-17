@@ -1,8 +1,4 @@
-// @author Tomáš Vlach
-
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-// Keeps value for loading screen animation lock
 
 type loadingState = {
     loadingState: boolean;

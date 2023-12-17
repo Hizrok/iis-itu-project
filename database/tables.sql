@@ -17,11 +17,15 @@ drop type if exists ROLE cascade;
 drop type if exists COURSE_ACTIVITY cascade;
 drop type if exists RECURRENCE cascade;
 drop type if exists DAY cascade;
+drop type if exists STATE cascade;
+drop type if exists STATUS cascade;
 
 create type ROLE as enum ('student', 'rozvrhář', 'vyučující', 'garant', 'admin');
 create type COURSE_ACTIVITY as enum ('přednáška', 'cvičení', 'laboratoř', 'democvičení', 'seminář');
 create type RECURRENCE as enum ('každý', 'lichý', 'sudý', 'jednorázová aktivita');
 create type DAY as enum ('pondělí', 'úterý', 'středa', 'čtvrtek', 'pátek');
+create type STATE as enum ('IDLE', 'COURSES IN PROGRESS', 'SCHEDULING', 'ACTIVITIES IN PROGRESS', 'EVALUATING', 'FINISHED');
+create type STATUS as enum ('NOT ACTIVE', 'ACTIVE');
 
 create table users (
 	id varchar(10) primary key,
@@ -77,8 +81,8 @@ create table course_activity_instances (
 
 create table registrations (
 	id serial primary key,
-	state integer default 0,
-	status boolean default false
+	state STATE default 'IDLE',
+	status STATUS default 'NOT ACTIVE'
 );
 
 create table course_registrations (

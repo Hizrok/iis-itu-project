@@ -1,8 +1,4 @@
-// @author Tomáš Vlach
-
 import { ReactNode } from "react";
-
-// Type for AppRoutes.tsx array of pages
 
 export type RouteType = {
   element: ReactNode,

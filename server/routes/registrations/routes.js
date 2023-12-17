@@ -8,56 +8,42 @@ const router = Router();
 
 router.get("/", authenticate(["admin"]), controller.get_registrations);
 router.get(
-  "/active",
-  get_active_registration,
-  controller.get_active_registration
+  "/courses/:student",
+  [authenticate(["admin", "student"]), get_active_registration],
+  controller.get_registered_courses
 );
 router.get(
-  "/courses/:user_id",
-  [authenticate(["admin"], ["student"]), get_active_registration],
-  controller.get_courses_with_reg_data
-);
-router.get(
-  "/instances/:user_id",
-  [authenticate(["admin"], ["student"]), get_active_registration],
-  controller.get_instances_with_reg_data
+  "/activities/:student",
+  [authenticate(["admin", "student"]), get_active_registration],
+  controller.get_activities
 );
 
 router.post("/", authenticate(["admin"]), controller.add_registration);
 router.post(
-  "/courses",
+  "/course",
   [authenticate(["admin", "student"]), get_active_registration],
   controller.register_course
 );
 router.post(
-  "/instances",
+  "/activity",
   [authenticate(["admin", "student"]), get_active_registration],
-  controller.register_instance
+  controller.register_activity
 );
 
+router.put("/:id", authenticate(["admin"]), controller.set_status);
 router.put(
-  "/:id",
-  [authenticate(["admin"]), get_active_registration],
-  controller.set_status
+  "/start/:id",
+  [authenticate(["admin"]), get_state],
+  controller.start
 );
-router.put("/next/:id", authenticate(["admin"]), controller.next_phase);
+router.put("/stop/:id", [authenticate(["admin"]), get_state], controller.stop);
 router.put("/reset/:id", authenticate(["admin"]), controller.reset);
-router.put(
-  "/instances/:user_id",
-  [authenticate(["admin"], ["student"]), get_active_registration],
-  controller.update_instance_registration
-);
 
 router.delete("/:id", authenticate(["admin"]), controller.delete_registration);
 router.delete(
-  "/courses/:course/:user_id",
-  [authenticate(["admin"], ["student"]), get_active_registration],
-  controller.unregister_course
-);
-router.delete(
-  "/instances/:instance/:user_id",
-  [authenticate(["admin"], ["student"]), get_active_registration],
-  controller.unregister_instance
+  "/:type/:object_id/:student",
+  [authenticate(["admin", "student"]), get_active_registration],
+  controller.unregister
 );
 
 module.exports = router;

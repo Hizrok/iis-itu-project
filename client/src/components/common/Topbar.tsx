@@ -1,7 +1,17 @@
-// @author Tomáš Vlach
-// @author Jan Kapsa
-
-import { AppBar, Fab, Stack, Toolbar, Typography } from "@mui/material";
+import {
+  AppBar,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Fab,
+  Stack,
+  TextField,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LoginIcon from "@mui/icons-material/Login";
@@ -17,12 +27,9 @@ import {
   useSignIn,
   useSignOut,
 } from "react-auth-kit";
+import React from "react";
 import { useDispatch } from "react-redux";
 import { setLoadingState } from "../../redux/features/LoadingStateSlice";
-import { useConfirm } from "material-ui-confirm";
-import { toast } from "react-toastify";
-import axios from "axios";
-import LoginDialog from "./LoginDialog";
 
 function Topbar() {
   // Top bar nav
@@ -35,57 +42,70 @@ function Topbar() {
   const signIn = useSignIn();
   const auth = useAuthUser();
   const navigate = useNavigate();
-  const confirm = useConfirm();
+  const [errorMessage, setErrorMessage] = React.useState("");
 
-  // Handle login popup
-  const [showDialog, setShowDialog] = useState(false);
+  // Handle logout popup
+  const [logoutDialog, setLogoutDialog] = React.useState(false);
+  const [loginDialog, setLoginDialog] = React.useState(false);
+
+  const [id, setId] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const dispatch = useDispatch();
 
-  const logoutDialogCheck = () => {
-    confirm({
-      description: "Chcete se odhlásit?",
-      confirmationText: "Ano",
-      cancellationText: "Ne",
-      title: "Odhlášení",
-      confirmationButtonProps: { color: "error" },
-    })
-      .then(() => {
-        signOut();
-        navigate("/");
-        toast.success("Odhlášen");
-      })
-      .catch(() => {});
+  const handleLogoutDialogClose = () => {
+    setLoginDialog(false);
+    setLogoutDialog(false);
+    signOut();
+    navigate("/");
   };
 
-  const login = async (id: string, password: string) => {
-    dispatch(setLoadingState(true));
-    await axios
-      .post(`${import.meta.env.VITE_SERVER_HOST}login`, { id, password })
-      .then((res) => {
-        if (
-          signIn({
-            token: res.data.token,
-            expiresIn: 60,
-            tokenType: "Bearer",
-            authState: { id: res.data.id, role: res.data.role },
-          })
-        ) {
-          setShowDialog(false);
+  const handleLogin = () => {
+    async function loginUser() {
+      const login_user = {
+        id: id,
+        password: password,
+      };
+
+      try {
+        dispatch(setLoadingState(true));
+        const request = await fetch("http://localhost:3000/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(login_user),
+        });
+
+        if (request.status >= 400) {
+          setErrorMessage("An incorrect login or password");
+          setPassword("");
           dispatch(setLoadingState(false));
-          toast.success("Přihlášení proběhlo uspěšně");
-        }
-      })
-      .catch((err) => {
-        console.error(err.message);
-        if (err.status == 403) {
-          toast.error("Špatné přihlašovací údaje");
-        } else if (err.status > 400) {
-          toast.error("Probl0m s přihlášením");
+          return;
         }
 
+        const request_json = await request.json();
+        if (
+          signIn({
+            token: request_json.token,
+            expiresIn: 60,
+            tokenType: "Bearer",
+            authState: { id: request_json.id, role: request_json.role },
+          })
+        ) {
+          setId("");
+          setPassword("");
+          setErrorMessage("");
+          setLoginDialog(false);
+          dispatch(setLoadingState(false));
+        }
+      } catch (err) {
+        console.log(err);
+        setErrorMessage("An error has occured");
         dispatch(setLoadingState(false));
-      });
+      }
+    }
+    loginUser();
   };
 
   useEffect(() => {
@@ -113,7 +133,7 @@ function Topbar() {
           color: ColourConfig.topbar.colour,
         }}
       >
-        <Toolbar sx={{ boxShadow: 3 }}>
+        <Toolbar>
           <ArrowForwardIosIcon />
           <Typography variant="h6">{topbarTitle}</Typography>
           <Stack
@@ -137,14 +157,35 @@ function Topbar() {
               aria-label="add"
               variant="extended"
               onClick={() => {
-                logoutDialogCheck();
+                setLogoutDialog(true);
               }}
               sx={{ maxHeight: 35 }}
             >
               <LogoutIcon sx={{ mr: 1 }} />
-              Odhlásit
+              Logout
             </Fab>
           </Stack>
+          <Dialog
+            open={logoutDialog}
+            onClose={() => {
+              setLogoutDialog(false);
+            }}
+          >
+            <DialogTitle>Logout</DialogTitle>
+            <DialogContent>
+              <DialogContentText>Are you sure to logout?</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => {
+                  setLogoutDialog(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleLogoutDialogClose}>Logout</Button>
+            </DialogActions>
+          </Dialog>
         </Toolbar>
       </AppBar>
     );
@@ -174,18 +215,54 @@ function Topbar() {
             variant="extended"
             sx={{ maxHeight: 35 }}
             onClick={() => {
-              setShowDialog(true);
+              setLoginDialog(true);
             }}
           >
             <LoginIcon sx={{ mr: 1 }} />
-            Přihlásit
+            Login
           </Fab>
         </Stack>
-        <LoginDialog
-          showDialog={showDialog}
-          toggleDialog={setShowDialog}
-          loginUser={login}
-        />
+        <Dialog
+          open={loginDialog}
+          onClose={() => {
+            setLoginDialog(false);
+          }}
+        >
+          <DialogTitle>Login</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="login"
+              label="Login"
+              type="login"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setId(e.target.value)}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="password"
+              label="Password"
+              type="password"
+              fullWidth
+              variant="standard"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </DialogContent>
+          <DialogContentText>{errorMessage}</DialogContentText>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                setLoginDialog(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleLogin}>Login</Button>
+          </DialogActions>
+        </Dialog>
       </Toolbar>
     </AppBar>
   );

@@ -1,5 +1,3 @@
-// @author Tomáš Vlach
-
 const RestrictedAccess = () => {
     return(
         <div>This page has restricted access</div>

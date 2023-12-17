@@ -1,5 +1,3 @@
-// @author Tomáš Vlach
-
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type loadingContentState = {

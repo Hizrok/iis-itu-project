@@ -1,5 +1,4 @@
 const pool = require("../../db");
-const { query_database } = require("../../middleware");
 const queries = require("./queries");
 
 const check_room_id = (id) => {
@@ -31,112 +30,139 @@ const get_new_room_id = (old_id, building, floor, number) => {
 };
 
 const get_rooms = async (req, res) => {
-  const [search_query, err] = await query_database(
-    res,
-    queries.get_all_rooms,
-    []
-  );
-  if (err) return;
+  try {
+    const search_query = await pool.query(queries.get_all_rooms);
 
-  const rooms = search_query.rows.map((room) => {
-    const building = room.id.substring(0, 1);
-    const floor = parseInt(room.id.substring(1, 2));
-    const number = parseInt(room.id.substring(2, 4));
-    return {
-      id: room.id,
-      building,
-      floor,
-      number,
-      capacity: room.capacity,
-    };
-  });
+    const rooms = search_query.rows.map((room) => {
+      const building = room.id.substring(0, 1);
+      const floor = parseInt(room.id.substring(1, 2));
+      const number = parseInt(room.id.substring(2, 4));
+      return {
+        id: room.id,
+        building,
+        floor,
+        number,
+        capacity: room.capacity,
+      };
+    });
 
-  res.status(200).json(rooms);
+    res.status(200).json(rooms);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
 };
 
 const get_room = async (req, res) => {
-  const id = req.params.id;
+  try {
+    const id = req.params.id;
 
-  const [find_query, find_err] = await query_database(res, queries.get_room, [
-    id,
-  ]);
-  if (find_err) return;
+    if (!check_room_id(id)) return res.sendStatus(400);
 
-  if (!find_query.rowCount)
-    return res.status(404).json({ error: `room ${id} was not found` });
+    const find_query = await pool.query(queries.get_room, [id]);
+    if (!find_query.rowCount) return res.sendStatus(404);
 
-  const building = find_query.rows[0].id.substring(0, 1);
-  const floor = parseInt(find_query.rows[0].id.substring(1, 2));
-  const number = parseInt(find_query.rows[0].id.substring(2, 4));
+    const building = find_query.rows[0].id.substring(0, 1);
+    const floor = parseInt(find_query.rows[0].id.substring(1, 2));
+    const number = parseInt(find_query.rows[0].id.substring(2, 4));
 
-  const room = {
-    id: find_query.rows[0].id,
-    building,
-    floor,
-    number,
-    capacity: find_query.rows[0].capacity,
-    instances: [],
-  };
+    const room = {
+      id: find_query.rows[0].id,
+      building,
+      floor,
+      number,
+      capacity: find_query.rows[0].capacity,
+    };
 
-  res.status(200).json(room);
+    res.status(200).json(room);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
 };
 
 const add_room = async (req, res) => {
-  const { building, floor, number, capacity } = req.body;
+  try {
+    const { building, floor, number, capacity } = req.body;
 
-  const id = `${building}${floor}${
-    number >= 0 && number < 10 ? "0" : ""
-  }${number}`;
+    const id = `${building}${floor}${
+      number >= 0 && number < 10 ? "0" : ""
+    }${number}`;
 
-  if (!check_room_id(id))
-    return res.status(400).json({ error: "invalid request parameters" });
+    if (!check_room_id(id)) return res.sendStatus(400);
 
-  const [_, err] = await query_database(res, queries.add_room, [id, capacity]);
-  if (err) return;
+    await pool.query(queries.add_room, [id, capacity]);
 
-  const room = {
-    id,
-  };
+    const room = {
+      id,
+      building,
+      floor,
+      number,
+      capacity,
+    };
 
-  res.status(201).json(room);
+    res.status(201).json(room);
+  } catch (error) {
+    if (error.code === "23505") return res.sendStatus(400);
+    console.error(error);
+    res.sendStatus(500);
+  }
 };
 
 const edit_room = async (req, res) => {
-  const old_id = req.params.id;
-  let { building, floor, number, capacity } = req.body;
+  console.log(`recieved PUT request - /rooms/${req.params.id}`);
+  try {
+    const old_id = req.params.id;
+    let { building, floor, number, capacity } = req.body;
 
-  const new_id = get_new_room_id(old_id, building, floor, number);
+    if (!check_room_id(old_id)) return res.sendStatus(400);
 
-  if (!check_room_id(new_id))
-    return res.status(400).json({ error: "invalid request parameters" });
+    const new_id = get_new_room_id(old_id, building, floor, number);
 
-  const values = [new_id, capacity].filter((value) => value);
+    if (!check_room_id(new_id)) return res.sendStatus(400);
 
-  const [edit_query, err] = await query_database(
-    res,
-    queries.get_edit_query(capacity),
-    [old_id, ...values]
-  );
-  if (err) return;
+    const values = [new_id, capacity].filter((value) => value);
 
-  if (!edit_query.rowCount)
-    return res.status(404).json({ error: `room ${old_id} was not found` });
+    const edit_query = await pool.query(queries.get_edit_query(capacity), [
+      old_id,
+      ...values,
+    ]);
 
-  res.status(202).json({ id: new_id });
+    if (!edit_query.rowCount) return res.sendStatus(404);
+
+    building = new_id.substring(0, 1);
+    floor = parseInt(new_id.substring(1, 2));
+    number = parseInt(new_id.substring(2, 4));
+    const room = {
+      id: new_id,
+      building,
+      floor,
+      number,
+      capacity: edit_query.rows[0].capacity,
+    };
+
+    res.status(202).json(room);
+  } catch (error) {
+    if (error.code === "23505") return res.sendStatus(400);
+    console.error(error);
+    res.sendStatus(500);
+  }
 };
 
 const delete_room = async (req, res) => {
-  const id = req.params.id;
+  try {
+    const id = req.params.id;
 
-  const [delete_query, err] = await query_database(res, queries.delete_room, [
-    id,
-  ]);
-  if (err) return;
+    if (!check_room_id(id)) return res.sendStatus(400);
 
-  if (!delete_query.rowCount)
-    return res.status(404).json({ error: `room ${id} was not found` });
+    const delete_query = await pool.query(queries.delete_room, [id]);
+    if (!delete_query.rowCount) return res.sendStatus(404);
 
-  res.status(202).json({ msg: `room ${id} was deleted` });
+    res.sendStatus(202);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
 };
 
 module.exports = {

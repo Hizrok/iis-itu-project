@@ -1,8 +1,4 @@
-// @author Tomáš Vlach
-
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-// AppSlice for navigation, keeps wich page is currently open
 
 type appState = {
     appState: string;

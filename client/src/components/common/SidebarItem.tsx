@@ -1,5 +1,3 @@
-// @author Tomáš Vlach
-
 import { ListItemButton, ListItemText, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import colorConfigs from "../../configs/ColourConfig";
@@ -28,8 +26,7 @@ const SidebarItem = ({ item }: Props) => {
           backgroundColor: appState === item.state ? colorConfigs.sidebar.activeBg : ColourConfig.sidebar.highlightBg,
           paddingY: "12px",
           paddingX: "0px",
-          marginBottom: "2px",
-          boxShadow:5
+          marginBottom: "2px"
         }}
       >
         <ListItemText
