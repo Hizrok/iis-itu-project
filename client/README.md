@@ -1,9 +1,27 @@
 # React + Vite
 
+## Inicialization
+
 To run this client open a terminal inside this folder and use these commands/actions:
   - `npm install`
   - create an .env file inside the root of this folder with this template ```VITE_SERVER_HOST = "<server ip/hostname>" ```
   - `npm run dev`
+
+## Project struture
+
+All relevant project code source file are within folder `src`. This folder is further structured into serveral subfolders:
+
+  - `assets` - contains all non source code media
+  - `components` - contains non page react/typescript compoents like layouts, navigation and so on
+  - `config` - contains colour and size configs for the website
+  - `pages` - contains pages (strutured into more subfolders by their logical grouping) that hold the frontend codes neccesery for those pages
+  - `redux` - contains setup for cross page variable handling
+  - `routes` - contains list of all pages, their names, elements, route names and so on and also the folder contains a script for wabpage route generation
+  - `styles` - contains styles used throughout the webpage
+
+`src` folder also contains root elements of [App.tsx](./src/App.tsx) and [main.tsx](./src/main.tsx) that hold the root elements of the website and all relevant providers.
+
+## Sources and plugins
 
 Sources:
   - An [amazing turtorial](https://www.youtube.com/watch?v=XwnZLgIfIvg ) by Tuat Tran Anh
