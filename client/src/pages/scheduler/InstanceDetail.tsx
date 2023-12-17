@@ -1,5 +1,5 @@
 import { Button, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { Instance } from "../../../components/common/Types/Course";
+import { Instance } from "../../components/common/Types/Course";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useConfirm } from "material-ui-confirm";

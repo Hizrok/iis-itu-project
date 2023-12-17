@@ -100,15 +100,15 @@ const CreateActivityDialog = ({
           label="Kapacita"
           fullWidth
           variant="outlined"
-          disabled={disabled}
           value={capacity}
+          disabled={disabled}
           onChange={(e) => setCapacity(e.target.value)}
         />
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <TimePicker 
-              disabled={disabled}
               label="Duration" 
               value={duration}
+              disabled={disabled}
               onChange={(newValue) => setDuration(newValue)}
               ampm={false}
               slotProps={{ textField: { fullWidth: true } }}

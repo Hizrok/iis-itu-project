@@ -23,6 +23,8 @@ import RegistrationListPage from "../pages/list/RegistrationListPage";
 
 import NotFound from "../pages/error/NotFoundPage";
 import UserListPage from "../pages/list/UserList/UserListPage";
+import GuarantiedCourseList from "../pages/garant/GarantCoursePage";
+import SchedulerCoursePage from "../pages/scheduler/SchedulerCoursePage";
 
 const appRoutes: RouteType[] = [
   {
@@ -75,7 +77,7 @@ const appRoutes: RouteType[] = [
     path: "/registration",
     element: <RegistrationPageLayout />,
     authenticated: true,
-    roles: ["student", "vyučující", "rozvrhář", "garant"],
+    roles: ["student"],
     state: "registration",
     topbarText: "Registrace",
     sidebarProps: {
@@ -112,6 +114,28 @@ const appRoutes: RouteType[] = [
         },
       },
     ],
+  },
+  {
+    path: "/guarantied",
+    element: <GuarantiedCourseList />,
+    authenticated: true,
+    roles: ["admin", "garant"],
+    state: "guarantied",
+    topbarText: "Garantované předmety",
+    sidebarProps: {
+      displayText: "Garantované předmety",
+    },
+  },
+  {
+    path: "/scheduler",
+    element: <SchedulerCoursePage />,
+    authenticated: true,
+    roles: ["admin", "rozvrhář"],
+    state: "scheduler",
+    topbarText: "Tvorba rozvrhu",
+    sidebarProps: {
+      displayText: "Tvorba rozvrhu",
+    },
   },
   {
     path: "/list",

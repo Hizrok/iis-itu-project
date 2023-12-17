@@ -5,18 +5,18 @@ const controller = require("./controller");
 
 const router = Router();
 
-router.get("/", authenticate(["admin"]), controller.get_activities);
-router.get("/:id", authenticate(["admin"]), controller.get_activity);
+router.get("/", authenticate(["admin", "garant"]), controller.get_activities);
+router.get("/:id", authenticate(["admin", "garant"]), controller.get_activity);
 
-router.post("/", authenticate(["admin"]), controller.add_activity);
-router.post("/:id", authenticate(["admin"]), controller.add_lecturer);
+router.post("/", authenticate(["admin", "garant"]), controller.add_activity);
+router.post("/:id", authenticate(["admin", "garant"]), controller.add_lecturer);
 
-router.put("/:id", authenticate(["admin"]), controller.edit_activity);
+router.put("/:id", authenticate(["admin", "garant"]), controller.edit_activity);
 
-router.delete("/:id", authenticate(["admin"]), controller.delete_activity);
+router.delete("/:id", authenticate(["admin", "garant"]), controller.delete_activity);
 router.delete(
   "/:id/:lecturer",
-  authenticate(["admin"]),
+  authenticate(["admin", "garant"]),
   controller.delete_lecturer
 );
 

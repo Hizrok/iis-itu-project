@@ -2,7 +2,7 @@ import { Button, InputLabel } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAuthHeader } from "react-auth-kit";
-import { Instance, Activity } from "../../../components/common/Types/Course";
+import { Instance, Activity } from "../../components/common/Types/Course";
 import InstanceDetail from "./InstanceDetail";
 import CreateInstanceDialog from "./CreateInstanceDialog";
 

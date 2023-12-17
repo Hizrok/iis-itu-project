@@ -1,7 +1,6 @@
 import { Autocomplete, Button, InputLabel, TextField } from "@mui/material";
-import { Activity } from "../../../components/common/Types/Course";
+import { Activity } from "../../components/common/Types/Course";
 import { useEffect, useState } from "react";
-import InstanceList from "./InstanceList";
 import axios from "axios";
 import { useAuthHeader } from "react-auth-kit";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
@@ -19,7 +18,6 @@ type ActivityDetailProps = {
 };
 
 const ActivityDetail = ({
-  course,
   activity,
   selected,
   editActivity,
@@ -242,11 +240,6 @@ const ActivityDetail = ({
               </div>
             ))}
           </div>
-          <InstanceList
-            course={course}
-            activity={activity}
-            lecturers={lecturers}
-          />
         </div>
       )}
     </div>
