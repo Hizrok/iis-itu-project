@@ -72,6 +72,7 @@ const CreateActivityDialog = ({
         <InputLabel>Typ</InputLabel>
         <Autocomplete
             value={type}
+            disabled={disabled}
             onChange={(event: any, newValue: string | null) => {
               console.log(event);
               setType(newValue? newValue : type);
@@ -84,6 +85,7 @@ const CreateActivityDialog = ({
         <InputLabel>Recurence</InputLabel>
         <Autocomplete
             value={recurrence}
+            disabled={disabled}
             onChange={(event: any, newValue: string | null) => {
               console.log(event);
               setRecurrence(newValue? newValue : recurrence);
@@ -98,11 +100,13 @@ const CreateActivityDialog = ({
           label="Kapacita"
           fullWidth
           variant="outlined"
+          disabled={disabled}
           value={capacity}
           onChange={(e) => setCapacity(e.target.value)}
         />
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <TimePicker 
+              disabled={disabled}
               label="Duration" 
               value={duration}
               onChange={(newValue) => setDuration(newValue)}

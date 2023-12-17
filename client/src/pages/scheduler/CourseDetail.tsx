@@ -5,19 +5,14 @@ import axios from "axios";
 import {
   CircularProgress,
   InputLabel,
-  Button,
   TextField,
   Autocomplete,
 } from "@mui/material";
 import ActivityList from "./ActivityList";
-import { useConfirm } from "material-ui-confirm";
-import { toast } from "react-toastify";
 
 type CourseDetailProps = {
   id: string;
-  editCourse: Function;
-  deleteCourse: Function;
-  resetSelected: Function;
+  guarantors: string[];
   setCourses: Function;
   setSelected: Function;
   index: number;
@@ -25,18 +20,11 @@ type CourseDetailProps = {
 
 const CourseDetail = ({
   id,
-  editCourse,
-  deleteCourse,
-  resetSelected,
-  setCourses,
-  setSelected,
-  index,
+  guarantors,
 }: CourseDetailProps) => {
   const authHeader = useAuthHeader();
-  const confirm = useConfirm();
 
   const [loading, setLoading] = useState(false);
-  const [disabled, setDisabled] = useState(false);
 
   const [abbr, setAbbr] = useState("");
   const [name, setName] = useState("");
@@ -63,38 +51,6 @@ const CourseDetail = ({
       });
   };
 
-  const handleEdit = async () => {
-    setDisabled(true);
-    await toast.promise(
-      editCourse(abbr, name, annotation, guarantor, index, setCourses, setSelected, authHeader),
-      {
-        pending: 'Předmět se aktualizuje',
-        success: 'Předmět aktualizulován',
-        error: 'Problém s tvorbou předmětu'
-      }
-    );
-    
-    setDisabled(false);
-  };
-
-  const handleDelete = async () => {
-    confirm({ description: "Chcete smazat předmět?", confirmationText: "Ano", cancellationText: "Ne", title: "Smazání předmětu", confirmationButtonProps: { color: "error" }  })
-      .then(async () => {
-        setDisabled(true);
-        await toast.promise(
-          deleteCourse(id, resetSelected, authHeader),
-          {
-            pending: 'Předmět se maže',
-            success: 'Předmět smazán',
-            error: 'Problém s mazáním předmětu'
-          }
-        );
-        setDisabled(false);
-      })
-      .catch(() => {
-      });
-  };
-
   useEffect(() => {
     if (id) {
       getCourse();
@@ -110,26 +66,10 @@ const CourseDetail = ({
           </div>
         ) : (
           <div>
-            <div className="detail-buttons">
-              <Button
-                variant="contained"
-                disabled={disabled}
-                onClick={handleEdit}
-              >
-                Save
-              </Button>
-              <Button
-                variant="contained"
-                disabled={disabled}
-                onClick={handleDelete}
-              >
-                Delete
-              </Button>
-            </div>
             <TextField
               margin="dense"
               label="Zkratka"
-              disabled={disabled}
+              disabled
               fullWidth
               variant="outlined"
               value={abbr}
@@ -138,7 +78,7 @@ const CourseDetail = ({
             <TextField
               margin="dense"
               label="Jméno"
-              disabled={disabled}
+              disabled
               fullWidth
               variant="outlined"
               value={name}
@@ -147,7 +87,7 @@ const CourseDetail = ({
             <TextField
               margin="dense"
               label="Anotace"
-              disabled={disabled}
+              disabled
               fullWidth
               variant="outlined"
               value={annotation}
@@ -164,7 +104,7 @@ const CourseDetail = ({
                 setGuarantor(newValue? newValue : guarantor);
               }}
               id="controllable-states-type"
-              options={[guarantor]}
+              options={guarantors}
               fullWidth
               renderInput={(params) => <TextField {...params} />}
               />

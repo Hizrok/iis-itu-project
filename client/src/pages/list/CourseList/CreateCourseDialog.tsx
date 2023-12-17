@@ -91,6 +91,7 @@ const CreateCourseDialog = ({
         <InputLabel>Garant</InputLabel>
         <Autocomplete
             value={guarantor}
+            disabled={disabled}
             onChange={(event: any, newValue: string | null) => {
               console.log(event);
               setGuarantor(newValue? newValue : guarantor);
