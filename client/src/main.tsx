@@ -1,3 +1,5 @@
+// @author Tomáš Vlach
+
 import { CssBaseline } from '@mui/material';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -11,10 +13,12 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
+    {/* AuthProvider for hadling JWT tokes and user information */}
     <AuthProvider authType={'cookie'}
                   authName={'_auth'}
                   cookieDomain={window.location.hostname}
                   cookieSecure={window.location.protocol === "https:"}>
+      {/* Redux provider for cross page variables */}
       <Provider store={store}>
         <CssBaseline />
         <App />

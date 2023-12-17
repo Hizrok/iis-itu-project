@@ -1,4 +1,7 @@
-import { Autocomplete, InputLabel, TextField } from "@mui/material";
+// @author Tomáš Vlach
+// @author Jan Kapsa
+
+import { Autocomplete, Button, InputLabel, TextField } from "@mui/material";
 import { Activity } from "../../components/common/Types/Course";
 import { useEffect, useState } from "react";
 import InstanceList from "./InstanceList";
@@ -47,7 +50,7 @@ const ActivityDetail = ({
   return (
     <div>
       <div className="toggleble-list-item">
-        <p>{activity.type}</p>
+        <Button variant="contained">{activity.type}</Button>
         <div className="detail-buttons">
         </div>
       </div>
@@ -55,6 +58,7 @@ const ActivityDetail = ({
         <div>
           <InputLabel>Typ</InputLabel>
           <Autocomplete
+            disabled
             value={type}
             onChange={(event: any, newValue: string | null) => {
               console.log(event);
@@ -67,6 +71,7 @@ const ActivityDetail = ({
             />
           <InputLabel>Recurence</InputLabel>
           <Autocomplete
+            disabled
             value={recurrence}
             onChange={(event: any, newValue: string | null) => {
               console.log(event);
@@ -78,6 +83,7 @@ const ActivityDetail = ({
             renderInput={(params) => <TextField {...params} />}
             />
           <TextField
+            disabled
             margin="normal"
             label="Kapacity"
             fullWidth
@@ -87,6 +93,7 @@ const ActivityDetail = ({
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <TimePicker 
+              disabled
               label="Duration" 
               value={duration}
               onChange={(newValue) => setDuration(newValue)}

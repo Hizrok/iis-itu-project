@@ -1,3 +1,5 @@
+// @author Tomáš Vlach
+
 import { Typography } from "@mui/material"
 import { Box, Stack } from "@mui/system"
 

@@ -1,3 +1,6 @@
+// @author Tomáš Vlach
+// @author Jan Kapsa
+
 import { Autocomplete, Button, InputLabel, TextField } from "@mui/material";
 import { Activity } from "../../../components/common/Types/Course";
 import { useEffect, useState } from "react";
@@ -158,7 +161,7 @@ const ActivityDetail = ({
   return (
     <div>
       <div className="toggleble-list-item">
-        <p>{activity.type}</p>
+        <Button variant="contained">{activity.type}</Button>
         <div className="detail-buttons">
           <Button variant="contained" disabled={!selected} onClick={handleEdit}>
             Save

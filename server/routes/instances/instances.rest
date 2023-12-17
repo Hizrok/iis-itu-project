@@ -8,7 +8,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3000/instances?activity=8
+GET http://localhost:3000/instances
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
 
 ###

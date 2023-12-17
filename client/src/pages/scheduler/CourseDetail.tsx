@@ -1,3 +1,6 @@
+// @author Tomáš Vlach
+// @author Jan Kapsa
+
 import { useEffect, useState } from "react";
 import { useAuthHeader } from "react-auth-kit";
 import axios from "axios";

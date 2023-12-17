@@ -1,6 +1,8 @@
+// @author Tomáš Vlach
+
 const NotFound = () => {
     return(
-        <div>404: Page Not Found</div>
+        <div><h2>404: Page Not Found</h2></div>
     )
 }
 

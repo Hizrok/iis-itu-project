@@ -9,8 +9,6 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import csLocale from '@fullcalendar/core/locales/cs';
 import styled from "@emotion/styled";
-
-
 //@author: Petr Teichgráb
 
 // priklad dat:
@@ -90,11 +88,8 @@ const SchedulePage = () => {
     const dispatch = useDispatch();
 
     const [activities, setActivities] = useState<Activity[]>([]);
-    const [selectedActivity, setSelectedActivity] = useState<Activity>();
     const [eventLecturer, setEventLecturer] = useState<String>();
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-
 
     const openModal = (info : any) => {
         setEventLecturer(info.event.extendedProps.lecturer);
@@ -189,10 +184,6 @@ const SchedulePage = () => {
         return color;
       };
       
-
-    const handleActivityClick = (activity: Activity) => {
-        setSelectedActivity(activity);
-    };
 
     const StyleWrapper = styled.div`
     .fc-button.fc-prev-button, .fc-button.fc-next-button, .fc-button.fc-button-primary{

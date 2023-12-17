@@ -1,8 +1,13 @@
-import { Button, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+// @author Jan Kapsa
+
+import { Button, InputLabel, MenuItem, Select } from "@mui/material";
 import { Instance } from "../../../components/common/Types/Course";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useConfirm } from "material-ui-confirm";
+import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 type InstanceDetailProps = {
   instance: Instance;
@@ -27,7 +32,7 @@ const InstanceDetail = ({
     instance.lecturer ? instance.lecturer : ""
   );
   const [day, setDay] = useState(instance.day);
-  const [startTime, setStartTime] = useState(instance.start_time);
+  const [startTime, setStartTime] = useState<Dayjs | null>(dayjs(instance.start_time, "HH:mm:ss"));
 
   const handleEdit = async (e: any) => {
     e.stopPropagation();
@@ -61,8 +66,9 @@ const InstanceDetail = ({
 
   return (
     <div>
+      <li>
       <div className="toggleble-list-item">
-        <p>{instance.id}</p>
+        <Button variant="contained">{instance.id}</Button>
         <div className="detail-buttons">
           <Button variant="contained" disabled={!selected} onClick={handleEdit}>
             Save
@@ -113,16 +119,18 @@ const InstanceDetail = ({
             <MenuItem value={"čtvrtek"}>čtvrtek</MenuItem>
             <MenuItem value={"pátek"}>pátek</MenuItem>
           </Select>
-          <TextField
-            margin="dense"
-            label="Start time"
-            fullWidth
-            variant="outlined"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
-          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <TimePicker 
+              label="Start Time" 
+              value={startTime}
+              onChange={(newValue) => setStartTime(newValue)}
+              ampm={false}
+              slotProps={{ textField: { fullWidth: true } }}
+              />
+          </LocalizationProvider>
         </div>
       )}
+      </li>
     </div>
   );
 };

@@ -1,3 +1,5 @@
+// @author Tomáš Vlach
+
 import { Drawer, List, Toolbar, Stack, Typography } from "@mui/material"
 import { Link } from "react-router-dom";
 import SizeConfig from "../../configs/SizeConfig"

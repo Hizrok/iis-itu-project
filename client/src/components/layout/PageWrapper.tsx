@@ -1,3 +1,5 @@
+// @author Tomáš Vlach
+
 import { ReactNode, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setAppState } from "../../redux/features/AppStateSlice";

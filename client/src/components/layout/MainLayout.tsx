@@ -1,3 +1,5 @@
+// @author Tomáš Vlach
+
 import { Outlet } from "react-router-dom";
 import { Backdrop, Box, Stack, Toolbar } from "@mui/material";
 import Topbar from "../common/Topbar";

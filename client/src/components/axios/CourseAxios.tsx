@@ -1,3 +1,6 @@
+// @author Tomáš Vlach
+// @author Jan Kapsa
+
 import axios from "axios";
 import { Course } from "../common/Types/Course";
 

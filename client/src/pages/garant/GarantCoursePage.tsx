@@ -1,3 +1,6 @@
+// @author Tomáš Vlach
+// @author Jan Kapsa
+
 import { useState, useEffect } from "react";
 import { useAuthHeader, useAuthUser } from "react-auth-kit";
 
