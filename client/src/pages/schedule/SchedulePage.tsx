@@ -9,14 +9,14 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import csLocale from '@fullcalendar/core/locales/cs';
 import styled from "@emotion/styled";
-import { Calendar } from '@fullcalendar/core';
-import listPlugin from '@fullcalendar/list';
+
 
 //@author: Petr Teichgráb
 
-
-// "id": 1,
-//     "course": "ITU",
+// priklad dat:
+//
+//     "id": IMA1,
+//     "course": "Matematicka analyza",
 //     "type": "přednáška",
 //     "recurrence": "každý",
 //     "capacity": 100,
@@ -91,7 +91,20 @@ const SchedulePage = () => {
 
     const [activities, setActivities] = useState<Activity[]>([]);
     const [selectedActivity, setSelectedActivity] = useState<Activity>();
+    const [eventLecturer, setEventLecturer] = useState<String>();
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
+
+
+    const openModal = (info : any) => {
+        setEventLecturer(info.event.extendedProps.lecturer);
+        setIsModalOpen(true);
+      };
+    
+      // Funkce pro zavření modálního okna
+      const closeModal = () => {
+        setIsModalOpen(false);
+      };
 
     useEffect(() => {
         getActivities();
@@ -158,7 +171,7 @@ const SchedulePage = () => {
           color += letters[Math.floor(Math.random() * 16)];
         }
       
-        const limitedLightness = Math.min(100, Math.max(30, lightness));
+        const limitedLightness = Math.min(100, Math.max(40, lightness));
       
         const rgb = [
           parseInt(color.slice(1, 3), 16),
@@ -201,14 +214,20 @@ const SchedulePage = () => {
         čtvrtek: 4,
         pátek: 5,
       };
-
-    const subjects = activitiesDummy.map(activity => {
+ 
+    const subjects = activities.map(activity => {
         return {
             title: activity.course,
-            backgroundColor: generateRandomColor(70, activity.id),
+            borderColor: "white",
+            backgroundColor: generateRandomColor(90, activity.id),
             daysOfWeek: [dayMap[activity.day]],
             startTime: activity.start_time,
             endTime: calculateEndTime(activity.start_time, activity.duration),
+            extendedProps: {
+                id: activity.id,
+                room: activity.room,
+                lecturer: activity.lecturer,          
+              },
         };
     });
 
@@ -241,34 +260,47 @@ const SchedulePage = () => {
         return num < 10 ? `0${num}` : `${num}`;
       }
 
-      //návratová stránka
+      //návratová
     const ReturnPage = (props: ReturnPageProps) => {
-            return (
-                <div>
-                    <div className="course-page">
-                        <div className="list-pages-list-container">
-                            <h2>{props.headerName}</h2>
-                        </div>
-                        {props.errorMessage}
-                    </div>
-                    <div className="schedule">
-                        <StyleWrapper>
-                            <Fullcalendar
-                            events={subjects}
-                            locale={csLocale}
-                            weekends={false} 
-                            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                            headerToolbar={{
-                                start: "prev, next",
-                                center: "title",
-                                end: "dayGridMonth, timeGridWeek, timeGridDay"
-                            }}
-                            initialView={"timeGridWeek"}/>
-                        </StyleWrapper>
-                    </div>
+        return (
+            <div className="schedule">
+              <StyleWrapper>
+                <Fullcalendar
+                  events={subjects}
+                  locale={csLocale}
+                  weekends={false} 
+                  plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                  headerToolbar={{
+                    start: "prev, next",
+                    center: "title",
+                    end: "dayGridMonth, timeGridWeek, timeGridDay"
+                  }}
+                  eventMouseEnter={openModal}
+                  eventMouseLeave={closeModal}
+                  eventContent={renderEventContent}
+                  initialView={"timeGridWeek"}
+                />
+              </StyleWrapper>
+        
+              {isModalOpen && (
+                <div className="modal">
+                  <p>Vyučující: {eventLecturer}</p>
                 </div>
-            );
+              )}
+            </div>
+          );
     };
+
+    function renderEventContent(eventInfo : any) {
+        return (
+          <div className="lectureEvent">
+            <b>{eventInfo.timeText}</b><br/>
+            <b>{eventInfo.event.extendedProps.id}</b><br/>
+            <b>{eventInfo.event.title}</b><br/>
+            <b>{eventInfo.event.extendedProps.room}</b>
+          </div>
+        )
+      }
 
     const AdminPage = () => {
         return (
