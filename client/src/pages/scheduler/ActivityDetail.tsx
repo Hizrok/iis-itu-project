@@ -25,7 +25,6 @@ const ActivityDetail = ({
   const [duration, setDuration] = useState<Dayjs | null>(dayjs(activity.duration, "HH:mm:ss"));
   const [lecturers, setLecturers] = useState<string[]>(activity.lecturers);
 
-  const [selectedLecturer, setSelectedLecturer] = useState("");
 
   useEffect(() => {
     setLecturers(activity.lecturers);
@@ -47,11 +46,15 @@ const ActivityDetail = ({
 
   return (
     <div>
+      <div className="toggleble-list-item">
+        <p>{activity.type}</p>
+        <div className="detail-buttons">
+        </div>
+      </div>
       {selected && (
         <div>
           <InputLabel>Typ</InputLabel>
           <Autocomplete
-            disabled
             value={type}
             onChange={(event: any, newValue: string | null) => {
               console.log(event);
@@ -64,7 +67,6 @@ const ActivityDetail = ({
             />
           <InputLabel>Recurence</InputLabel>
           <Autocomplete
-            disabled
             value={recurrence}
             onChange={(event: any, newValue: string | null) => {
               console.log(event);
@@ -76,7 +78,6 @@ const ActivityDetail = ({
             renderInput={(params) => <TextField {...params} />}
             />
           <TextField
-            disabled
             margin="normal"
             label="Kapacity"
             fullWidth
@@ -86,7 +87,6 @@ const ActivityDetail = ({
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <TimePicker 
-              disabled  
               label="Duration" 
               value={duration}
               onChange={(newValue) => setDuration(newValue)}
@@ -95,18 +95,16 @@ const ActivityDetail = ({
               />
           </LocalizationProvider>
           <InputLabel>Lecturers</InputLabel>
-          <Autocomplete
-            disabled
-            value={selectedLecturer}
-            onChange={(event: any, newValue: string | null) => {
-              console.log(event);
-              setSelectedLecturer(newValue? newValue : '');
-            }}
-            id="controllable-states-type"
-            options={[]}
-            fullWidth
-            renderInput={(params) => <TextField {...params} />}
-            />
+          <div>
+            {lecturers.map((lecturer: string) => (
+              <div
+                key={lecturer}
+                style={{ display: "flex", justifyContent: "space-between" }}
+              >
+                <p>{lecturer}</p>
+              </div>
+            ))}
+          </div>
           <InstanceList
             course={course}
             activity={activity}

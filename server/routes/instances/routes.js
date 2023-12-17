@@ -5,12 +5,12 @@ const controller = require("./controller");
 
 const router = Router();
 
-router.get("/", authenticate(["admin"]), controller.get_instances);
+router.get("/", authenticate(["admin", "rozvrhář"]), controller.get_instances);
 
-router.post("/", authenticate(["admin"]), controller.add_instance);
+router.post("/", authenticate(["admin", "rozvrhář"]), controller.add_instance);
 
-router.put("/:id", authenticate(["admin"]), controller.edit_instance);
+router.put("/:id", authenticate(["admin", "rozvrhář"]), controller.edit_instance);
 
-router.delete("/:id", authenticate(["admin"]), controller.delete_instance);
+router.delete("/:id", authenticate(["admin", "rozvrhář"]), controller.delete_instance);
 
 module.exports = router;

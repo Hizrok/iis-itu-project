@@ -5,8 +5,8 @@ const controller = require("./controller");
 
 const router = Router();
 
-router.get("/", authenticate(["admin", "garant"]), controller.get_activities);
-router.get("/:id", authenticate(["admin", "garant"]), controller.get_activity);
+router.get("/", authenticate(["admin", "garant", "rozvrhář"]), controller.get_activities);
+router.get("/:id", authenticate(["admin", "garant", "rozvrhář"]), controller.get_activity);
 
 router.post("/", authenticate(["admin", "garant"]), controller.add_activity);
 router.post("/:id", authenticate(["admin", "garant"]), controller.add_lecturer);
