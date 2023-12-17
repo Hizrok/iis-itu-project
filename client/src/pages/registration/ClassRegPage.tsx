@@ -1,3 +1,6 @@
+// @author Tomáš Vlach
+// @author Jan Kapsa
+
 import { useEffect, useState } from "react";
 import { useAuthHeader, useAuthUser } from "react-auth-kit";
 import { Box, Select, MenuItem } from "@mui/material";

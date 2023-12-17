@@ -1,3 +1,5 @@
+// @author Tomáš Vlach
+
 import { ListItemButton, ListItemText, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import colorConfigs from "../../configs/ColourConfig";

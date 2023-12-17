@@ -1,3 +1,5 @@
+// @author Tomáš Vlach
+
 import HomePage from "../pages/main/HomePage";
 import { RouteType } from "./config";
 
@@ -8,6 +10,10 @@ import CourseDetailsPage from "../pages/course/CourseDetailsPage";
 
 import SchedulePage from "../pages/schedule/SchedulePage";
 
+import GuarantiedCourseList from "../pages/garant/GarantCoursePage";
+
+import SchedulerCoursePage from "../pages/scheduler/SchedulerCoursePage";
+
 import RegistrationPageLayout from "../pages/registration/RegistationPageLayout";
 import RegistrationIndex from "../pages/registration/RegistrationIndex";
 import CourseRegPage from "../pages/registration/CourseRegPage";
@@ -17,14 +23,13 @@ import ListPageLayout from "../pages/list/ListPageLayout";
 import ListIndex from "../pages/list/ListIndex";
 import CourseListPage from "../pages/list/CourseList/CourseListPage";
 import RoomListPage from "../pages/list/RoomList/RoomListPage";
-// import ActivityListPage from "../pages/list/ActivityListPage";
-// import InstanceListPage from "../pages/list/InstanceListPage";
 import RegistrationListPage from "../pages/list/RegistrationListPage";
 
 import NotFound from "../pages/error/NotFoundPage";
 import UserListPage from "../pages/list/UserList/UserListPage";
-import GuarantiedCourseList from "../pages/garant/GarantCoursePage";
-import SchedulerCoursePage from "../pages/scheduler/SchedulerCoursePage";
+
+// A list of all pages on the website for route and navigation generation
+// All pages need an element that will be loaded when the page changes to it, a valid path to it, and state+authentification information
 
 const appRoutes: RouteType[] = [
   {
