@@ -2,11 +2,15 @@
 
 ## Github
 
-[Github repozitory](https://github.com/Hizrok/iis-itu-project) of this project
+[Github repository](https://github.com/Hizrok/iis-itu-project) of this project
 
 Additionally some members had multilple accounts so for clarity these are the owners:
 -   AlfieLeFluff - Tomáš Vlach
 -   Hizrok - Jak Kapsa
+
+## Online Deployment
+
+This project's website is also available here https://registration-website-7zsy.onrender.com . Hosting for this website was provided by [Render](https://render.com/).
 
 ## File Structure
 

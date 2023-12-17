@@ -9,9 +9,6 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import csLocale from '@fullcalendar/core/locales/cs';
 import styled from "@emotion/styled";
-import { Calendar } from '@fullcalendar/core';
-import listPlugin from '@fullcalendar/list';
-
 //@author: Petr Teichgráb
 
 
@@ -89,8 +86,7 @@ const SchedulePage = () => {
     const authHeader = useAuthHeader();
     const dispatch = useDispatch();
 
-    const [activities, setActivities] = useState<Activity[]>([]);
-    const [selectedActivity, setSelectedActivity] = useState<Activity>();
+    const [, setActivities] = useState<Activity[]>([]);
 
 
     useEffect(() => {
@@ -176,10 +172,6 @@ const SchedulePage = () => {
         return color;
       };
       
-
-    const handleActivityClick = (activity: Activity) => {
-        setSelectedActivity(activity);
-    };
 
     const StyleWrapper = styled.div`
     .fc-button.fc-prev-button, .fc-button.fc-next-button, .fc-button.fc-button-primary{
