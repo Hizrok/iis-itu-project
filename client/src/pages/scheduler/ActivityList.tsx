@@ -25,6 +25,7 @@ const ActivityList = ({ course }: ActivityListProps) => {
       })
       .then((res) => {
         setActivities(res.data);
+        console.log(res.data);
       })
       .catch((err) => {
         console.error(err.message);
