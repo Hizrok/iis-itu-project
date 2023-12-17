@@ -1,3 +1,6 @@
+// @author Tomáš Vlach
+// @author Jan Kapsa
+
 import { InputLabel } from "@mui/material";
 import { Activity } from "../../components/common/Types/Course";
 import ActivityDetail from "./ActivityDetail";

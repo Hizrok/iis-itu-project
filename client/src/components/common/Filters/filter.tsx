@@ -1,3 +1,5 @@
+// @author Petr Teichgrab
+
 import {
   Select,
   MenuItem,

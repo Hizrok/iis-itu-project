@@ -1,3 +1,6 @@
+// @author Tomáš Vlach
+// @author Jan Kapsa
+
 import {
   Autocomplete,
   Button,

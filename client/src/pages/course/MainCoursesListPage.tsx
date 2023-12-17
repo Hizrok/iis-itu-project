@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from "react";
+// @author Tomáš Vlach
+// @author Jan Kapsa
+// @author Petr Teichgrab
+
+import { useState, useEffect } from "react";
 import { Course } from "../../components/common/Types/Course";
 import { useNavigate } from "react-router-dom";
 import { useAuthHeader } from "react-auth-kit";
@@ -9,7 +13,7 @@ const MainCoursesListPage = () => {
   const navigate = useNavigate();
   const authHeader = useAuthHeader();
 
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [courses, setCourses] = useState<Course[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 

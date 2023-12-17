@@ -1,3 +1,6 @@
+// @author Tomáš Vlach
+// @author Jan Kapsa
+
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setLoadingContentState } from "../../redux/features/LoadingContentStateSlice";

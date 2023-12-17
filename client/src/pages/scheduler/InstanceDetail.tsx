@@ -1,3 +1,6 @@
+// @author Tomáš Vlach
+// @author Jan Kapsa
+
 import { Button, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { Instance } from "../../components/common/Types/Course";
 import { useState } from "react";
