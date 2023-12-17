@@ -43,12 +43,19 @@ const delete_registration = async (req, res) => {
 };
 
 const get_active_registration = async (req, res) => {
+  if (req.params.active === null) {
+    return res.status(404).json({ err: "no active registration found" });
+  }
+
   res.status(200).json(req.params.active);
 };
 
 const set_status = async (req, res) => {
   const id = req.params.id;
-  const old_id = req.params.active.id;
+  let old_id = null;
+  if (req.params.active) {
+    old_id = req.params.active.id;
+  }
 
   const [set_query, err] = await query_database(res, queries.set_status, [
     true,

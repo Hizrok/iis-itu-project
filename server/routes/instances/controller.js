@@ -3,12 +3,12 @@ const queries = require("./queries");
 const { query_database } = require("../../middleware");
 
 const get_instances = async (req, res) => {
-  const { course, activity } = req.query;
+  const { course, activity, lecturer } = req.query;
 
   const [search_query, err] = await query_database(
     res,
-    queries.get_all_instance_query(course, activity),
-    [course, activity].filter((value) => value)
+    queries.get_all_instance_query(course, activity, lecturer),
+    [course, activity, lecturer].filter((value) => value)
   );
   if (err) return;
 

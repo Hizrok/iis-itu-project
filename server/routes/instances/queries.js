@@ -1,22 +1,25 @@
-const get_all_instance_query = (course, activity) => {
+const get_all_instance_query = (course, activity, lecturer) => {
   let index = 1;
   let query =
     "select cai.id, course, type, room, lecturer, recurrence, day, start_time, duration, capacity from course_activity_instances as cai join course_activities as ca on cai.course_activity=ca.id";
 
-  if (course || activity) {
-    query += " where ";
-  }
+  const queries = [];
 
   if (course) {
-    query += `ca.course=$${index++}`;
-  }
-
-  if (course && activity) {
-    query += " and ";
+    queries.push(`ca.course=$${index++}`);
   }
 
   if (activity) {
-    query += `cai.course_activity=$${index++}`;
+    queries.push(`cai.course_activity=$${index++}`);
+  }
+
+  if (lecturer) {
+    queries.push(`lecturer=$${index++}`);
+  }
+
+  if (queries.length) {
+    query += " where ";
+    query += queries.join(" and ");
   }
 
   query += ";";

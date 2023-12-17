@@ -92,7 +92,8 @@ const RegistrationListPage = () => {
         console.log(res.data.msg);
         setRegistrations((oldRegistrations) => {
           const newRegistrations = [...oldRegistrations];
-          newRegistrations[index].status = false;
+          if (newRegistrations.length > index)
+            newRegistrations[index].status = false;
           newRegistrations[i].status = true;
           setIndex(i);
           return newRegistrations;

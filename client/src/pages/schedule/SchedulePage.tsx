@@ -9,8 +9,6 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import csLocale from "@fullcalendar/core/locales/cs";
 import styled from "@emotion/styled";
-import { Calendar } from "@fullcalendar/core";
-import listPlugin from "@fullcalendar/list";
 import axios from "axios";
 
 //@author: Petr Teichgráb
@@ -86,10 +84,8 @@ const SchedulePage = () => {
     if (isAuthenticated()) {
       if (auth()!.role === "student") {
         fetchActivitiesStudent();
-      } else if (auth()!.role === "vyučující") {
+      } else {
         fetchActivitiesTeacher();
-      } else if (auth()!.role === "garant") {
-        fetchActivitiesGarant();
       }
     }
   };
@@ -102,17 +98,7 @@ const SchedulePage = () => {
 
   async function fetchActivitiesTeacher() {
     fetchActivities(
-      import.meta.env.VITE_SERVER_HOST +
-        "courses/instances?lecturer=" +
-        auth()!.id
-    );
-  }
-
-  async function fetchActivitiesGarant() {
-    fetchActivities(
-      import.meta.env.VITE_SERVER_HOST +
-        "courses/instances?lecturer=" +
-        auth()!.id
+      import.meta.env.VITE_SERVER_HOST + "instances?lecturer=" + auth()!.id
     );
   }
 
@@ -121,7 +107,12 @@ const SchedulePage = () => {
     axios
       .get(URL, { headers: { Authorization: authHeader() } })
       .then((res) => {
-        setActivities(res.data.filter((a: any) => a.registered));
+        console.log(res.data);
+        setActivities(
+          res.data.filter(
+            (a: any) => a.registered === undefined || a.registered
+          )
+        );
       })
       .catch((err) => console.error(err.message))
       .finally(() => {

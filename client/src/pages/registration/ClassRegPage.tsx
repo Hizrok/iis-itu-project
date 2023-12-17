@@ -11,6 +11,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import styled from "@emotion/styled";
+import { toast } from "react-toastify";
 
 type Instance = {
   id: number;
@@ -112,6 +113,9 @@ const ClassRegPage = () => {
         )
         .then((res) => {
           console.log(res.data.msg);
+          toast.success(
+            `vyučování ${instance.course} ${instance.type} ${instance.recurrence} ${instance.day} ${instance.start_time} bylo vybráno jako číslo ${order}`
+          );
           setInstances((oldInstances) => {
             const newInstances = [...oldInstances];
             newInstances[index].order = order;
@@ -139,6 +143,9 @@ const ClassRegPage = () => {
         )
         .then((res) => {
           console.log(res.data.msg);
+          toast.success(
+            `vyučování ${instance.course} ${instance.type} ${instance.recurrence} ${instance.day} ${instance.start_time} bylo vybráno jako číslo ${order}`
+          );
           setInstances((oldInstances) => {
             const newInstances = [...oldInstances];
             newInstances[index].order = order;
@@ -161,6 +168,9 @@ const ClassRegPage = () => {
         )
         .then((res) => {
           console.log(res.data.msg);
+          toast.success(
+            `vyučování ${instance.course} ${instance.type} ${instance.recurrence} ${instance.day} ${instance.start_time} bylo odebráno`
+          );
           setInstances((oldInstances) => {
             const newInstances = [...oldInstances];
             newInstances[index].order = -1;
@@ -285,45 +295,6 @@ const ClassRegPage = () => {
           initialView={"timeGridWeek"}
         />
       </StyleWrapper>
-      <div style={{ marginTop: "30px" }}>
-        {instances.map((i: Instance, index: number) => (
-          <div
-            key={i.id}
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "50px 100px 100px 100px 100px 100px 100px 100px 150px",
-              justifyItems: "center",
-              alignItems: "center",
-              width: "fit-content",
-              margin: "10px auto",
-            }}
-          >
-            <span>{i.course}</span>
-            <span>{i.type}</span>
-            <span>{i.recurrence}</span>
-            <span>{i.lecturer}</span>
-            <span>{i.room}</span>
-            <span>{i.day}</span>
-            <span>{i.start_time.substring(0, 5)}</span>
-            <span>
-              {calculateEndTime(i.start_time, i.duration).substring(0, 5)}
-            </span>
-            <Select
-              value={i.order}
-              disabled
-              onChange={(e) => handleChange(e, index)}
-            >
-              <MenuItem value={-1}>not selected</MenuItem>
-              {[...Array(10).keys()].map((n) => (
-                <MenuItem key={n} value={n + 1}>
-                  {n + 1}
-                </MenuItem>
-              ))}
-            </Select>
-          </div>
-        ))}
-      </div>
     </Box>
   );
 };
