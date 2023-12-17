@@ -1,10 +1,17 @@
-/* userlist.css */
 .list-pages-list-container {
   max-width: 600px;
 }
 
-.course-list-pages-list-container {
-  margin-right: 10%;
+.course-page .list-pages-list-container {
+  max-width: 1100px;
+}
+
+.activity-page .list-pages-list-container {
+  max-width: 1100px;
+}
+
+.activities-page .list-pages-list-container {
+  max-width: 1100px;
 }
 
 .list-pages-list-container ul {
@@ -13,7 +20,7 @@
 }
 
 .list-pages-list-container .list-header {
-  background-color: #A453F5;
+  background-color: #a453f5;
   border-bottom: 1px solid #ddd;
   color: #f4f4f4;
   font-weight: bold;
@@ -60,6 +67,10 @@
   display: flex;
 }
 
+.activity-page {
+  display: flex;
+}
+
 .list-pages-list-container {
   flex: 1;
   margin-right: 20px;
@@ -68,8 +79,8 @@
 .user-detail-container {
   margin-left: 15px;
   border-radius: 5px;
-  max-width: 30%;
-  max-height: 500px;
+  max-width: 40%;
+  max-height: 600px;
   background-color: white;
   margin-top: 75px;
   border: 1px solid #ddd;
@@ -79,7 +90,7 @@
 .user-detail-properties {
   margin-left: 10%;
   display: grid;
-  grid-template-columns: 30% 40%;
+  grid-template-columns: 60% 40%;
 }
 
 .user-detail-properties p {
@@ -96,11 +107,11 @@
 }
 
 .user-detail-header {
-  background-color: #A453F5;
+  background-color: #a453f5;
 }
 
 .purple-bar {
-  background-color: #A453F5;
+  background-color: #a453f5;
   height: 45px;
   width: 100%;
   border-radius: 5px 5px 0 0;
@@ -133,4 +144,125 @@
 .descArrowIcon {
   margin-left: 3px;
   margin-top: 15px;
+}
+
+.searchBar {
+  padding: 8px;
+  width: 44.5%;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  margin-bottom: 30px;
+}
+
+.coursePageContentWrapper {
+  margin: 2% 0 0 5%;
+}
+
+.courseCardWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  max-width: 1300px;
+}
+
+.courseCard {
+  width: 300px;
+  height: 300px;
+  color: white;
+  border: 1px solid white;
+  border-radius: 15px;
+  background: rgb(106, 90, 205);
+  background: linear-gradient(
+    to bottom right,
+    rgba(106, 90, 205, 1) 0%,
+    #9585fb 100%
+  );
+  overflow: hidden;
+  cursor: pointer;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.courseCard h2 {
+  font-size: 1.6em;
+}
+
+.courseCardID {
+  font-size: 1.6em;
+}
+
+.courseCardGuarantor {
+  font-size: 1.1em;
+}
+
+.courseCardAnnotation {
+  margin: 0 15px;
+}
+
+.tileWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  max-width: 1300px;
+  margin-top: 5%;
+  margin-left: 10%;
+}
+
+.tile {
+  width: 300px;
+  height: 200px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  color: white;
+  border: 1px solid white;
+  border-radius: 15px;
+  background: rgb(106, 90, 205);
+  background: linear-gradient(
+    to bottom right,
+    rgba(106, 90, 205, 1) 0%,
+    #9585fb 100%
+  );
+  text-decoration: none;
+}
+
+.tile img {
+  margin-bottom: 20px;
+}
+
+.schedule {
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 5%;
+}
+
+.lectureEvent {
+  margin-left: 10px;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  z-index: 1000;
+  border-radius: 15px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+  width: 100%;
+  opacity: 0.7;
+  transition: opacity 0.3s;
 }
