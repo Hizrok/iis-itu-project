@@ -77,6 +77,18 @@ const SchedulePage = () => {
   const dispatch = useDispatch();
 
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [eventLecturer, setEventLecturer] = useState<String>();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (info : any) => {
+      setEventLecturer(info.event.extendedProps.lecturer);
+      setIsModalOpen(true);
+    };
+  
+    // Funkce pro zavření modálního okna
+    const closeModal = () => {
+      setIsModalOpen(false);
+    };
 
   useEffect(() => {
     getActivities();
@@ -233,9 +245,16 @@ const SchedulePage = () => {
                 center: "title",
                 end: "dayGridMonth, timeGridWeek, timeGridDay",
               }}
+              eventMouseEnter={openModal}
+              eventMouseLeave={closeModal}
               initialView={"timeGridWeek"}
             />
           </StyleWrapper>
+            {isModalOpen && (
+                <div className="modal">
+                  <p>Vyučující: {eventLecturer}</p>
+                </div>
+              )}
         </div>
       </div>
     );
