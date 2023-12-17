@@ -3,9 +3,9 @@
 
 import { useEffect, useState } from "react";
 import { useAuthHeader, useAuthUser } from "react-auth-kit";
-// import Course from "../../components/common/Types/Course";
-import { Box, Checkbox } from "@mui/material";
+import { Box, Checkbox, TextField } from "@mui/material";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 type CourseRegistration = {
   id: string;
@@ -18,6 +18,7 @@ const CourseRegPage = () => {
   const authHeader = useAuthHeader();
   const auth = useAuthUser();
 
+  const [search, setSearch] = useState("");
   const [state, setState] = useState(0);
   const [courses, setCourses] = useState<CourseRegistration[]>([]);
 
@@ -80,6 +81,7 @@ const CourseRegPage = () => {
         )
         .then((res) => {
           console.log(res.data.msg);
+          toast.success(`Předmět ${courses[index].id} byl zaregistrován`);
           setCourses((oldCourses) => {
             const newCourses = [...oldCourses];
             newCourses[index].registered = !newCourses[index].registered;
@@ -102,6 +104,7 @@ const CourseRegPage = () => {
         )
         .then((res) => {
           console.log(res.data.msg);
+          toast.success(`Předmět ${courses[index].id} byl odregistrován`);
           setCourses((oldCourses) => {
             const newCourses = [...oldCourses];
             newCourses[index].registered = !newCourses[index].registered;
@@ -112,13 +115,29 @@ const CourseRegPage = () => {
     }
   };
 
+  const filteredCourses = courses.filter(
+    (course) =>
+      course.name.toLowerCase().includes(search.toLowerCase()) ||
+      course.guarantor.toLowerCase().includes(search.toLowerCase()) ||
+      course.id.toLowerCase().includes(search.toLowerCase())
+  );
+
   if (state === 0) {
     return <div>Modul registrací předmětů nebyl spuštěn</div>;
   }
 
   return (
-    <Box>
-      {courses.map((c: CourseRegistration, i: number) => (
+    <Box sx={{ width: "600px", margin: "30px 50px" }}>
+      <TextField
+        fullWidth
+        id="outlined-basic"
+        label="Vyhledat předmět..."
+        variant="outlined"
+        sx={{ marginBottom: "50px" }}
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+      {filteredCourses.map((c: CourseRegistration, i: number) => (
         <div
           key={c.id}
           style={{
