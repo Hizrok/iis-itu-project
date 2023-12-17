@@ -7,6 +7,7 @@ import { useAuthHeader } from "react-auth-kit";
 import { Instance, Activity } from "../../../components/common/Types/Course";
 import InstanceDetail from "./InstanceDetail";
 import CreateInstanceDialog from "./CreateInstanceDialog";
+import dayjs from "dayjs";
 
 type InstanceListProps = {
   course: string;
@@ -59,6 +60,7 @@ const InstanceList = ({ course, activity, lecturers }: InstanceListProps) => {
     day: string,
     start_time: string
   ) => {
+    start_time = dayjs(start_time).format('HH:mm:ss');
     return await axios
       .put(
         `${import.meta.env.VITE_SERVER_HOST}instances/${selected}`,
@@ -106,6 +108,7 @@ const InstanceList = ({ course, activity, lecturers }: InstanceListProps) => {
     day: string,
     start_time: string
   ) => {
+    start_time = dayjs(start_time).format('HH:mm:ss');
     return await axios
       .post(
         `${import.meta.env.VITE_SERVER_HOST}instances`,
@@ -165,6 +168,7 @@ const InstanceList = ({ course, activity, lecturers }: InstanceListProps) => {
       <Button variant="contained" onClick={() => toggleDialog(true)}>
         Add instance
       </Button>
+      <ul>
       {instances.map((instance: Instance, i: number) => (
         <div key={i} onClick={() => handleSelect(instance.id, i)}>
           <InstanceDetail
@@ -177,6 +181,7 @@ const InstanceList = ({ course, activity, lecturers }: InstanceListProps) => {
           />
         </div>
       ))}
+      </ul>
       <CreateInstanceDialog
         rooms={rooms}
         lecturers={lecturers}

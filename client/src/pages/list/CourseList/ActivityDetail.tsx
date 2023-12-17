@@ -161,7 +161,7 @@ const ActivityDetail = ({
   return (
     <div>
       <div className="toggleble-list-item">
-        <p>{activity.type}</p>
+        <Button variant="contained">{activity.type}</Button>
         <div className="detail-buttons">
           <Button variant="contained" disabled={!selected} onClick={handleEdit}>
             Save

@@ -10,8 +10,10 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField,
 } from "@mui/material";
+import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -35,7 +37,7 @@ const CreateInstanceDialog = ({
   const [room, setRoom] = useState("");
   const [lecturer, setLecturer] = useState("");
   const [day, setDay] = useState("pondělí");
-  const [startTime, setStartTime] = useState("08:00:00");
+  const [startTime, setStartTime] = useState<Dayjs | null>(dayjs("08:00:00", "HH:mm:ss"));
 
   const handleCreateInstance = async () => {
     setDisabled(true);
@@ -53,7 +55,7 @@ const CreateInstanceDialog = ({
     setRoom("");
     setLecturer("");
     setDay("pondělí");
-    setStartTime("08:00:00");
+    setStartTime(dayjs("08:00:00", "HH:mm:ss"));
   };
 
   return (
@@ -99,14 +101,15 @@ const CreateInstanceDialog = ({
           <MenuItem value={"čtvrtek"}>čtvrtek</MenuItem>
           <MenuItem value={"pátek"}>pátek</MenuItem>
         </Select>
-        <TextField
-          margin="dense"
-          label="Start time"
-          fullWidth
-          variant="outlined"
-          value={startTime}
-          onChange={(e) => setStartTime(e.target.value)}
-        />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <TimePicker 
+              label="Start Time" 
+              value={startTime}
+              onChange={(newValue) => setStartTime(newValue)}
+              ampm={false}
+              slotProps={{ textField: { fullWidth: true } }}
+              />
+          </LocalizationProvider>
       </DialogContent>
       <DialogActions>
         <Button
