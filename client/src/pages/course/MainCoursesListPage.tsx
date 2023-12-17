@@ -1,24 +1,18 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { Course } from "../../components/common/Types/Course";
 import { useNavigate } from "react-router-dom";
+import { useAuthHeader } from "react-auth-kit";
+import { getCourses } from "../../components/axios/CourseAxios";
 
 const MainCoursesListPage = () => {
   const navigate = useNavigate();
+  const authHeader = useAuthHeader();
 
+  const [, setLoading] = useState(true);
   const [courses, setCourses] = useState<Course[]>([]);
 
-  const getCourses = async () => {
-    await axios
-      .get(`${import.meta.env.VITE_SERVER_HOST}courses`)
-      .then((res) => {
-        setCourses(res.data);
-      })
-      .catch((err) => console.error(err));
-  };
-
   useEffect(() => {
-    getCourses();
+    getCourses(setLoading,setCourses, authHeader);
   }, []);
 
   return (
