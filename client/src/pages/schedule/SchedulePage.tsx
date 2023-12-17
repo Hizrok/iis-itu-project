@@ -10,7 +10,6 @@ import interactionPlugin from "@fullcalendar/interaction";
 import csLocale from "@fullcalendar/core/locales/cs";
 import styled from "@emotion/styled";
 import axios from "axios";
-import { duration } from "@mui/material";
 
 //@author: Petr Teichgráb
 
@@ -157,7 +156,7 @@ const SchedulePage = () => {
     return color;
   };
 
-  const subjects = activitiesDummy.map((activity) => {
+  const subjects = activities.map((activity) => {
     return {
       title: activity.course,
       backgroundColor: generateRandomColor(70, activity.id),
