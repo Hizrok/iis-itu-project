@@ -94,6 +94,7 @@ const next_phase = async (req, res) => {
     case 3: // SCHEDULING
       break;
     case 4: // INSTANCE REGISTRATION IN PROGRESS
+      await evaluate_instances(res, id);
       break;
     case 5: // EVALUATING INSTANCE REGISTRATION
       break;
@@ -110,6 +111,19 @@ const next_phase = async (req, res) => {
   if (set_err) return;
 
   res.status(202).json({ msg: `registration ${id} was put into next phase` });
+};
+
+const evaluate_instances = async (res, id) => {
+  // get all instance registrations of registration id
+  // register those instances
+
+  const [_, err] = await query_database(
+    res,
+    "update course_activity_instance_registrations set registered=true where registration=$1;",
+    [id]
+  );
+  if (err) return err;
+  console.log("instances registered");
 };
 
 const reset = async (req, res) => {

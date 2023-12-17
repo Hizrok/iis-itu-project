@@ -171,7 +171,11 @@ const ClassRegPage = () => {
           <span>{i.day}</span>
           <span>{i.start_time}</span>
           <span>{i.duration}</span>
-          <Select value={i.order} onChange={(e) => handleChange(e, index)}>
+          <Select
+            value={i.order}
+            disabled={state > 4}
+            onChange={(e) => handleChange(e, index)}
+          >
             <MenuItem value={-1}>not selected</MenuItem>
             {[...Array(10).keys()].map((n) => (
               <MenuItem key={n} value={n + 1}>
