@@ -177,6 +177,103 @@ const unregister_course = async (req, res) => {
   res.status(202).json({ msg: `${user_id} unregistered ${course}` });
 };
 
+const get_instances_with_reg_data = async (req, res) => {
+  const reg_id = req.params.active.id;
+  const student = req.params.user_id;
+
+  // get all instances
+  const [all_i, all_i_err] = await query_database(
+    res,
+    queries.get_instances,
+    []
+  );
+  if (all_i_err) return;
+
+  // get all registered courses
+  const [reg_c, reg_c_err] = await query_database(
+    res,
+    queries.get_registered_courses,
+    [reg_id, student]
+  );
+  if (reg_c_err) return;
+  const registered_courses = reg_c.rows.map((r) => r.course);
+
+  const available_instances = all_i.rows.filter((i) =>
+    registered_courses.includes(i.course)
+  );
+
+  // get orders
+  const [reg_i, reg_i_err] = await query_database(
+    res,
+    queries.get_instances_with_reg_data,
+    [reg_id, student]
+  );
+  if (reg_i_err) return;
+
+  const instances = available_instances.map((i) => {
+    const index = reg_i.rows.findIndex(
+      (o) => o.course_activity_instance === i.id
+    );
+    return {
+      ...i,
+      order: index !== -1 ? reg_i.rows[index].order : -1,
+      registered: index !== -1 ? reg_i.rows[index].registered : false,
+    };
+  });
+
+  res.status(200).json(instances);
+};
+
+const register_instance = async (req, res) => {
+  const reg_id = req.params.active.id;
+  const { instance, student, order } = req.body;
+
+  const [_, err] = await query_database(res, queries.register_instance, [
+    reg_id,
+    instance,
+    student,
+    order,
+  ]);
+  if (err) return;
+
+  res.status(201).json({
+    msg: `${student} selected instance number ${instance} (order: ${order})`,
+  });
+};
+
+const update_instance_registration = async (req, res) => {
+  const reg_id = req.params.active.id;
+  const student = req.params.user_id;
+  const { instance, order } = req.body;
+
+  const [_, err] = await query_database(
+    res,
+    queries.update_instance_registration,
+    [order, reg_id, instance, student]
+  );
+  if (err) return;
+
+  res.status(202).json({
+    msg: `${student} updated instance number ${instance} (order: ${order})`,
+  });
+};
+
+const unregister_instance = async (req, res) => {
+  const reg_id = req.params.active.id;
+  const { instance, user_id } = req.params;
+
+  const [_, err] = await query_database(res, queries.unregister_instance, [
+    reg_id,
+    instance,
+    user_id,
+  ]);
+  if (err) return;
+
+  res
+    .status(202)
+    .json({ msg: `${user_id} unregistered instance number ${instance}` });
+};
+
 module.exports = {
   get_registrations,
   get_active_registration,
@@ -188,4 +285,8 @@ module.exports = {
   get_courses_with_reg_data,
   register_course,
   unregister_course,
+  get_instances_with_reg_data,
+  register_instance,
+  update_instance_registration,
+  unregister_instance,
 };

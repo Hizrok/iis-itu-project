@@ -23,6 +23,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwic
 
 ###
 
+GET http://localhost:3000/registrations/instances/student
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+
+###
+
 POST http://localhost:3000/registrations
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
 
@@ -35,6 +40,18 @@ Content-Type: application/json
 {
 	"course": "ITU",
 	"student": "student"
+}
+
+###
+
+POST http://localhost:3000/registrations/instances
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+Content-Type: application/json
+
+{
+	"instance": 7,
+	"student": "student",
+	"order": 1
 }
 
 ###
@@ -54,6 +71,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwic
 
 ###
 
+PUT http://localhost:3000/registrations/instances/student
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
+Content-Type: application/json
+
+{
+	"instance": 7,
+	"order": 2
+}
+
+###
+
 DELETE http://localhost:3000/registrations/2
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
 
@@ -62,3 +90,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwic
 DELETE http://localhost:3000/registrations/courses/ITU/student
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
 
+###
+
+DELETE http://localhost:3000/registrations/instances/7/student
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzAxNTcxNDYxfQ.cKqqqGGiu7aiol1c79UhHLIlIzOD49oJlvl_YPz2J9A
