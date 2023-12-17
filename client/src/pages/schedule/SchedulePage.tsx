@@ -12,6 +12,7 @@ import styled from "@emotion/styled";
 import { Calendar } from '@fullcalendar/core';
 import listPlugin from '@fullcalendar/list';
 
+//@author: Petr Teichgráb
 
 
 // "id": 1,
@@ -24,7 +25,6 @@ import listPlugin from '@fullcalendar/list';
 //     "duration": "02:00:00",
 //     "room": "A101",
 //     "lecturer": "garant"
-
 
 type Activity = {
     id: string;
@@ -41,8 +41,8 @@ type Activity = {
 
 const activitiesDummy: Activity[] = [
     {
-      id: '1',
-      course: 'ITU',
+      id: 'ITU',
+      course: 'Tvorba uzivatelskych rozhrani',
       type: 'přednáška',
       recurrence: 'každý',
       capacity: '100',
@@ -53,7 +53,7 @@ const activitiesDummy: Activity[] = [
       lecturer: 'garant',
     },
     {
-        id: '2',
+        id: 'IMA2',
         course: 'Matematika',
         type: 'cvičení',
         recurrence: 'každý týden',
@@ -65,7 +65,7 @@ const activitiesDummy: Activity[] = [
         lecturer: 'Dr. Novák',
       },
       {
-        id: '3',
+        id: 'FYZ',
         course: 'Fyzika',
         type: 'seminář',
         recurrence: 'každý druhý týden',
@@ -78,6 +78,9 @@ const activitiesDummy: Activity[] = [
       }
   ];
   
+  type ReturnPageProps = {
+    headerName: string;
+    errorMessage: string;}
 
 const SchedulePage = () => {
 
@@ -141,10 +144,38 @@ const SchedulePage = () => {
         }
     }
 
-    type ReturnPageProps = {
-        headerName: string;
-        errorMessage: string;
-    };
+    const generateRandomColor = (lightness = 60, id : string) => {
+        let storedColor = (localStorage.getItem(id));
+
+        if (storedColor) {
+            // Pokud je k dispozici ulozena barva return
+            return storedColor;
+        }
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        
+        for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+      
+        const limitedLightness = Math.min(100, Math.max(30, lightness));
+      
+        const rgb = [
+          parseInt(color.slice(1, 3), 16),
+          parseInt(color.slice(3, 5), 16),
+          parseInt(color.slice(5, 7), 16)
+        ];
+      
+        const adjustedRgb = rgb.map(value => Math.round(value * (limitedLightness / 100)));
+        
+        color = `#${adjustedRgb.map(value => value.toString(16).padStart(2, '0')).join('')}`;
+
+        localStorage.setItem(id, color);
+
+      
+        return color;
+      };
+      
 
     const handleActivityClick = (activity: Activity) => {
         setSelectedActivity(activity);
@@ -173,11 +204,11 @@ const SchedulePage = () => {
 
     const subjects = activitiesDummy.map(activity => {
         return {
-        title: activity.course,
-        groupId: 'blueEvents', // Přizpůsobte podle potřeby
-        daysOfWeek: [dayMap[activity.day]],
-        startTime: activity.start_time,
-        endTime: calculateEndTime(activity.start_time, activity.duration), // Přizpůsobte podle potřeby
+            title: activity.course,
+            backgroundColor: generateRandomColor(70, activity.id),
+            daysOfWeek: [dayMap[activity.day]],
+            startTime: activity.start_time,
+            endTime: calculateEndTime(activity.start_time, activity.duration),
         };
     });
 
@@ -210,6 +241,7 @@ const SchedulePage = () => {
         return num < 10 ? `0${num}` : `${num}`;
       }
 
+      //návratová stránka
     const ReturnPage = (props: ReturnPageProps) => {
             return (
                 <div>
@@ -230,43 +262,13 @@ const SchedulePage = () => {
                                 start: "prev, next",
                                 center: "title",
                                 end: "dayGridMonth, timeGridWeek, timeGridDay"
-                            }}  
+                            }}
                             initialView={"timeGridWeek"}/>
                         </StyleWrapper>
                     </div>
                 </div>
             );
     };
-
-    type activityDetailProps = {
-        selectedActivity: Activity;
-    };
-
-    const ActivityDetail = (props: activityDetailProps) => {
-        return (
-            <div className="user-detail-container">
-                <div className="purple-bar"></div>
-                <div className="user-detail-properties">
-                    <p>Předmět:</p>
-                    <p>{props.selectedActivity.course}</p>
-                    <p>Typ:</p>
-                    <p>{props.selectedActivity.type}</p>
-                    <p>Rekurence:</p>
-                    <p>{props.selectedActivity.recurrence}</p>
-                    <p>Den:</p>
-                    <p>{props.selectedActivity.day}</p>
-                    <p>Čas:</p>
-                    <p>{props.selectedActivity.start_time}</p>
-                    <p>Trvání:</p>
-                    <p>{props.selectedActivity.duration}</p>
-                    <p>Místnost:</p>
-                    <p>{props.selectedActivity.room}</p>
-                    <p>Učitel:</p>
-                    <p>{props.selectedActivity.lecturer}</p>
-                </div>
-            </div>
-        );
-    }
 
     const AdminPage = () => {
         return (
