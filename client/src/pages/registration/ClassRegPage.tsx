@@ -10,6 +10,7 @@ import csLocale from "@fullcalendar/core/locales/cs";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import styled from "@emotion/styled";
 
 type Instance = {
   id: number;
@@ -32,6 +33,24 @@ const dayMap: Record<string, number> = {
   čtvrtek: 4,
   pátek: 5,
 };
+
+const StyleWrapper = styled.div`
+  .fc-button.fc-prev-button,
+  .fc-button.fc-next-button,
+  .fc-button.fc-button-primary {
+    background: rgba(106, 90, 205, 1);
+    background-image: none;
+  }
+  .fc th {
+    background: rgba(106, 90, 205, 1);
+  }
+  .fc-col-header-cell-cushion {
+    color: white;
+  }
+  .fc-scrollgrid-sync-table {
+    display: none;
+  }
+`;
 
 const ClassRegPage = () => {
   const authHeader = useAuthHeader();
@@ -71,9 +90,6 @@ const ClassRegPage = () => {
   };
 
   const handleChange = async (e: any, index: number) => {
-    // if order === null and value !== 0 then create
-    // if order and value !== 0 then update
-    // if order and value === 0 then delete
     const instance = instances[index];
     const order = e.target.value;
 
@@ -155,7 +171,7 @@ const ClassRegPage = () => {
     }
   };
 
-  // @author Petr Teichgráb (chatgpt)
+  // @author Petr Teichgráb
   function calculateEndTime(startTime: any, duration: any) {
     // Rozdělení začátečního času na hodiny, minuty a sekundy
     const [startHours, startMinutes, startSeconds] = startTime
@@ -201,6 +217,38 @@ const ClassRegPage = () => {
     fetchInstances();
   }, []);
 
+  function renderEventContent(eventInfo: any) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          overflow: "hidden",
+        }}
+      >
+        <b>{eventInfo.timeText}</b>
+        <br />
+        <b>{eventInfo.event.title}</b>
+        <br />
+        <b>{eventInfo.event.extendedProps.type}</b>
+        <Select
+          style={{ maxWidth: "75px", maxHeight: "30px", color: "white" }}
+          disabled={state > 4}
+          value={eventInfo.event.extendedProps.order}
+          onChange={(e) => handleChange(e, eventInfo.event.extendedProps.index)}
+        >
+          <MenuItem value={-1}>not selected</MenuItem>
+          {[...Array(10).keys()].map((n) => (
+            <MenuItem key={n} value={n + 1}>
+              {n + 1}
+            </MenuItem>
+          ))}
+        </Select>
+      </div>
+    );
+  }
+
   if (state < 4) {
     return <div>Modul vyučování ještě nebyl spuštěn</div>;
   }
@@ -208,25 +256,35 @@ const ClassRegPage = () => {
   return (
     <Box>
       <h2>Registrace vyučování</h2>
-      <Fullcalendar
-        events={instances.map((i: Instance) => ({
-          title: i.course,
-          groupId: "blueEvents",
-          daysOfWeek: [dayMap[i.day]],
-          startTime: i.start_time,
-          endTime: calculateEndTime(i.start_time, i.duration),
-          overlap: false,
-        }))}
-        locale={csLocale}
-        weekends={false}
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        headerToolbar={{
-          start: "prev, next",
-          center: "title",
-          end: "dayGridMonth, timeGridWeek, timeGridDay",
-        }}
-        initialView={"timeGridWeek"}
-      />
+      <StyleWrapper>
+        <Fullcalendar
+          slotMinTime={"08:00"}
+          slotMaxTime={"22:00"}
+          events={instances.map((i: Instance, index: number) => ({
+            title: i.course,
+            groupId: "blueEvents",
+            daysOfWeek: [dayMap[i.day]],
+            startTime: i.start_time,
+            endTime: calculateEndTime(i.start_time, i.duration),
+            overlap: false,
+            extendedProps: {
+              index,
+              order: i.order,
+              type: i.type,
+            },
+          }))}
+          eventContent={renderEventContent}
+          locale={csLocale}
+          weekends={false}
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          headerToolbar={{
+            start: "prev, next",
+            center: "title",
+            end: "",
+          }}
+          initialView={"timeGridWeek"}
+        />
+      </StyleWrapper>
       <div style={{ marginTop: "30px" }}>
         {instances.map((i: Instance, index: number) => (
           <div
@@ -253,7 +311,7 @@ const ClassRegPage = () => {
             </span>
             <Select
               value={i.order}
-              disabled={state > 4}
+              disabled
               onChange={(e) => handleChange(e, index)}
             >
               <MenuItem value={-1}>not selected</MenuItem>
