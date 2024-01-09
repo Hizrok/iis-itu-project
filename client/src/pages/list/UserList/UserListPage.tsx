@@ -1,5 +1,6 @@
 // @author Tomáš Vlach
 // @author Jan Kapsa
+// @author Petr Teichgráb
 
 import { useState, useEffect } from "react";
 import { User } from "../../../components/common/Types/User";

@@ -1,5 +1,6 @@
 // @author Tomáš Vlach
 // @author Jan Kapsa
+// @author Petr Teichgráb
 
 import { Button, InputLabel } from "@mui/material";
 import { Activity } from "../../../components/common/Types/Course";

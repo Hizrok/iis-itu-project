@@ -1,5 +1,6 @@
 // @author Tomáš Vlach
 // @author Jan Kapsa
+// @author Petr Teichgráb
 
 import { Autocomplete, Button, InputLabel, TextField } from "@mui/material";
 import { Activity } from "../../../components/common/Types/Course";

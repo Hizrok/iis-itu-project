@@ -9,6 +9,8 @@ import ScheduleIcon from "../../assets/scheduleIcon.png";
 import ListIcon from "../../assets/listIcon.png";
 import Tile from "../../components/common/Tiles/Tile";
 
+// @author Petr Teichgráb
+
 type Course = {
   id: string;
   name: string;
